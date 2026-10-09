@@ -30,7 +30,7 @@ See `ROADMAP.md` for the plan, level list and open decisions.
 - Arcade physics. Game canvas is 960x540; the level camera uses zoom 2, so the world is authored in
   480x270 "pixel" units. The HUD runs in its own scene at zoom 1.
 - **All placeholder art is generated in code** (`src/systems/Textures.js`): small sprites are ASCII
-  pixel grids + palettes, larger ones (combi, boss, backgrounds) use Graphics primitives.
+  pixel grids + palettes, larger ones (combi, boss, backgrounds) use Painter primitives (rect, disc, line, 3x5 text).
   Replace with real sprite sheets later by loading images under the same texture keys.
 - **All sound is synthesized** with WebAudio (`src/systems/Sfx.js`), including the placeholder
   chicha-style music loop.
