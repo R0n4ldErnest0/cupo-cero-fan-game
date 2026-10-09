@@ -40,15 +40,15 @@ The driver ends the game as a folk hero and a fugitive ("going rogue").
 - [x] Phaser vendored, no-build project structure
 
 ### M1 — Mission 1 playable prototype (current)
-- [ ] Player: run, jump, crouch, aim up, shoot, grenades, one-hit death, lives, respawn
-- [ ] Weapons: pistol (∞), machine gun pickup, grenades
-- [ ] Enemies: gang gunman, motorcycle extortionist
-- [ ] Emoliente Abuelita helper (tied up → freed → follows and throws emoliente → leaves with a gift)
-- [ ] Combi Slug: board/exit, drive, jump, machine gun + cannon, sticker HP, explode on 0 HP
-- [ ] Boss: El Cobrador's armored mototaxi with 3 attack patterns and a rage phase
-- [ ] HUD, title screen, game over, mission complete
-- [ ] Placeholder procedural art + synthesized SFX and music loop
-- [ ] Playtest and tune difficulty
+- [x] Player: run, jump, crouch, aim up, shoot, grenades, one-hit death, lives, respawn
+- [x] Weapons: pistol (∞), machine gun pickup, grenades
+- [x] Enemies: gang gunman, motorcycle extortionist
+- [x] Emoliente Abuelita helper (tied up → freed → follows and throws emoliente → leaves with a gift)
+- [x] Combi Slug: board/exit, drive, jump, machine gun + cannon, sticker HP, explode on 0 HP
+- [x] Boss: El Cobrador's armored mototaxi with 3 attack patterns and a rage phase
+- [x] HUD, title screen, game over, mission complete
+- [x] Placeholder procedural art + synthesized SFX and music loop
+- [ ] Playtest and tune difficulty (needs human play)
 
 ### M2 — Vertical slice (Mission 1 "for real")
 - [ ] Final art direction decided (see open questions)

@@ -22,6 +22,12 @@ const Fx = {
       if (!b.active) return false;
       if (time > b.until) { b.destroy(); return false; }
       if (b.follow && b.follow.active) b.setPosition(Math.round(b.follow.x), Math.round(b.follow.y - (b.follow.bubbleOffset || 28)));
+      // Keep bubbles fully on screen
+      if (scene.viewLeft !== undefined) {
+        const half = b.width / 2 + 2;
+        b.x = Phaser.Math.Clamp(b.x, scene.viewLeft + half, scene.viewLeft + CFG.VIEW_W - half);
+        b.y = Math.max(b.y, b.height + 2);
+      }
       return true;
     });
   },

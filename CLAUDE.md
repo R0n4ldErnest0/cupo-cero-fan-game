@@ -37,11 +37,12 @@ See `ROADMAP.md` for the plan, level list and open decisions.
 
 ## Running
 
-Open `index.html` directly in a browser, or serve the folder:
+```
+python tools/serve.py 8000   # then open http://localhost:8000
+```
 
-```
-python -m http.server 8000   # then open http://localhost:8000
-```
+`tools/serve.py` disables caching so edits show up on a plain reload. Opening `index.html` directly
+also works. Add `?debug` to the URL to see physics bodies.
 
 Controls: ←/→ move, ↑ aim up, ↓ crouch, Z jump, X shoot, C grenade, ↓ near the Combi Slug to board,
 ↓+Z to exit it, P pause, M mute, Enter start.
@@ -54,7 +55,8 @@ lib/phaser.min.js     vendored engine
 src/config.js         constants (sizes, speeds, tuning)
 src/systems/          Textures (procedural art), Sfx (synth audio), helpers
 src/entities/         Player, enemies, Abuelita (helper), CombiSlug (vehicle), bosses, projectiles
-src/scenes/           Boot, Title, Level1, HUD, GameOver
+src/scenes/           MenuScenes (Boot, Title, GameOver), HUDScene, Level1Scene
+tools/serve.py        no-cache dev server
 ```
 
 ## Conventions

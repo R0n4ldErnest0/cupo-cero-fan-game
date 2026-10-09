@@ -54,8 +54,8 @@ class Painter {
     x = Math.round(x);
     y = Math.round(y);
     if (this.wrapX) x = ((x % this.w) + this.w) % this.w;
-    if (x < 0 || y < 0 || x >= this.w || y >= this.h) return;
-    this.px[y * this.w + x] = c;
+    if (x >= 0 && y >= 0 && x < this.w && y < this.h) this.px[y * this.w + x] = c;
+    return this;
   }
 
   get(x, y) {
