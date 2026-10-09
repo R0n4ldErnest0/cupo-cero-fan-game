@@ -1,0 +1,15 @@
+# Local Claude Code settings
+.claude/settings.local.json
+
+# OS / editor
+Thumbs.db
+.DS_Store
+.vscode/
+.idea/
+
+# Node (if a build step is added later)
+node_modules/
+dist/
+
+# Ripped / third-party assets used only as private placeholders — never commit
+assets/_private/
