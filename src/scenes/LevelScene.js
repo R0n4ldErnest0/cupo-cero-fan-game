@@ -201,7 +201,8 @@ class LevelScene extends Phaser.Scene {
   buildGround() {
     const G = CFG.GROUND_Y;
     this.add.tileSprite(0, G, this.levelW, 30, 'ground').setOrigin(0).setDepth(-5);
-    this.ground = this.add.zone(this.levelW / 2, G + 15, this.levelW, 30);
+    // The solid ground extends past both ends so enemies entering from off-screen land on it.
+    this.ground = this.add.zone(this.levelW / 2, G + 15, this.levelW + 400, 30);
     this.physics.add.existing(this.ground, true);
 
     // Crates are one-way platforms (stand on top, walk/jump through from below and sides).
@@ -327,7 +328,8 @@ class LevelScene extends Phaser.Scene {
 
     this.enemies.getChildren().slice().forEach((e) => {
       if (e.active) e.update(time, delta);
-      if (e.active && e.x < this.viewLeft - 80) e.destroy();
+      // Left behind or fell out of the world: remove, so wave arenas can't wait on them forever.
+      if (e.active && (e.x < this.viewLeft - 80 || e.y > CFG.GROUND_Y + 200)) e.destroy();
     });
     this.abuelitas.forEach((a) => a.active && a.update(time, delta));
     if (this.boss && this.boss.active) this.boss.update(time, delta);
