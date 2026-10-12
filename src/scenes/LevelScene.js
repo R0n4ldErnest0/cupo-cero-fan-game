@@ -305,7 +305,7 @@ class LevelScene extends Phaser.Scene {
     if (!c) return;
     const driven = () => c.active && c.state === 'driven';
     this.combiColliders = [
-      P.collider(c, solids),
+      P.collider(c, solids, null, (cc, t) => this.vehicleTouchesTile(c, t)),
       P.overlap(c, this.eBullets, (cc, b) => { if (driven()) { b.destroy(); c.damage(1); } }),
       P.overlap(c, this.eBombs, (cc, b) => driven() && this.explodeEnemyBomb(b)),
       P.overlap(c, this.enemies, (cc, e) => { if (driven() && e.alive && e.contactKills) { e.die(true, c.driver); c.damage(1); } }),
@@ -351,6 +351,15 @@ class LevelScene extends Phaser.Scene {
     Fx.updateBubbles(this, time);
     if (!this.arenaStarted && this.viewLeft >= this.arenaX - 0.5) this.startArena();
     if (this.waves) this.updateWaves();
+  }
+
+  // The combi is 58px wide: it rides on the terrain under its center (so it follows slopes instead of
+  // resting on a corner), but anything 2+ tiles taller than its wheels still stops it like a wall.
+  vehicleTouchesTile(v, t) {
+    if (t.pixelX === undefined) return true; // crates
+    const b = v.body, cx = b.center.x;
+    if (cx >= t.pixelX && cx < t.pixelX + TILE) return true;
+    return t.pixelY < b.bottom - 2 * TILE;
   }
 
   // Everything that walks gets put back on slope surfaces right after the physics step.

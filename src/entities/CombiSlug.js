@@ -59,13 +59,18 @@ class CombiSlug extends Phaser.Physics.Arcade.Sprite {
     this.hint.x = this.x;
     if (this.label) this.label.setPosition(this.x, this.y - 44);
 
-    // Parts
+    // Tilt with the slope (45° tiles) and keep the parts attached to the tilted body.
+    const want = this.onSlope ? (this.slopeKind === 'up' ? -Math.PI / 4 : Math.PI / 4) : 0;
+    this.rotation += (want - this.rotation) * Math.min(1, dt / 90);
+    const cos = Math.cos(this.rotation), sin = Math.sin(this.rotation);
+    const at = (dx, dy) => [this.x + dx * cos - dy * sin, this.y + dx * sin + dy * cos];
+
     const f = this.facing;
     this.setFlipX(f < 0);
     const spin = (this.body.velocity.x * dt) / 1000 / 6;
-    this.wheels[0].setPosition(this.x + f * 17, this.y - 6).rotation += spin;
-    this.wheels[1].setPosition(this.x - f * 17, this.y - 6).rotation += spin;
-    this.turret.setPosition(this.x - f * 6, this.y - 35);
+    this.wheels[0].setPosition(...at(f * 17, -6)).rotation += spin;
+    this.wheels[1].setPosition(...at(-f * 17, -6)).rotation += spin;
+    this.turret.setPosition(...at(-f * 6, -35));
     this.turret.setRotation(this.aimAngle).setFlipY(Math.cos(this.aimAngle) < -0.01);
 
     if (this.state === 'driven') this.driver.setPosition(this.x, this.y - 8);

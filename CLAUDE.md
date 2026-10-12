@@ -74,7 +74,7 @@ tools/serve.py        no-cache dev server
   Terrain is a text map (key at the top of `src/systems/Terrain.js`): symbols are tiles, letters are markers.
   The player jumps ~60px, so floors meant to be climbed are at most 3 tiles (48px) apart.
 - Arcade physics has no slopes: `Terrain.snap` puts walkers on slope surfaces after each physics step.
-  Wide bodies (the combi) ride slopes poorly; keep vehicles on flat ground for now.
+  Vehicles only touch the tile under their center (plus walls 2+ tiles taller than the wheels), and tilt.
   Mission-specific logic goes in the data (`events[].run`) or a new entity, not in `LevelScene`.
 - Damage values: pistol 1, machine gun 1, emoliente 2, grenade 5, combi cannon 6.
 - Third-party/ripped Metal Slug assets may be used only as private placeholders in `assets/_private/`

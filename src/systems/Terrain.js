@@ -209,13 +209,17 @@ class Terrain {
     if (!b || !b.enable || b.velocity.y < 0) return;
     const x = b.position.x + b.halfWidth, foot = b.position.y + b.height;
     const c = Math.floor(x / TILE), r0 = Math.floor(foot / TILE);
-    let best = null;
+    let best = null, kind = null;
     for (let r = r0 - 1; r <= r0 + 1; r++) {
       const s = this.slopeY(c, r, x);
       if (s === null) continue;
       const d = foot - s; // > 0: sunk into the slope; < 0: floating above it
-      if (d >= -(was ? 6 : 1) && d <= 10 && (best === null || Math.abs(d) < Math.abs(foot - best))) best = s;
+      if (d >= -(was ? 6 : 1) && d <= 10 && (best === null || Math.abs(d) < Math.abs(foot - best))) {
+        best = s;
+        kind = this.kind(c, r);
+      }
     }
+    o.slopeKind = kind;
     if (best === null) return;
     b.position.y += best - foot;
     b.updateCenter();
