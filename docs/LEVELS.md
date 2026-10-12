@@ -88,24 +88,31 @@ The old idea (highway chase on the "Chosicano" Bus Slug) is replaced by the air 
 
 ---
 
-## Weapons (Metal Slug → ours)
+## Weapons (Metal Slug → ours) — decided
 
-Weapons come in crates or are dropped by rescued people, shown by a letter. Ammo runs out, back to the pistol.
+Rules (Metal Slug's): weapons come in crates or are dropped by rescued people, shown by a letter. A weapon lasts
+until its ammo runs out, then you're back to the pistol. Picking up the same weapon adds ammo; a different one
+replaces it. Throwables are counted separately. You lose your weapon when you die.
 
 | Metal Slug | Ours | Behavior | Status |
 |---|---|---|---|
 | Handgun | **Pistola** | infinite | ✅ |
-| Heavy Machine Gun (H) | **Metralleta** | fast fire | ✅ |
-| Grenade | **Granada** | thrown, bounces | ✅ |
-| Knife (melee) | **Llave de ruedas** (tire iron) ❓ | automatic when an enemy is very close | 📝 |
-| Rocket Launcher (R) | **Cohetón** | New Year's firework rockets, splash damage | 📝 |
-| Flame Shot (F) | **Anticuchera** | flames from a street grill, short range, pierces | 📝 |
-| Shotgun (S) | **Escopeta** | short wide blast, strong | 📝 |
-| Iron Lizard (I) — the "walking bombs" | **Gallo de pelea** | roosters run along the ground, leap at the first enemy and burst in a cloud of feathers; the rooster flies off unharmed (cartoon) | 📝 |
-| Drop Shot (D) | **Pelota de fulbito** ❓ | bouncing shots | 📝 optional |
-| Enemy Chaser (C) | **Dron de delivery** ❓ | homing | 📝 optional |
-| Laser (L) | **Puntero láser de ambulante** ❓ | beam | 📝 optional |
+| Heavy Machine Gun (H) | **Metralleta** | fast fire, 150 rounds | ✅ |
+| Rocket Launcher (R) | **Cohetón** | New Year's firework rockets that **home in** on the nearest enemy; sparkly trail, colored burst with splash damage; ~30 | 📝 |
+| Flame Shot (F) | **Anticuchera** | street-grill flamethrower; short range (~1/5 screen), goes through enemies; enemies end blackened and smoking; ~30 | 📝 |
+| Shotgun (S) | **Escopeta** | wide short-range blast, hits several enemies, slow; ~15 | 📝 |
+| Iron Lizard (I) | **Gallo de pelea** | roosters run along the ground (slopes, ledges), leap at an enemy and burst in feathers (splash), then fly off unharmed crowing "¡KIKIRIKÍ!"; useless vs flying enemies; ~20 | 📝 |
+| Drop Shot (D) | **Pelota de fulbito** | bouncing balls that hop along the ground and over obstacles | 📝 |
+| Enemy Chaser (C) | **Dron de delivery** | small drones that chase enemies | 📝 |
+| Laser (L) | **Puntero láser** | a street vendor's laser pointer: a beam that cuts through everything in a line | 📝 |
+| — (ours) | **Piedras** | thrown stones, like in street fights: fast, arcing, weak, lots of them | 📝 |
+| Grenade | **Granada** | throwable, bounces | ✅ |
+| Fire Bomb (MS3) | **Molotov** | second throwable (rare pickup): bursts into flames that stay on the ground for a moment | 📝 |
+| Super Grenade | **Super granada** | rare pickup: one huge grenade that clears the screen | 📝 |
+| Knife (melee) | **Per character** | when an enemy is right next to you, fire hits instead of shooting. Don Chato: tire iron (llave de ruedas). Sargento: police baton. Mercenario: machete. Cobradora: swings the coin bag | 📝 |
 | Vehicle weapons | Combi Slug ✅, Mototaxi Slug, helicopter, rochabus | | |
+
+Crate letters still to assign for Piedras and the throwables (map markers must not clash: P is the player start).
 
 ---
 
@@ -115,7 +122,7 @@ Systems first (each one unlocks several missions), then the missions, then art/s
 
 1. ✅ Level engine, mission flow, terrain (text maps, floors, slopes, pits, vertical camera)
 2. **Sections:** a mission made of several parts with transitions, each with its own map or mode
-3. **Weapons system:** letter pickups, ammo, HUD; Cohetón, Anticuchera, Escopeta, Gallo de pelea; melee
+3. **Weapons system:** letter pickups, ammo, HUD; the 9 new weapons, Molotov and Super granada; per-character melee
 4. **Rescuable people (POWs):** free them, they drop weapons and items (core Metal Slug loop)
 5. **Auto-scroll mode** (train roof; reused by the air level)
 6. **Police enemies** (patrol, riot shield, motorcycle cop, sniper) and the boss framework (mid-bosses, phases)

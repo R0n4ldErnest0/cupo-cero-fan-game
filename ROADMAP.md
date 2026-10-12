@@ -82,7 +82,8 @@ Full design, weapons list and build order: `docs/LEVELS.md`.
 
 ### M2 — Systems for the remaining missions (build order in `docs/LEVELS.md`)
 - [ ] Sections: missions made of several parts with transitions
-- [ ] Weapons: letter pickups, ammo; Cohetón, Anticuchera, Escopeta, Gallo de pelea; melee
+- [ ] Weapons: letter pickups, ammo; Cohetón, Anticuchera, Escopeta, Gallo de pelea, Pelota, Dron, Láser, Piedras;
+      Molotov, Super granada; per-character melee
 - [ ] Rescuable people (POWs) that drop weapons and items
 - [ ] Auto-scroll mode (train roof, air level)
 - [ ] Police enemy types; boss framework (mid-bosses, phases)
@@ -110,6 +111,8 @@ Full design, weapons list and build order: `docs/LEVELS.md`.
 ## Open questions (need answers)
 
 Answered: ripped Metal Slug assets → **private testing only** (`assets/_private/`, gitignored).
+Answered: weapons → see the decided list in `docs/LEVELS.md` (homing Cohetón, all optional weapons, Piedras,
+Molotov as second throwable, per-character melee, Metal Slug ammo rules).
 Missions are designed in `docs/LEVELS.md`.
 
 1. **Final title.** "Cupo Cero" is a placeholder. Alternatives: "Combi Slug", "Al Fondo Hay Sitio",
@@ -134,7 +137,5 @@ Missions are designed in `docs/LEVELS.md`.
 16. **Air level.** Helicopter bought with a pollada, or a crop-duster plane lent from the provinces? Who gives it?
 17. **Allies in Mission 5.** Who joins (honest police, vendors, mototaxistas, cobradores, students, rescued people)?
     Can they die? Do they only fight in the plaza or until the end?
-18. **Weapon names.** Approve or change: Cohetón, Anticuchera, Escopeta, Gallo de pelea, melee weapon (tire iron?),
-    and whether to add the optional ones (bouncing, homing, laser).
-19. **Bus Slug.** Keep the "Chosicano" bus somewhere (e.g. the Metropolitano) or drop it?
-20. **Ladders.** Not planned (Metal Slug barely uses them). Do we want them anyway, e.g. in the comisaría?
+18. **Bus Slug.** Keep the "Chosicano" bus somewhere (e.g. the Metropolitano) or drop it?
+19. **Ladders.** Not planned (Metal Slug barely uses them). Do we want them anyway, e.g. in the comisaría?
