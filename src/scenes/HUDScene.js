@@ -5,7 +5,7 @@ class HUDScene extends Phaser.Scene {
   }
 
   create() {
-    this.level = this.scene.get('Level1');
+    this.level = this.scene.get('Level');
     const big = { fontFamily: FONT, fontSize: '20px', fontStyle: 'bold', color: '#ffe066', stroke: '#000000', strokeThickness: 5 };
     const small = Object.assign({}, big, { fontSize: '15px', color: '#ffffff', strokeThickness: 4 });
 
@@ -47,7 +47,7 @@ class HUDScene extends Phaser.Scene {
   }
 
   togglePause() {
-    const lvl = 'Level1';
+    const lvl = 'Level';
     if (this.scene.isPaused(lvl)) {
       this.scene.resume(lvl);
       this.pauseText.setVisible(false);

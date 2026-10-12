@@ -48,7 +48,8 @@ Controls (solo): ←/→ move, ↑ aim up, ↓ crouch (in the air: shoot down), 
 ↓ near the Combi Slug to board, ↓+Z to exit it, P pause, M mute, Enter start.
 2 players: 1P WASD + F shoot / G jump / H grenade, 2P arrows + , shoot / . jump / / grenade; gamepads work
 (A jump, X shoot, B grenade, Start). Keys are defined in `CFG.KEYS`.
-Testing: **5** inserts a coin, **F2** toggles FREE PLAY (infinite credits, saved in localStorage).
+Testing: **5** inserts a coin, **F2** toggles FREE PLAY (infinite credits, saved in localStorage),
+**F3** on the title picks the starting mission, **F4** finishes the current mission, `?mission=2` preselects a mission.
 
 ## Layout
 
@@ -58,7 +59,8 @@ lib/phaser.min.js     vendored engine
 src/config.js         constants (sizes, speeds, tuning)
 src/systems/          Textures (procedural art), Sfx (synth audio), Session (credits), Controls (input), Fx
 src/entities/         Player, enemies, Abuelita (helper), CombiSlug (vehicle), bosses, projectiles
-src/scenes/           MenuScenes (Boot, Title, CharSelect, GameOver), HUDScene, Level1Scene
+src/levels/           missions.js (registry + data schema), missionN.js (one data file per mission)
+src/scenes/           MenuScenes (Boot, Title, CharSelect, MissionEnd, Ending, GameOver), HUDScene, LevelScene
 docs/LEVELS.md        mission designs + what's missing for Missions 2–5
 tools/serve.py        no-cache dev server
 ```
@@ -66,7 +68,9 @@ tools/serve.py        no-cache dev server
 ## Conventions
 
 - One class per entity file; entities extend Phaser sprites/containers and expose `update(time, dt)`.
-- Tuning numbers go in `src/config.js`, not scattered literals.
+- Tuning numbers go in `src/config.js`, not scattered literals. Level layouts go in `src/levels/`.
+- New missions: add `src/levels/missionN.js` (push onto `MISSIONS`) and a `<script>` tag in `index.html`.
+  Mission-specific logic goes in the data (`events[].run`) or a new entity, not in `LevelScene`.
 - Damage values: pistol 1, machine gun 1, emoliente 2, grenade 5, combi cannon 6.
 - Third-party/ripped Metal Slug assets may be used only as private placeholders in `assets/_private/`
   (gitignored). Never commit or ship SNK assets.

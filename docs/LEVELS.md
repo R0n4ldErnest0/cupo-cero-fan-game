@@ -16,7 +16,10 @@ All names are fictional placeholders.
   a sign "DENUNCIAS: VUELVA MAÑANA".
 - **Boss:** El Cobrador de Cupos in an armored mototaxi. Escapes yelling he has contacts at the comisaría.
 
-## Mission 2 — "Gamarra no se cierra" (Market / garment district)
+## Mission 2 — "Gamarra no se cierra" (Market / garment district) 🚧 greybox
+
+Greybox in `src/levels/mission2.js`: Mission 1 art with a dusk tint, the fiscalización gag, and a 3-wave
+ambush in place of the boss. Everything below that isn't in that file is still to do.
 
 - **Setting:** market streets, stalls, narrow galleries with several floors (multi-level platforms), rooftops.
 - **Enemies:** gang collectors extorting vendors; shield thugs (hiding behind a stall's metal shutter);
@@ -64,12 +67,12 @@ All names are fictional placeholders.
 
 Technical work (in suggested order):
 
-1. **Generic level engine.** Mission 1 is hard-coded in `Level1Scene`. Split it into a reusable `LevelScene`
-   plus one data file per mission (backgrounds, platforms, spawns, decor, helpers, vehicles, boss).
+1. ✅ **Generic level engine.** `LevelScene` builds each mission from a data file in `src/levels/`
+   (schema documented in `src/levels/missions.js`).
 2. **Level editing tool.** Use [Tiled](https://www.mapeditor.org/) maps for platforms, spawns and decor
    instead of coordinates typed by hand in `config.js`.
-3. **Mission flow.** Mission intro/outro, carrying credits, lives, scores and characters between missions,
-   and a debug **stage select** for testing.
+3. ✅ **Mission flow.** Intro/outro, tally screen, carry-over of lives/scores/characters, placeholder ending,
+   stage select (F3 on the title, or `?mission=N`) and F4 to finish a mission.
 4. **New mechanics.** Auto-scroll (bus ride, highway), vertical/multi-level stages (cerros, galleries),
    indoor stages (comisaría), destructible objects, scripted events (the helicopter reveal), simple cutscenes.
 5. **New enemies.** Police types, serenazgo, private security, shield, sniper, vehicle enemies. Plus

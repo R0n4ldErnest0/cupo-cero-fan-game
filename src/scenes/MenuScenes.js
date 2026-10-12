@@ -1,4 +1,5 @@
-// Boot (builds textures), Title (1P/2P menu), Character Select and Game Over screens.
+// Boot (builds textures), Title (1P/2P menu + stage select), Character Select, Mission End (tally),
+// Ending and Game Over screens.
 
 const MENU_TEXT = { fontFamily: FONT, fontStyle: 'bold', stroke: '#000000', align: 'center' };
 const menuStyle = (extra) => Object.assign({}, MENU_TEXT, extra);
@@ -19,7 +20,7 @@ class TitleScene extends Phaser.Scene {
     super('Title');
   }
 
-  create(data = {}) {
+  create() {
     this.add.image(480, 270, 'bg_sky').setScale(2);
     this.add.tileSprite(0, 100, 480, 150, 'bg_hills').setOrigin(0).setScale(2);
     this.add.tileSprite(0, 480 - 340, 480, 170, 'bg_city').setOrigin(0).setScale(2);
@@ -40,18 +41,21 @@ class TitleScene extends Phaser.Scene {
       this.add.text(480, 180 + i * 34, t, menuStyle({ fontSize: '26px', color: '#ffffff', strokeThickness: 6 })).setOrigin(0.5));
     this.notice = this.add.text(480, 252, '', menuStyle({ fontSize: '18px', color: '#ff6b6b', strokeThickness: 5 })).setOrigin(0.5);
 
-    if (data.completed && data.scores) {
-      const s = data.scores.map((p) => `${p.index + 1}P ${p.score}`).join('   ');
-      this.notice.setColor('#9fd36a').setText(`¡MISIÓN 1 CUMPLIDA!  ${s}\nMisión 2 (el mercado): próximamente`);
-    }
+    this.tStage = this.add.text(480, 284, '', menuStyle({ fontSize: '17px', color: '#9fd3f0', strokeThickness: 5 })).setOrigin(0.5);
 
     this.tCredits = this.add.text(16, 528, '', menuStyle({ fontSize: '16px', color: '#ffe066', strokeThickness: 4 })).setOrigin(0, 1);
-    this.add.text(944, 528, '5: insertar moneda   F2: free play (pruebas)', menuStyle({ fontSize: '13px', color: '#ffffff', strokeThickness: 3 })).setOrigin(1, 1);
+    this.add.text(944, 528, '5: moneda   F2: free play   F3: misión (pruebas)', menuStyle({ fontSize: '13px', color: '#ffffff', strokeThickness: 3 })).setOrigin(1, 1);
     this.add.text(480, 506, 'Sátira. Todos los personajes y organizaciones son ficticios.', menuStyle({ fontSize: '13px', color: '#ffffff', strokeThickness: 3 })).setOrigin(0.5, 1);
 
     this.ctrl = new Controls(this, CFG.KEYS.solo, 0);
     this.twoCtrl = new Controls(this, { start: ['TWO'] });
     this.input.on('pointerdown', () => this.start(this.choice + 1));
+    this.input.keyboard.addCapture('F3');
+    this.input.keyboard.on('keydown-F3', () => {
+      Sfx.init();
+      Session.cycleStartMission();
+      Sfx.jump();
+    });
   }
 
   start(n) {
@@ -77,6 +81,8 @@ class TitleScene extends Phaser.Scene {
       t.setText((i === this.choice && blink ? '► ' : '  ') + ['1 JUGADOR', '2 JUGADORES'][i] + '  ');
     });
     this.tCredits.setText(Session.creditText());
+    const m = MISSIONS[Session.startMission];
+    this.tStage.setText(Session.startMission ? `EMPEZAR EN ${m.title}: ${m.name}${m.draft ? ' (BORRADOR)' : ''}` : '');
   }
 }
 
@@ -147,9 +153,75 @@ class CharSelectScene extends Phaser.Scene {
     if (this.sel.every((s) => s.done)) {
       this.starting = true;
       Session.chars = this.sel.map((s) => CFG.CHARACTERS[s.idx].id);
+      Session.newRun();
       Sfx.horn();
-      this.time.delayedCall(700, () => this.scene.start('Level1'));
+      this.time.delayedCall(700, () => this.scene.start('Level', { mission: Session.startMission }));
     }
+  }
+}
+
+// Between missions: score tally and what comes next. Lives, scores and characters carry over.
+class MissionEndScene extends Phaser.Scene {
+  constructor() {
+    super('MissionEnd');
+  }
+
+  create(data = {}) {
+    this.index = data.mission || 0;
+    const done = MISSIONS[this.index], next = MISSIONS[this.index + 1];
+    this.cameras.main.setBackgroundColor('#101820');
+    this.add.tileSprite(0, 540 - 340, 480, 170, 'bg_city').setOrigin(0).setScale(2).setAlpha(0.25);
+    this.add.text(480, 90, `${done.title} CUMPLIDA`, menuStyle({ fontSize: '52px', color: '#ffe066', strokeThickness: 9 })).setOrigin(0.5);
+    this.add.text(480, 140, done.name, menuStyle({ fontSize: '22px', color: '#ffffff', strokeThickness: 5 })).setOrigin(0.5);
+    const scores = (data.scores || []).map((p) => `${p.index + 1}P ${p.name}   ${String(p.score).padStart(7, '0')}`).join('\n');
+    this.add.text(480, 230, scores, menuStyle({ fontSize: '24px', color: '#ffffff', strokeThickness: 5 })).setOrigin(0.5);
+    if (next) {
+      this.add.text(480, 330, 'SIGUIENTE', menuStyle({ fontSize: '18px', color: '#9fd3f0', strokeThickness: 4 })).setOrigin(0.5);
+      this.add.text(480, 364, `${next.title}: ${next.subtitle}${next.draft ? ' (BORRADOR)' : ''}`,
+        menuStyle({ fontSize: '24px', color: '#ffe066', strokeThickness: 5 })).setOrigin(0.5);
+    }
+    this.prompt = this.add.text(480, 450, 'DISPARO / ENTER: CONTINUAR', menuStyle({ fontSize: '18px', color: '#cccccc', strokeThickness: 4 })).setOrigin(0.5);
+    this.ctrls = [new Controls(this, CFG.KEYS.solo, 0), new Controls(this, CFG.KEYS.p2, 1)];
+    this.leaving = false;
+    this.time.delayedCall(8000, () => this.next());
+  }
+
+  next() {
+    if (this.leaving) return;
+    this.leaving = true;
+    Sfx.horn();
+    if (MISSIONS[this.index + 1]) this.scene.start('Level', { mission: this.index + 1 });
+    else this.scene.start('Ending', { scores: (Session.run.players || []).map((p, i) => ({ index: i, char: p.char, score: p.score })) });
+  }
+
+  update(time) {
+    this.prompt.setAlpha(Math.floor(time / 400) % 2 ? 0.4 : 1);
+    if (this.ctrls.some((ctl) => { const c = ctl.read(); return c.startP || c.fireP || c.jumpP; })) this.next();
+  }
+}
+
+// Placeholder ending until Mission 5 and the final cutscene exist.
+class EndingScene extends Phaser.Scene {
+  constructor() {
+    super('Ending');
+  }
+
+  create(data = {}) {
+    this.cameras.main.setBackgroundColor('#0c0c14');
+    this.add.text(480, 140, 'CONTINUARÁ...', menuStyle({ fontSize: '64px', color: '#ffe066', strokeThickness: 9 })).setOrigin(0.5);
+    this.add.text(480, 220, `Jugaste todas las misiones disponibles (${MISSIONS.length} de 5).\nLa ruta, la comisaría y la municipalidad te esperan.`,
+      menuStyle({ fontSize: '20px', color: '#ffffff', strokeThickness: 5 })).setOrigin(0.5);
+    const scores = (data.scores || []).filter((p) => p.score > 0)
+      .map((p) => `${p.index + 1}P ${CFG.CHARACTERS.find((c) => c.id === p.char).name}   ${p.score}`).join('\n');
+    this.add.text(480, 330, scores, menuStyle({ fontSize: '22px', color: '#ffe066', strokeThickness: 5 })).setOrigin(0.5);
+    this.add.text(480, 440, 'ENTER: volver al título', menuStyle({ fontSize: '18px', color: '#cccccc', strokeThickness: 4 })).setOrigin(0.5);
+    this.ctrl = new Controls(this, CFG.KEYS.solo, 0);
+    Session.run = null;
+  }
+
+  update() {
+    const c = this.ctrl.read();
+    if (c.startP || c.fireP || c.jumpP) this.scene.start('Title');
   }
 }
 

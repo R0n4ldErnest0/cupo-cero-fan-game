@@ -1,20 +1,25 @@
-// Mission 1 — "¡Paga o ya sabes!": paradero in the cono, ends with El Cobrador's mototaxi.
-class Level1Scene extends Phaser.Scene {
+// Generic run-and-gun level, built from a mission definition in MISSIONS (src/levels/).
+// Start with this.scene.start('Level', { mission: index }).
+const BOSSES = { cobrador: BossCobrador };
+
+class LevelScene extends Phaser.Scene {
   constructor() {
-    super('Level1');
+    super('Level');
   }
 
-  create() {
-    const L = CFG.LEVEL1;
-    this.levelW = L.WIDTH;
-    this.arenaX = L.ARENA_X;
+  create(data = {}) {
+    this.missionIndex = Phaser.Math.Clamp(data.mission || 0, 0, MISSIONS.length - 1);
+    const M = (this.mission = MISSIONS[this.missionIndex]);
+    this.levelW = M.width;
+    this.arenaX = M.arenaX;
     this.viewLeft = 0;
     this.bubbles = [];
-    this.bossStarted = false;
+    this.named = {};
+    this.arenaStarted = false;
+    this.waves = null;
     this.finished = false;
     this.frozen = false;
     this.boss = null;
-    this.copSpoke = false;
     this.registry.set({ bossHp: 0, bossMax: 1, bossName: '' });
     // Clock and tweens survive a scene restart; make sure a previous freeze doesn't carry over.
     this.time.paused = false;
@@ -36,10 +41,11 @@ class Level1Scene extends Phaser.Scene {
     this.eBombs = this.physics.add.group();
 
     this.createPlayers();
-    this.combi = new CombiSlug(this, L.COMBI_X, CFG.GROUND_Y);
-    this.abuelita = new Abuelita(this, L.ABUELITA_X, CFG.GROUND_Y);
-    L.PICKUPS.forEach((p) => this.spawnPickup(p.x, CFG.GROUND_Y - 40, p.kind));
-    this.spawns = L.SPAWNS.map((s) => Object.assign({}, s)).sort((a, b) => a.x - b.x);
+    this.combi = M.combi ? new CombiSlug(this, M.combi.x, CFG.GROUND_Y) : null;
+    this.abuelitas = (M.abuelitas || []).map((a) => new Abuelita(this, a.x, CFG.GROUND_Y));
+    (M.pickups || []).forEach((p) => this.spawnPickup(p.x, CFG.GROUND_Y - 40, p.kind));
+    this.spawns = (M.spawns || []).map((s) => Object.assign({}, s)).sort((a, b) => a.x - b.x);
+    this.triggers = (M.events || []).map((e) => Object.assign({}, e)).sort((a, b) => a.x - b.x);
 
     this.setupCollisions();
     this.updateCamera();
@@ -48,24 +54,41 @@ class Level1Scene extends Phaser.Scene {
     this.scene.launch('HUD');
     Sfx.startMusic();
     this.events.once('shutdown', () => Sfx.stopMusic());
-    this.time.delayedCall(300, () => this.message('MISIÓN 1', '¡PAGA O YA SABES!', 2600));
+    const sub = M.subtitle + (M.draft ? '\n(BORRADOR)' : '');
+    this.time.delayedCall(300, () => this.message(M.title, sub, 2600));
   }
 
   // ---------- players ----------
 
+  // Fresh run: characters from the select screen. Next mission: lives, scores and characters carry over
+  // (players that were out or still deciding come back as 'inactive' and can rejoin with start).
   createPlayers() {
     const n = Session.numPlayers;
+    const saved = Session.run && Session.run.players;
     const c0 = Session.chars[0] || 'chato';
     const c1 = Session.chars[1] || CFG.CHARACTERS.map((c) => c.id).find((id) => id !== c0);
     this.players = [c0, c1].map((ch, i) => {
-      const p = new Player(this, i, ch, 60 - i * 24, CFG.GROUND_Y);
-      if (i >= n) {
-        p.state = 'inactive';
-        p.deactivate();
-      }
+      const s = saved && saved[i];
+      const p = new Player(this, i, s ? s.char : ch, 60 - i * 24, CFG.GROUND_Y);
+      if (s) {
+        p.score = s.score;
+        p.lives = s.lives;
+        p.state = s.state;
+      } else if (i >= n) p.state = 'inactive';
+      if (p.state !== 'play') p.deactivate();
       return p;
     });
     this.setupControls(n);
+  }
+
+  savePlayers() {
+    Session.run = Session.run || {};
+    Session.run.players = this.players.map((p) => ({
+      char: p.char,
+      score: p.score,
+      lives: p.state === 'play' ? p.lives : CFG.CREDITS.LIVES_PER_CREDIT,
+      state: p.state === 'play' ? 'play' : 'inactive',
+    }));
   }
 
   // Solo: P1 accepts every key layout. 2P: split keyboard (P1 WASD+F/G/H, P2 arrows+, . /) plus gamepads.
@@ -157,9 +180,13 @@ class Level1Scene extends Phaser.Scene {
   // ---------- world building ----------
 
   buildBackground() {
+    const bg = this.mission.bg || {};
     this.bgSky = this.add.image(0, 0, 'bg_sky').setOrigin(0).setDepth(-10);
     this.bgHills = this.add.tileSprite(0, 70, CFG.VIEW_W, 150, 'bg_hills').setOrigin(0).setDepth(-9);
     this.bgCity = this.add.tileSprite(0, CFG.GROUND_Y - 170, CFG.VIEW_W, 170, 'bg_city').setOrigin(0).setDepth(-8);
+    if (bg.sky) this.bgSky.setTint(bg.sky);
+    if (bg.hills) this.bgHills.setTint(bg.hills);
+    if (bg.city) this.bgCity.setTint(bg.city);
   }
 
   updateParallax() {
@@ -179,7 +206,7 @@ class Level1Scene extends Phaser.Scene {
 
     // Crates are one-way platforms (stand on top, walk/jump through from below and sides).
     this.platforms = this.physics.add.staticGroup();
-    CFG.LEVEL1.CRATES.forEach(({ x, stack }) => {
+    (this.mission.crates || []).forEach(({ x, stack }) => {
       for (let i = 0; i < stack; i++) {
         const c = this.platforms.create(x, G - 10 - i * 20, 'crate').setDepth(0);
         c.refreshBody();
@@ -196,34 +223,33 @@ class Level1Scene extends Phaser.Scene {
   }
 
   buildDecor() {
-    const G = CFG.GROUND_Y, L = CFG.LEVEL1;
-    const graffiti = (x, txt, color) => {
-      this.add.image(x, G, 'wall').setOrigin(0.5, 1).setDepth(-3);
-      this.add.text(x, G - 24, txt, { fontFamily: FONT, fontSize: '9px', fontStyle: 'bold italic', color, stroke: '#f4efe4', strokeThickness: 3, align: 'center', resolution: 2 })
-        .setOrigin(0.5).setRotation(-0.06).setDepth(-2);
+    const G = CFG.GROUND_Y;
+    const sign = (x, y, text, bg) => this.worldText(x, y, text, { backgroundColor: bg, strokeThickness: 0, padding: { x: 3, y: 2 } });
+    const build = {
+      text: (d) => this.worldText(d.x, d.y, d.text, d.style),
+      controls: (d) => this.worldText(d.x, d.y, Session.numPlayers === 1
+        ? '←→ MOVER   ↑ APUNTAR   ↓ AGACHARSE\nZ SALTAR   X DISPARAR   C GRANADA'
+        : '1P: WASD + F DISPARAR  G SALTAR  H GRANADA\n2P: FLECHAS + , DISPARAR  . SALTAR  / GRANADA'),
+      image: (d) => this.add.image(d.x, d.y || G, d.key).setOrigin(0.5, 1).setDepth(-2),
+      sign: (d) => sign(d.x, d.y, d.text, d.bg || '#1e5fb4'),
+      graffiti: (d) => {
+        this.add.image(d.x, G, 'wall').setOrigin(0.5, 1).setDepth(-3);
+        return this.add.text(d.x, G - 24, d.text, { fontFamily: FONT, fontSize: '9px', fontStyle: 'bold italic', color: d.color, stroke: '#f4efe4', strokeThickness: 3, align: 'center', resolution: 2 })
+          .setOrigin(0.5).setRotation(-0.06).setDepth(-2);
+      },
+      copcar: (d) => {
+        const car = this.add.image(d.x, G, 'policecar').setOrigin(0.5, 1).setDepth(-1);
+        car.bubbleOffset = 30;
+        const z = this.worldText(d.x + 6, G - 34, 'z Z z', { color: '#ffffff', fontSize: '8px' });
+        this.tweens.add({ targets: z, y: G - 42, alpha: 0.2, duration: 1200, repeat: -1 });
+        if (d.sign) sign(d.x, G - 58, d.sign, '#2e7d32');
+        return car;
+      },
     };
-
-    this.worldText(240, 70, 'Los cuperos mataron a tu compadre.\nHoy no se paga. Hoy se cobra.', { fontSize: '10px', color: '#ffe066' });
-    const help = Session.numPlayers === 1
-      ? '←→ MOVER   ↑ APUNTAR   ↓ AGACHARSE\nZ SALTAR   X DISPARAR   C GRANADA'
-      : '1P: WASD + F DISPARAR  G SALTAR  H GRANADA\n2P: FLECHAS + , DISPARAR  . SALTAR  / GRANADA';
-    this.worldText(240, 104, help);
-
-    this.add.image(150, G, 'paradero').setOrigin(0.5, 1).setDepth(-2);
-    graffiti(330, 'LOS CUPEROS\nMANDAN', '#c0282e');
-    this.add.image(650, G, 'banner').setOrigin(0.5, 1).setDepth(-2);
-    graffiti(1250, 'PAGA O\nYA SABES', '#1b1b22');
-    graffiti(2170, '¡PARO DE\nTRANSPORTISTAS!', '#1e5fb4');
-    graffiti(3040, 'NO A LA\nEXTORSIÓN', '#2e7d32');
-
-    // A patrol car with a sleeping cop. Foreshadowing.
-    this.copCar = this.add.image(L.COP_CAR_X, G, 'policecar').setOrigin(0.5, 1).setDepth(-1);
-    this.copCar.bubbleOffset = 30;
-    const z = this.worldText(L.COP_CAR_X + 6, G - 34, 'z Z z', { color: '#ffffff', fontSize: '8px' });
-    this.tweens.add({ targets: z, y: G - 42, alpha: 0.2, duration: 1200, repeat: -1 });
-    this.worldText(L.COP_CAR_X, G - 58, 'DENUNCIAS:\nVUELVA MAÑANA', { backgroundColor: '#2e7d32', strokeThickness: 0, padding: { x: 3, y: 2 } });
-
-    this.worldText(3385, G - 70, 'TERMINAL\nATE — CALLAO', { backgroundColor: '#1e5fb4', strokeThickness: 0, padding: { x: 3, y: 2 } });
+    (this.mission.decor || []).forEach((d) => {
+      const obj = build[d.type](d);
+      if (d.id) this.named[d.id] = obj;
+    });
   }
 
   // ---------- setup ----------
@@ -234,17 +260,19 @@ class Level1Scene extends Phaser.Scene {
     const P = this.physics.add;
 
     P.collider(this.enemies, solids);
-    P.collider(this.abuelita, this.ground);
     P.collider(this.pickups, solids);
     P.collider(this.pBombs, solids, (a, b) => this.onPlayerBombGround(pick(a, b, 'kind')));
     P.collider(this.eBombs, solids, (a, b) => this.explodeEnemyBomb(pick(a, b, 'isEnemyBomb')));
     P.overlap(this.pBullets, this.enemies, (b, e) => this.bulletHitsEnemy(b, e));
     P.overlap(this.pBombs, this.enemies, (b, e) => e.alive && this.detonate(b));
-    P.overlap(this.abuelita, this.pBullets, (a, b) => {
-      if (a.state !== 'tied') return;
-      const owner = b.owner;
-      b.destroy();
-      a.free(owner);
+    this.abuelitas.forEach((ab) => {
+      P.collider(ab, this.ground);
+      P.overlap(ab, this.pBullets, (a, b) => {
+        if (ab.state !== 'tied') return;
+        const owner = b.owner;
+        b.destroy();
+        ab.free(owner);
+      });
     });
 
     this.players.forEach((pl) => {
@@ -257,10 +285,12 @@ class Level1Scene extends Phaser.Scene {
       P.overlap(pl, this.eBombs, (p, b) => pl.canBeHit() && this.explodeEnemyBomb(b));
       P.overlap(pl, this.enemies, (p, e) => e.alive && e.contactKills && pl.canBeHit() && pl.die());
       P.overlap(pl, this.pickups, (p, k) => k.collect(pl));
-      P.overlap(pl, this.abuelita, () => this.abuelita.free(pl));
+      this.abuelitas.forEach((ab) => P.overlap(pl, ab, () => ab.free(pl)));
     });
 
+    this.combiColliders = [];
     const c = this.combi;
+    if (!c) return;
     const driven = () => c.active && c.state === 'driven';
     this.combiColliders = [
       P.collider(c, solids),
@@ -293,22 +323,19 @@ class Level1Scene extends Phaser.Scene {
     this.clampToView();
     this.updateParallax();
     this.checkSpawns();
+    this.checkEvents();
 
     this.enemies.getChildren().slice().forEach((e) => {
       if (e.active) e.update(time, delta);
       if (e.active && e.x < this.viewLeft - 80) e.destroy();
     });
-    if (this.abuelita.active) this.abuelita.update(time, delta);
+    this.abuelitas.forEach((a) => a.active && a.update(time, delta));
     if (this.boss && this.boss.active) this.boss.update(time, delta);
-
-    if (!this.copSpoke && this.players.some((p) => p.targetable() && p.x > CFG.LEVEL1.COP_CAR_X - 130)) {
-      this.copSpoke = true;
-      Fx.say(this, this.copCar, 'Zzz... yo no he visto nada, causa...', 2600);
-    }
 
     this.cleanupProjectiles();
     Fx.updateBubbles(this, time);
-    if (!this.bossStarted && this.viewLeft >= this.arenaX - 0.5) this.startBoss();
+    if (!this.arenaStarted && this.viewLeft >= this.arenaX - 0.5) this.startArena();
+    if (this.waves) this.updateWaves();
   }
 
   // What enemies aim at: the nearest player (or their combi) to x.
@@ -345,14 +372,33 @@ class Level1Scene extends Phaser.Scene {
     }
   }
 
+  spawnEnemy(s, x) {
+    const e = s.t === 'biker'
+      ? new Biker(this, this.viewLeft + CFG.VIEW_W + 30, CFG.GROUND_Y)
+      : new Grunt(this, x, s.y || CFG.GROUND_Y, s);
+    this.enemies.add(e);
+    return e;
+  }
+
   checkSpawns() {
     const edge = this.viewLeft + CFG.VIEW_W + 16;
     while (this.spawns.length && this.spawns[0].x <= edge) {
       const s = this.spawns.shift();
-      const e = s.t === 'biker'
-        ? new Biker(this, this.viewLeft + CFG.VIEW_W + 30, CFG.GROUND_Y)
-        : new Grunt(this, s.x, s.y || CFG.GROUND_Y, s);
-      this.enemies.add(e);
+      this.spawnEnemy(s, s.x);
+    }
+  }
+
+  // Scripted moments: fire once when any player in play passes x.
+  checkEvents() {
+    const front = Math.max(-Infinity, ...this.players.filter((p) => p.targetable()).map((p) => (p.vehicle || p).x));
+    while (this.triggers.length && this.triggers[0].x <= front) {
+      const e = this.triggers.shift();
+      if (e.say) {
+        const who = this.named[e.say.who];
+        if (who) Fx.say(this, who, e.say.text, e.say.ms || 2500);
+      }
+      if (e.message) this.message(...e.message);
+      if (e.run) e.run(this);
     }
   }
 
@@ -541,11 +587,46 @@ class Level1Scene extends Phaser.Scene {
     });
   }
 
-  startBoss() {
-    this.bossStarted = true;
-    this.message('¡ALERTA!', 'EL COBRADOR DE CUPOS', 2200);
+  startArena() {
+    this.arenaStarted = true;
+    const A = this.mission.arena || {};
+    if (A.alert) this.message(A.alert[0], A.alert[1], 2200);
+    if (A.boss) this.startBoss(A.boss);
+    else if (A.waves) {
+      this.waves = { list: A.waves, index: -1, pending: 0 };
+      this.time.delayedCall(1200, () => this.nextWave());
+    } else this.onBossDefeated();
+  }
+
+  // Locked-screen ambush: the next wave comes when the current one is dead.
+  nextWave() {
+    const W = this.waves;
+    W.index++;
+    const wave = W.list[W.index];
+    W.pending = wave.length;
+    wave.forEach((s, i) => this.time.delayedCall(i * 450, () => {
+      if (this.finished) return;
+      this.spawnEnemy(s, this.arenaX + s.dx);
+      W.pending--;
+    }));
+  }
+
+  updateWaves() {
+    const W = this.waves;
+    if (W.index < 0 || W.pending > 0 || W.done) return;
+    if (this.enemies.getChildren().some((e) => e.alive)) return;
+    if (W.index + 1 < W.list.length) {
+      W.pending = 1; // hold until the next wave is queued
+      this.time.delayedCall(900, () => { W.pending = 0; this.nextWave(); });
+    } else {
+      W.done = true;
+      this.onBossDefeated();
+    }
+  }
+
+  startBoss(type) {
     Sfx.rev();
-    const b = (this.boss = new BossCobrador(this, this.levelW + 70, CFG.GROUND_Y));
+    const b = (this.boss = new BOSSES[type](this, this.levelW + 70, CFG.GROUND_Y));
     const P = this.physics.add;
     P.overlap(b, this.pBullets, (bb, bullet) => {
       if (!b.alive || !bullet.active) return;
@@ -573,17 +654,21 @@ class Level1Scene extends Phaser.Scene {
 
   onBossDefeated() {
     this.registry.set('bossHp', 0);
-    this.time.delayedCall(2600, () => this.missionComplete());
+    this.time.delayedCall(this.boss ? 2600 : 1200, () => this.missionComplete());
   }
 
   missionComplete() {
+    if (this.finished) return;
     this.finished = true;
+    this.updateFreeze();
     Sfx.stopMusic();
     Sfx.fanfare();
-    this.message('¡MISIÓN CUMPLIDA!', '...¿contactos en la comisaría?', 4500);
+    const O = this.mission.outro || { title: '¡MISIÓN CUMPLIDA!', sub: '' };
+    this.message(O.title, O.sub, 4500);
+    this.savePlayers();
     this.time.delayedCall(5200, () => {
       this.scene.stop('HUD');
-      this.scene.start('Title', { completed: true, scores: this.scores() });
+      this.scene.start('MissionEnd', { mission: this.missionIndex, scores: this.scores() });
     });
   }
 }

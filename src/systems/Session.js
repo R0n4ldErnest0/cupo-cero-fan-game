@@ -1,14 +1,28 @@
-// State that outlives a single scene: credits, free play, number of players, chosen characters.
+// State that outlives a single scene: credits, free play, number of players, chosen characters,
+// the mission a new game starts on (stage select) and the current run (players carried between missions).
 const Session = {
   credits: CFG.CREDITS.START,
   freePlay: false,
   numPlayers: 1,
   chars: ['chato', null],
+  startMission: 0,
+  run: null,
 
   load() {
     try {
       this.freePlay = localStorage.getItem('cupocero.freePlay') === '1';
     } catch (e) { /* storage unavailable: keep default */ }
+    const m = /[?&]mission=(\d+)/.exec(location.search);
+    if (m) this.startMission = Phaser.Math.Clamp(+m[1] - 1, 0, MISSIONS.length - 1);
+  },
+
+  newRun() {
+    this.run = { players: null };
+  },
+
+  // Stage select (testing): cycles the mission a new game starts on.
+  cycleStartMission() {
+    this.startMission = (this.startMission + 1) % MISSIONS.length;
   },
 
   toggleFreePlay() {

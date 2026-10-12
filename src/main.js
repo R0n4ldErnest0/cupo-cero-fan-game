@@ -15,10 +15,11 @@ const game = new Phaser.Game({
     arcade: { gravity: { y: CFG.GRAVITY }, debug: CFG.DEBUG },
   },
   scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH },
-  scene: [BootScene, TitleScene, CharSelectScene, Level1Scene, HUDScene, GameOverScene],
+  scene: [BootScene, TitleScene, CharSelectScene, LevelScene, HUDScene, MissionEndScene, EndingScene, GameOverScene],
 });
 
-// Arcade-style global keys, active in every scene: 5 = insert coin, F2 = toggle FREE PLAY.
+// Arcade-style global keys, active in every scene: 5 = insert coin, F2 = toggle FREE PLAY,
+// F4 = finish the current mission (testing).
 window.addEventListener('keydown', (e) => {
   if (e.repeat) return;
   if (e.code === 'Digit5' || e.code === 'Numpad5') {
@@ -30,5 +31,9 @@ window.addEventListener('keydown', (e) => {
     Session.toggleFreePlay();
     Sfx.init();
     Sfx.coin();
+  } else if (e.code === 'F4') {
+    e.preventDefault();
+    const lv = game.scene.getScene('Level');
+    if (game.scene.isActive('Level') && !lv.finished && !lv.frozen) lv.missionComplete();
   }
 });

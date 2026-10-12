@@ -60,6 +60,14 @@ The driver ends the game as a folk hero and a fugitive ("going rogue").
 - [x] Combi Slug turret aims in 8 directions incl. down-diagonals and keeps its angle
 - [x] Shoot straight down while jumping
 
+### M1.6 — Level engine + mission flow ✅
+- [x] Generic data-driven `LevelScene`; one data file per mission in `src/levels/`
+- [x] Scripted events (`events`), named decor, arena as boss fight or locked-screen enemy waves
+- [x] Mission flow: intro banner → outro → tally screen → next mission → placeholder ending
+- [x] Lives, scores and characters carry over; game-over players can rejoin next mission
+- [x] Test helpers: F3 stage select on the title, F4 finishes the current mission, `?mission=N`
+- [x] Mission 2 greybox (reuses Mission 1 art; ends in an ambush instead of a boss)
+
 ### M2 — Vertical slice (Mission 1 "for real")
 - [ ] Final art direction decided (see open questions)
 - [ ] Real sprites for Don Chato, gang grunt, abuelita, Combi Slug, boss
@@ -70,7 +78,8 @@ The driver ends the game as a folk hero and a fugitive ("going rogue").
 - [ ] Knife/melee at close range
 
 ### M3 — Missions 2–3
-- [ ] Market level + ledger story beat
+- [ ] Market level for real (greybox exists) + ledger story beat
+- [ ] Level editing with Tiled instead of hand-typed coordinates
 - [ ] Moving-bus level + police helicopter reveal
 - [ ] Police enemy types; mixed gang + police encounters
 - [ ] Mototaxi Slug
