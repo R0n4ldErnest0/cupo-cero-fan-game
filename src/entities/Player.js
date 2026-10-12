@@ -78,8 +78,12 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
     this.setVelocityX(move * (this.crouching ? P.SPEED * 0.4 : P.SPEED));
     if (c.jumpP && onGround) {
-      this.setVelocityY(-P.JUMP);
-      Sfx.jump();
+      // ↓ + jump on a one-way floor drops through it instead of jumping.
+      if (c.down && s.terrain.isOneWayAt(this.x, this.y + 2)) this.dropUntil = time + 250;
+      else {
+        this.setVelocityY(-P.JUMP);
+        Sfx.jump();
+      }
     }
 
     // Holding ↓ in the air shoots straight down, like Metal Slug.
@@ -148,12 +152,23 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     this.scene.time.delayedCall(1500, () => this.scene.onPlayerDeath(this));
   }
 
-  respawn(x) {
+  // Fell into a pit: no death animation, just gone.
+  fallDeath() {
+    if (this.state !== 'play' || !this.alive) return;
+    this.alive = false;
+    Sfx.playerDie();
+    this.setVisible(false);
+    this.body.enable = false;
+    this.setVelocity(0, 0);
+    this.scene.time.delayedCall(900, () => this.scene.onPlayerDeath(this));
+  }
+
+  respawn(x, y) {
     this.state = 'play';
     this.alive = true;
     this.setVisible(true);
     this.body.enable = true;
-    this.setPosition(x, CFG.GROUND_Y - 120);
+    this.setPosition(x, y);
     this.setVelocity(0, 0);
     this.angle = 0;
     this.clearTint();

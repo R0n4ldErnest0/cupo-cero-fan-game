@@ -190,6 +190,7 @@ const Textures = {
     this.fx(scene);
     this.pickups(scene);
     this.props(scene);
+    this.tiles(scene);
     this.backgrounds(scene);
     this.anims(scene);
   },
@@ -426,6 +427,59 @@ const Textures = {
     pc.disc(14, 22, 4, PAL.k).disc(50, 22, 4, PAL.k).set(14, 22, PAL.g).set(50, 22, PAL.g);
     pc.outline();
     pc.register(scene, 'policecar');
+  },
+
+  // Terrain tileset: one 16x16 tile per entry of TILE_IDS (src/systems/Terrain.js), left to right.
+  tiles(scene) {
+    const T = 16, rnd = mulberry32(11);
+    const p = new Painter(T * TILE_IDS.length, T);
+    const speckle = (ox, y0, n, cols) => {
+      for (let i = 0; i < n; i++) p.set(ox + Math.floor(rnd() * T), y0 + Math.floor(rnd() * (T - y0)), cols[i % cols.length]);
+    };
+    const bricks = (ox, y0, base, mortar) => {
+      p.rect(ox, y0, T, T - y0, base);
+      for (let y = y0 + 3; y < T; y += 4) {
+        p.rect(ox, y, T, 1, mortar);
+        for (let x = (Math.floor(y / 4) % 2) * 4; x < T; x += 8) p.rect(ox + x, y - 3, 1, 3, mortar);
+      }
+    };
+    const draw = {
+      street_top: (o) => {
+        p.rect(o, 0, T, 2, '#c8c4b8').rect(o, 2, T, 4, '#a9a59c').rect(o + 15, 2, 1, 4, '#8d897f');
+        p.rect(o, 6, T, 2, '#6e6a62').rect(o, 8, T, 8, '#4b4b52');
+        speckle(o, 9, 6, ['#56565e', '#3f3f45']);
+      },
+      street_lane: (o) => { p.rect(o, 0, T, T, '#4b4b52'); speckle(o, 0, 10, ['#56565e', '#3f3f45']); p.rect(o, 2, T, 2, '#e3c45a'); },
+      street: (o) => { p.rect(o, 0, T, T, '#4b4b52'); speckle(o, 0, 10, ['#56565e', '#3f3f45']); },
+      brick_top: (o) => { bricks(o, 0, '#a5543c', '#7c3c2a'); p.rect(o, 0, T, 3, '#9d9a92').rect(o, 3, T, 1, '#6e6a62'); },
+      brick: (o) => bricks(o, 0, '#a5543c', '#7c3c2a'),
+      dirt_top: (o) => { p.rect(o, 0, T, T, '#8f7258'); speckle(o, 3, 8, ['#7d6249', '#a38466']); p.rect(o, 0, T, 3, '#b89a74').rect(o, 3, T, 1, '#a38466'); },
+      dirt: (o) => { p.rect(o, 0, T, T, '#8f7258'); speckle(o, 0, 12, ['#7d6249', '#a38466']); },
+      slab: (o) => {
+        p.rect(o, 0, T, 1, '#c8c4b8').rect(o, 1, T, 4, '#9d9a92').rect(o, 5, T, 1, '#6e6a62');
+        p.set(o + 4, 3, '#7e7b74').set(o + 11, 2, '#7e7b74');
+      },
+      plank: (o) => {
+        p.rect(o, 0, T, 4, '#a8743f').rect(o, 0, T, 1, '#c8955a').rect(o, 3, T, 1, '#6e4a26').rect(o + 7, 0, 1, 4, '#6e4a26');
+        p.rect(o + 2, 4, 2, 3, '#6e4a26').rect(o + 12, 4, 2, 3, '#6e4a26');
+      },
+      slope_up: (o) => {
+        for (let x = 0; x < T; x++) {
+          const s = T - 1 - x;
+          p.rect(o + x, s, 1, T - s, '#8f7258').set(o + x, s, '#b89a74');
+          if (s + 1 < T) p.set(o + x, s + 1, '#a38466');
+        }
+      },
+      slope_down: (o) => {
+        for (let x = 0; x < T; x++) {
+          p.rect(o + x, x, 1, T - x, '#8f7258').set(o + x, x, '#b89a74');
+          if (x + 1 < T) p.set(o + x, x + 1, '#a38466');
+        }
+      },
+      backwall: (o) => bricks(o, 0, '#5e3a30', '#4a2c24'),
+    };
+    TILE_IDS.forEach((id, i) => draw[id](i * T));
+    p.register(scene, 'tiles');
   },
 
   backgrounds(scene) {

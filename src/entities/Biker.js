@@ -19,7 +19,7 @@ class Biker extends Phaser.Physics.Arcade.Sprite {
     if (!this.alive) return;
     const s = this.scene, t = s.target(this.x);
     this.setVelocityX(-CFG.ENEMY.BIKER_SPEED);
-    const onScreen = this.x < s.viewLeft + CFG.VIEW_W - 4;
+    const onScreen = s.inView(this.x, this.y - 8, -4);
     if (!this.shot && onScreen && this.x > t.x && this.x - t.x < 220) {
       this.shot = true;
       s.enemyShoot(this.x - 12, this.y - 16, Math.PI);

@@ -137,6 +137,17 @@ class CombiSlug extends Phaser.Physics.Arcade.Sprite {
     });
   }
 
+  // Drove into a pit: the combi is lost and so is the driver (LevelScene.checkPits handles the death).
+  fellIntoPit() {
+    const d = this.driver;
+    this.driver = null;
+    if (d) {
+      d.vehicle = null;
+      d.setPosition(this.x, this.y);
+    }
+    this.removeAll();
+  }
+
   removeAll() {
     const s = this.scene;
     (s.combiColliders || []).forEach((c) => c.destroy());

@@ -33,9 +33,9 @@ class Grunt extends Phaser.Physics.Arcade.Sprite {
 
   update(time, dt) {
     if (!this.alive) return;
-    const s = this.scene, t = s.target(this.x);
+    const s = this.scene, t = s.target(this.x, this.y);
     const dx = t.x - this.x, dist = Math.abs(dx);
-    const onScreen = this.x > s.viewLeft + 4 && this.x < s.viewLeft + CFG.VIEW_W - 4;
+    const onScreen = s.inView(this.x, this.y - 10, -4);
     const fleeing = time < this.fleeUntil;
     let vx = 0;
 
@@ -53,6 +53,8 @@ class Grunt extends Phaser.Physics.Arcade.Sprite {
         Fx.say(s, this, '¡Mamita, el chofer está loco!', 1100);
       }
     }
+    // Stay on this floor: don't walk off ledges (crates and the street edge excepted).
+    if (vx && this.body.blocked.down && !s.terrain.hasFloor(this.x + Math.sign(vx) * 6, this.y)) vx = 0;
     this.setVelocityX(vx);
 
     if (onScreen && !fleeing && time > this.nextAction) this.act(time, t);
@@ -82,7 +84,14 @@ class Grunt extends Phaser.Physics.Arcade.Sprite {
     }
     const crouch = Math.random() < 0.3;
     if (crouch) this.crouchUntil = time + 700;
-    s.enemyShoot(this.x + this.facing * 9, this.y - (crouch ? 6 : 13), this.facing > 0 ? 0 : Math.PI);
+    // Straight ahead on the same floor; on another floor, aim (up to 45°) at the target.
+    const sx = this.x + this.facing * 9, sy = this.y - (crouch ? 6 : 13);
+    let angle = this.facing > 0 ? 0 : Math.PI;
+    if (Math.abs(t.y - this.y) > 24) {
+      const a = Math.atan2(t.y - 12 - sy, (t.x - sx) * this.facing);
+      angle = this.facing > 0 ? Phaser.Math.Clamp(a, -0.8, 0.8) : Math.PI - Phaser.Math.Clamp(a, -0.8, 0.8);
+    }
+    s.enemyShoot(sx, sy, angle);
     Sfx.enemyShot();
     this.nextAction = time + Phaser.Math.Between(1400, 2600);
   }

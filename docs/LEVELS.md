@@ -18,8 +18,9 @@ All names are fictional placeholders.
 
 ## Mission 2 — "Gamarra no se cierra" (Market / garment district) 🚧 greybox
 
-Greybox in `src/levels/mission2.js`: Mission 1 art with a dusk tint, the fiscalización gag, and a 3-wave
-ambush in place of the boss. Everything below that isn't in that file is still to do.
+Greybox in `src/levels/mission2.js` (text map): two multi-floor galleries, a municipal trench (pit, "INICIADA
+EN 2019"), a rubble mound (slopes), the fiscalización gag, and a 3-wave ambush in place of the boss.
+Everything below that isn't in that file is still to do.
 
 - **Setting:** market streets, stalls, narrow galleries with several floors (multi-level platforms), rooftops.
 - **Enemies:** gang collectors extorting vendors; shield thugs (hiding behind a stall's metal shutter);
@@ -69,11 +70,11 @@ Technical work (in suggested order):
 
 1. ✅ **Generic level engine.** `LevelScene` builds each mission from a data file in `src/levels/`
    (schema documented in `src/levels/missions.js`).
-2. **Level editing tool.** Use [Tiled](https://www.mapeditor.org/) maps for platforms, spawns and decor
-   instead of coordinates typed by hand in `config.js`.
+2. ✅ **Level editing.** Levels are text maps (`src/systems/Terrain.js`). A Tiled/LDtk importer can feed the
+   same tile grid later if a visual editor is wanted.
 3. ✅ **Mission flow.** Intro/outro, tally screen, carry-over of lives/scores/characters, placeholder ending,
    stage select (F3 on the title, or `?mission=N`) and F4 to finish a mission.
-4. **New mechanics.** Auto-scroll (bus ride, highway), vertical/multi-level stages (cerros, galleries),
+4. **New mechanics.** Auto-scroll (bus ride, highway), ✅ multi-level stages, slopes and pits,
    indoor stages (comisaría), destructible objects, scripted events (the helicopter reveal), simple cutscenes.
 5. **New enemies.** Police types, serenazgo, private security, shield, sniper, vehicle enemies. Plus
    4 mid-bosses and 4 bosses.

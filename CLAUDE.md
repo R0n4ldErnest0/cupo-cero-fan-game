@@ -44,7 +44,7 @@ python tools/serve.py 8000   # then open http://localhost:8000
 `tools/serve.py` disables caching so edits show up on a plain reload. Opening `index.html` directly
 also works. Add `?debug` to the URL to see physics bodies.
 
-Controls (solo): ←/→ move, ↑ aim up, ↓ crouch (in the air: shoot down), Z jump, X shoot, C grenade,
+Controls (solo): ←/→ move, ↑ aim up, ↓ crouch (in the air: shoot down), Z jump (↓+Z on a thin floor: drop down), X shoot, C grenade,
 ↓ near the Combi Slug to board, ↓+Z to exit it, P pause, M mute, Enter start.
 2 players: 1P WASD + F shoot / G jump / H grenade, 2P arrows + , shoot / . jump / / grenade; gamepads work
 (A jump, X shoot, B grenade, Start). Keys are defined in `CFG.KEYS`.
@@ -57,7 +57,8 @@ Testing: **5** inserts a coin, **F2** toggles FREE PLAY (infinite credits, saved
 index.html            entry; script load order lives here
 lib/phaser.min.js     vendored engine
 src/config.js         constants (sizes, speeds, tuning)
-src/systems/          Textures (procedural art), Sfx (synth audio), Session (credits), Controls (input), Fx
+src/systems/          Textures (procedural art), Sfx (synth audio), Session (credits), Controls (input), Fx,
+                      Terrain (text-map tiles, one-way floors, slopes)
 src/entities/         Player, enemies, Abuelita (helper), CombiSlug (vehicle), bosses, projectiles
 src/levels/           missions.js (registry + data schema), missionN.js (one data file per mission)
 src/scenes/           MenuScenes (Boot, Title, CharSelect, MissionEnd, Ending, GameOver), HUDScene, LevelScene
@@ -70,6 +71,10 @@ tools/serve.py        no-cache dev server
 - One class per entity file; entities extend Phaser sprites/containers and expose `update(time, dt)`.
 - Tuning numbers go in `src/config.js`, not scattered literals. Level layouts go in `src/levels/`.
 - New missions: add `src/levels/missionN.js` (push onto `MISSIONS`) and a `<script>` tag in `index.html`.
+  Terrain is a text map (key at the top of `src/systems/Terrain.js`): symbols are tiles, letters are markers.
+  The player jumps ~60px, so floors meant to be climbed are at most 3 tiles (48px) apart.
+- Arcade physics has no slopes: `Terrain.snap` puts walkers on slope surfaces after each physics step.
+  Wide bodies (the combi) ride slopes poorly; keep vehicles on flat ground for now.
   Mission-specific logic goes in the data (`events[].run`) or a new entity, not in `LevelScene`.
 - Damage values: pistol 1, machine gun 1, emoliente 2, grenade 5, combi cannon 6.
 - Third-party/ripped Metal Slug assets may be used only as private placeholders in `assets/_private/`

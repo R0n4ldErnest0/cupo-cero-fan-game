@@ -68,6 +68,14 @@ The driver ends the game as a folk hero and a fugitive ("going rogue").
 - [x] Test helpers: F3 stage select on the title, F4 finishes the current mission, `?mission=N`
 - [x] Mission 2 greybox (reuses Mission 1 art; ends in an ambush instead of a boss)
 
+### M1.7 — Terrain engine ✅
+- [x] Levels drawn as text maps: solid ground, brick, dirt, one-way floors, 45° slopes, back walls, pits
+- [x] Letter markers for enemies, pickups, helpers, the combi and the start
+- [x] ↓ + jump drops through thin floors; falling into a pit costs a life
+- [x] Camera follows vertically in tall maps; enemies keep to their floor and aim at other floors
+- [x] Mission 2 greybox rebuilt with two multi-floor galleries, a trench and a rubble mound
+- [ ] Optional: Tiled (or LDtk) import into the same tile grid
+
 ### M2 — Vertical slice (Mission 1 "for real")
 - [ ] Final art direction decided (see open questions)
 - [ ] Real sprites for Don Chato, gang grunt, abuelita, Combi Slug, boss
@@ -79,7 +87,7 @@ The driver ends the game as a folk hero and a fugitive ("going rogue").
 
 ### M3 — Missions 2–3
 - [ ] Market level for real (greybox exists) + ledger story beat
-- [ ] Level editing with Tiled instead of hand-typed coordinates
+- [x] Level editing as text maps (Tiled import optional, see M1.7)
 - [ ] Moving-bus level + police helicopter reveal
 - [ ] Police enemy types; mixed gang + police encounters
 - [ ] Mototaxi Slug

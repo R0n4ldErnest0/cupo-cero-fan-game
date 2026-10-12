@@ -1,13 +1,18 @@
 // Mission registry. Each src/levels/missionN.js pushes one mission definition, in play order
 // (script order in index.html). LevelScene builds everything from this data.
 //
-// Mission schema (x/y are world units; the ground is at CFG.GROUND_Y = 240):
+// Mission schema (x/y are world units, 1 tile = 16; y grows downward):
 //   id, title, subtitle        banner shown at the start ("MISIÓN 1", "¡PAGA O YA SABES!")
 //   name                       short name for the tally / stage select
 //   draft                      true while the mission is a greybox (shown as BORRADOR)
-//   width                      level length
-//   arenaX                     the camera locks here; the arena spans arenaX .. width
+//   terrain                    text map (see src/systems/Terrain.js). Without one the level is a flat street
+//                              with its top at CFG.GROUND_Y = 240
+//   legend { ch: def }         extra map markers, e.g. h: { t: 'grunt', hp: 3 }
+//   width                      level length (default: map width)
+//   arenaX                     the camera locks here; the arena spans arenaX .. width (default: width - 480)
+//   start { x }                player start (or a 'P' marker)
 //   bg                         optional tints { sky, hills, city }
+// Objects can be listed here or placed as letter markers in the map. Without a y they stand at street level.
 //   combi { x }                parked Combi Slug (optional)
 //   abuelitas [{ x }]          tied-up helpers
 //   crates [{ x, stack }]      one-way platforms
@@ -15,7 +20,7 @@
 //   spawns [{ x, t, ... }]     enemies, spawned when x reaches the right screen edge.
 //                              t: 'grunt' (skin, variant, y, hp) or 'biker' (enters from the right edge)
 //   decor [{ type, ... }]      'text' | 'controls' | 'image' | 'graffiti' | 'sign' | 'copcar'; an `id`
-//                              makes it addressable by events
+//                              makes it addressable by events. text and sign need a y
 //   events [{ x, say | message | run }]
 //                              fire once when a player passes x. say: { who, text, ms },
 //                              message: [title, sub, ms], run: (scene) => {}

@@ -39,7 +39,7 @@ class Abuelita extends Phaser.Physics.Arcade.Sprite {
   update(time, dt) {
     const s = this.scene, A = CFG.ABUELITA;
     if (this.state === 'tied') {
-      const onScreen = this.x < s.viewLeft + CFG.VIEW_W && this.x > s.viewLeft;
+      const onScreen = s.inView(this.x, this.y - 10);
       if (onScreen && time > this.nextCry) {
         Fx.say(s, this, '¡Auxilio! ¡Me amarraron por no pagar!', 1600);
         this.nextCry = time + 4500;
@@ -54,7 +54,7 @@ class Abuelita extends Phaser.Physics.Arcade.Sprite {
       return;
     }
 
-    const t = s.target(this.x);
+    const t = s.target(this.x, this.y);
     const desired = t.x - (t.facing || 1) * 28;
     const dx = desired - this.x;
     let vx = 0;
@@ -63,6 +63,12 @@ class Abuelita extends Phaser.Physics.Arcade.Sprite {
       this.facing = Math.sign(dx);
     }
     this.setVelocityX(vx);
+    // Follow between floors: hop up after the player, or drop through a one-way floor.
+    const grounded = this.body.blocked.down || this.body.touching.down;
+    if (grounded && Math.abs(t.x - this.x) < 70) {
+      if (t.y < this.y - 24) this.setVelocityY(-340);
+      else if (t.y > this.y + 24 && s.terrain.isOneWayAt(this.x, this.y + 2)) this.dropUntil = time + 250;
+    }
 
     if (time > this.nextThrow) {
       const e = s.nearestEnemy(this.x, this.y - 10, A.RANGE);

@@ -127,7 +127,7 @@ class BossCobrador extends Phaser.Physics.Arcade.Sprite {
 
   throwBag(t, i) {
     const off = [-50, 0, 50][i % 3];
-    this.scene.enemyLob(this.rider.x, this.rider.y - 20, t.x + off, CFG.GROUND_Y - 4, 'moneybag', 1.0);
+    this.scene.enemyLob(this.rider.x, this.rider.y - 20, t.x + off, this.y - 4, 'moneybag', 1.0);
     Sfx.throw();
   }
 
@@ -189,7 +189,7 @@ class BossCobrador extends Phaser.Physics.Arcade.Sprite {
       targets: r,
       tweens: [
         { y: r.y - 90, angle: 360, duration: 500, ease: 'Quad.Out' },
-        { y: CFG.GROUND_Y, angle: 720, duration: 450, ease: 'Quad.In' },
+        { y: this.y, angle: 720, duration: 450, ease: 'Quad.In' },
         {
           x: s.viewLeft + CFG.VIEW_W + 40, angle: 720, duration: 1600,
           onStart: () => {

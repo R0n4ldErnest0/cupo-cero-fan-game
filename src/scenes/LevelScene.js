@@ -10,9 +10,12 @@ class LevelScene extends Phaser.Scene {
   create(data = {}) {
     this.missionIndex = Phaser.Math.Clamp(data.mission || 0, 0, MISSIONS.length - 1);
     const M = (this.mission = MISSIONS[this.missionIndex]);
-    this.levelW = M.width;
-    this.arenaX = M.arenaX;
+    this.terrain = new Terrain(this, M);
+    this.levelW = M.width || this.terrain.width;
+    this.levelH = this.terrain.height;
+    this.arenaX = M.arenaX !== undefined ? M.arenaX : this.levelW - CFG.VIEW_W;
     this.viewLeft = 0;
+    this.viewTop = Math.max(0, this.levelH - CFG.VIEW_H);
     this.bubbles = [];
     this.named = {};
     this.arenaStarted = false;
@@ -25,7 +28,7 @@ class LevelScene extends Phaser.Scene {
     this.time.paused = false;
     this.tweens.resumeAll();
 
-    this.physics.world.setBounds(0, -400, this.levelW, 800);
+    this.physics.world.setBounds(0, -400, this.levelW, this.levelH + 800);
     this.cameras.main.setZoom(CFG.ZOOM).setRoundPixels(true);
     if (CFG.DEBUG) this.physics.world.createDebugGraphic();
 
@@ -40,15 +43,21 @@ class LevelScene extends Phaser.Scene {
     this.pBombs = this.physics.add.group();
     this.eBombs = this.physics.add.group();
 
-    this.createPlayers();
-    this.combi = M.combi ? new CombiSlug(this, M.combi.x, CFG.GROUND_Y) : null;
-    this.abuelitas = (M.abuelitas || []).map((a) => new Abuelita(this, a.x, CFG.GROUND_Y));
-    (M.pickups || []).forEach((p) => this.spawnPickup(p.x, CFG.GROUND_Y - 40, p.kind));
-    this.spawns = (M.spawns || []).map((s) => Object.assign({}, s)).sort((a, b) => a.x - b.x);
+    // Objects come from the mission lists (x, optional y) and from letter markers in the terrain map.
+    const marks = this.terrain.objects;
+    const start = marks.find((o) => o.start) || M.start || { x: 60 };
+    this.createPlayers(start);
+    const combi = M.combi || marks.find((o) => o.combi);
+    this.combi = combi ? new CombiSlug(this, combi.x, this.floorY(combi)) : null;
+    this.abuelitas = (M.abuelitas || []).concat(marks.filter((o) => o.abuelita)).map((a) => new Abuelita(this, a.x, this.floorY(a)));
+    (M.pickups || []).forEach((p) => this.spawnPickup(p.x, this.floorY(p) - 40, p.kind));
+    marks.filter((o) => o.pickup).forEach((p) => this.spawnPickup(p.x, p.y - 8, p.pickup));
+    this.spawns = (M.spawns || []).concat(marks.filter((o) => o.t)).map((s) => Object.assign({}, s)).sort((a, b) => a.x - b.x);
     this.triggers = (M.events || []).map((e) => Object.assign({}, e)).sort((a, b) => a.x - b.x);
 
     this.setupCollisions();
-    this.updateCamera();
+    this.updateCamera(true);
+    this.updateParallax();
 
     this.scene.stop('HUD');
     this.scene.launch('HUD');
@@ -62,14 +71,15 @@ class LevelScene extends Phaser.Scene {
 
   // Fresh run: characters from the select screen. Next mission: lives, scores and characters carry over
   // (players that were out or still deciding come back as 'inactive' and can rejoin with start).
-  createPlayers() {
+  createPlayers(start) {
     const n = Session.numPlayers;
     const saved = Session.run && Session.run.players;
     const c0 = Session.chars[0] || 'chato';
     const c1 = Session.chars[1] || CFG.CHARACTERS.map((c) => c.id).find((id) => id !== c0);
     this.players = [c0, c1].map((ch, i) => {
       const s = saved && saved[i];
-      const p = new Player(this, i, s ? s.char : ch, 60 - i * 24, CFG.GROUND_Y);
+      const x = Math.max(16, start.x - i * 24);
+      const p = new Player(this, i, s ? s.char : ch, x, this.floorY({ x, y: start.y }));
       if (s) {
         p.score = s.score;
         p.lives = s.lives;
@@ -135,7 +145,7 @@ class LevelScene extends Phaser.Scene {
       this.message('¡2 JUGADORES!', '1P: WASD + F G H     2P: FLECHAS + , . /', 3500);
     }
     p.joining = false;
-    p.respawn(this.viewLeft + 60 + p.index * 24);
+    p.respawn(...this.spawnPoint(p));
     Sfx.pickup();
     Fx.say(this, p, '¡Aquí estoy!', 1200);
   }
@@ -189,25 +199,22 @@ class LevelScene extends Phaser.Scene {
     if (bg.city) this.bgCity.setTint(bg.city);
   }
 
+  // Backgrounds follow the camera; when it climbs, the far layers sink a little (vertical parallax).
   updateParallax() {
-    const L = Math.round(this.viewLeft);
-    this.bgSky.x = L;
-    this.bgHills.x = L;
+    const L = Math.round(this.viewLeft), top = Math.round(this.viewTop);
+    const climb = Math.max(0, this.levelH - CFG.VIEW_H) - top;
+    this.bgSky.setPosition(L, top);
+    this.bgHills.setPosition(L, top + 70 + Math.round(climb * 0.15));
     this.bgHills.tilePositionX = Math.round(L * 0.15);
-    this.bgCity.x = L;
+    this.bgCity.setPosition(L, top + CFG.GROUND_Y - 170 + Math.round(climb * 0.4));
     this.bgCity.tilePositionX = Math.round(L * 0.45);
   }
 
+  // The terrain tile layer is built by Terrain; crates are extra one-way platforms (sprites).
   buildGround() {
-    const G = CFG.GROUND_Y;
-    this.add.tileSprite(0, G, this.levelW, 30, 'ground').setOrigin(0).setDepth(-5);
-    // The solid ground extends past both ends so enemies entering from off-screen land on it.
-    this.ground = this.add.zone(this.levelW / 2, G + 15, this.levelW + 400, 30);
-    this.physics.add.existing(this.ground, true);
-
-    // Crates are one-way platforms (stand on top, walk/jump through from below and sides).
     this.platforms = this.physics.add.staticGroup();
-    (this.mission.crates || []).forEach(({ x, stack }) => {
+    (this.mission.crates || []).forEach(({ x, stack, y }) => {
+      const G = this.floorY({ x, y });
       for (let i = 0; i < stack; i++) {
         const c = this.platforms.create(x, G - 10 - i * 20, 'crate').setDepth(0);
         c.refreshBody();
@@ -223,22 +230,24 @@ class LevelScene extends Phaser.Scene {
       .setDepth(-1);
   }
 
+  // Decor without a y stands at street level (graffiti, images, the cop car); text and signs need a y.
   buildDecor() {
-    const G = CFG.GROUND_Y;
     const sign = (x, y, text, bg) => this.worldText(x, y, text, { backgroundColor: bg, strokeThickness: 0, padding: { x: 3, y: 2 } });
     const build = {
       text: (d) => this.worldText(d.x, d.y, d.text, d.style),
       controls: (d) => this.worldText(d.x, d.y, Session.numPlayers === 1
-        ? '←→ MOVER   ↑ APUNTAR   ↓ AGACHARSE\nZ SALTAR   X DISPARAR   C GRANADA'
+        ? '←→ MOVER   ↑ APUNTAR   ↓ AGACHARSE   ↓+Z BAJAR\nZ SALTAR   X DISPARAR   C GRANADA'
         : '1P: WASD + F DISPARAR  G SALTAR  H GRANADA\n2P: FLECHAS + , DISPARAR  . SALTAR  / GRANADA'),
-      image: (d) => this.add.image(d.x, d.y || G, d.key).setOrigin(0.5, 1).setDepth(-2),
+      image: (d) => this.add.image(d.x, this.floorY(d), d.key).setOrigin(0.5, 1).setDepth(-2),
       sign: (d) => sign(d.x, d.y, d.text, d.bg || '#1e5fb4'),
       graffiti: (d) => {
+        const G = this.floorY(d);
         this.add.image(d.x, G, 'wall').setOrigin(0.5, 1).setDepth(-3);
         return this.add.text(d.x, G - 24, d.text, { fontFamily: FONT, fontSize: '9px', fontStyle: 'bold italic', color: d.color, stroke: '#f4efe4', strokeThickness: 3, align: 'center', resolution: 2 })
           .setOrigin(0.5).setRotation(-0.06).setDepth(-2);
       },
       copcar: (d) => {
+        const G = this.floorY(d);
         const car = this.add.image(d.x, G, 'policecar').setOrigin(0.5, 1).setDepth(-1);
         car.bubbleOffset = 30;
         const z = this.worldText(d.x + 6, G - 34, 'z Z z', { color: '#ffffff', fontSize: '8px' });
@@ -256,7 +265,9 @@ class LevelScene extends Phaser.Scene {
   // ---------- setup ----------
 
   setupCollisions() {
-    const solids = [this.ground, this.platforms];
+    const solids = [this.terrain.layer, this.platforms];
+    // One-way floors are ignored while someone drops through them (↓ + jump).
+    const notDropping = (o, t) => !(t && t.oneWay && o.dropUntil > this.time.now);
     const pick = (a, b, prop) => (a && a[prop] !== undefined ? a : b);
     const P = this.physics.add;
 
@@ -267,7 +278,7 @@ class LevelScene extends Phaser.Scene {
     P.overlap(this.pBullets, this.enemies, (b, e) => this.bulletHitsEnemy(b, e));
     P.overlap(this.pBombs, this.enemies, (b, e) => e.alive && this.detonate(b));
     this.abuelitas.forEach((ab) => {
-      P.collider(ab, this.ground);
+      P.collider(ab, solids, null, notDropping);
       P.overlap(ab, this.pBullets, (a, b) => {
         if (ab.state !== 'tied') return;
         const owner = b.owner;
@@ -277,7 +288,7 @@ class LevelScene extends Phaser.Scene {
     });
 
     this.players.forEach((pl) => {
-      P.collider(pl, solids);
+      P.collider(pl, solids, null, notDropping);
       P.overlap(pl, this.eBullets, (p, b) => {
         if (!pl.canBeHit()) return;
         b.destroy();
@@ -317,9 +328,11 @@ class LevelScene extends Phaser.Scene {
       return;
     }
 
+    this.snapToSlopes();
     this.players.forEach((p) => p.update(time, delta));
     if (this.combi && this.combi.active) this.combi.update(time, delta);
 
+    this.checkPits();
     this.updateCamera();
     this.clampToView();
     this.updateParallax();
@@ -329,7 +342,7 @@ class LevelScene extends Phaser.Scene {
     this.enemies.getChildren().slice().forEach((e) => {
       if (e.active) e.update(time, delta);
       // Left behind or fell out of the world: remove, so wave arenas can't wait on them forever.
-      if (e.active && (e.x < this.viewLeft - 80 || e.y > CFG.GROUND_Y + 200)) e.destroy();
+      if (e.active && (e.x < this.viewLeft - 80 || e.y > this.levelH + 40)) e.destroy();
     });
     this.abuelitas.forEach((a) => a.active && a.update(time, delta));
     if (this.boss && this.boss.active) this.boss.update(time, delta);
@@ -340,27 +353,43 @@ class LevelScene extends Phaser.Scene {
     if (this.waves) this.updateWaves();
   }
 
-  // What enemies aim at: the nearest player (or their combi) to x.
-  target(x = this.viewLeft + CFG.VIEW_W / 2) {
+  // Everything that walks gets put back on slope surfaces right after the physics step.
+  snapToSlopes() {
+    const T = this.terrain;
+    this.players.forEach((p) => p.state === 'play' && !p.vehicle && T.snap(p));
+    if (this.combi && this.combi.active) T.snap(this.combi);
+    this.abuelitas.forEach((a) => a.active && T.snap(a));
+    this.enemies.getChildren().forEach((e) => T.snap(e));
+    this.pickups.getChildren().forEach((k) => T.snap(k));
+  }
+
+  // What enemies aim at: the nearest player (or their combi) to x (and y, when given).
+  target(x = this.viewLeft + CFG.VIEW_W / 2, y) {
     let best = null, bd = Infinity;
     for (const p of this.players) {
       if (!p.targetable()) continue;
       const o = p.vehicle || p;
-      const d = Math.abs(o.x - x);
+      const d = Math.abs(o.x - x) + (y === undefined ? 0 : Math.abs(o.y - y));
       if (d < bd) { bd = d; best = o; }
     }
     return best || this.players[0];
   }
 
-  // The camera only scrolls forward, and never leaves the rear player behind.
-  updateCamera() {
+  // Horizontally the camera only scrolls forward and never leaves the rear player behind.
+  // Vertically it eases toward the players (only matters in maps taller than the screen).
+  updateCamera(snap = false) {
     const objs = this.players.filter((p) => p.state === 'play' && (p.alive || p.vehicle)).map((p) => p.vehicle || p);
+    const maxTop = Math.max(0, this.levelH - CFG.VIEW_H);
     if (objs.length) {
       const front = Math.max(...objs.map((o) => o.x)), back = Math.min(...objs.map((o) => o.x));
       const want = Math.min(front - CFG.PLAYER.CAM_LEAD, back - 16);
       this.viewLeft = Phaser.Math.Clamp(Math.max(this.viewLeft, want), 0, this.arenaX);
+      const avgY = objs.reduce((a, o) => a + Math.min(o.y, this.levelH), 0) / objs.length;
+      const wantTop = Phaser.Math.Clamp(avgY - CFG.VIEW_H * 0.68, 0, maxTop);
+      this.viewTop = snap ? wantTop : this.viewTop + (wantTop - this.viewTop) * 0.08;
     }
-    this.cameras.main.centerOn(this.viewLeft + CFG.VIEW_W / 2, CFG.VIEW_H / 2);
+    this.viewTop = Phaser.Math.Clamp(this.viewTop, 0, maxTop);
+    this.cameras.main.centerOn(this.viewLeft + CFG.VIEW_W / 2, Math.round(this.viewTop) + CFG.VIEW_H / 2);
   }
 
   clampToView() {
@@ -374,10 +403,11 @@ class LevelScene extends Phaser.Scene {
     }
   }
 
+  // Enemies without a y stand at street level. Bikers always ride in from the right edge.
   spawnEnemy(s, x) {
-    const e = s.t === 'biker'
-      ? new Biker(this, this.viewLeft + CFG.VIEW_W + 30, CFG.GROUND_Y)
-      : new Grunt(this, x, s.y || CFG.GROUND_Y, s);
+    if (s.t === 'biker') x = this.viewLeft + CFG.VIEW_W + 30;
+    const y = this.floorY({ x, y: s.y });
+    const e = s.t === 'biker' ? new Biker(this, x, y) : new Grunt(this, x, y, s);
     this.enemies.add(e);
     return e;
   }
@@ -408,19 +438,24 @@ class LevelScene extends Phaser.Scene {
     // Player shots vanish at the screen edge (no off-screen kills); enemy shots get a margin.
     [[this.pBullets, 0], [this.pBombs, 0], [this.eBullets, 40], [this.eBombs, 40]].forEach(([g, m]) => {
       const minX = this.viewLeft - m, maxX = this.viewLeft + CFG.VIEW_W + m;
+      const minY = this.viewTop - 150, maxY = this.viewTop + CFG.VIEW_H + 30;
       g.getChildren().slice().forEach((b) => {
-        if (b.x < minX || b.x > maxX || b.y > 300 || b.y < -150) b.destroy();
+        if (b.x < minX || b.x > maxX || b.y > maxY || b.y < minY) b.destroy();
       });
     });
-    // Bullets stop at the ground (the combi can now shoot down-diagonal).
+    // Bullets stop at walls, the ground and slopes (one-way floors let them through).
+    const T = this.terrain;
     [this.pBullets, this.eBullets].forEach((g) =>
       g.getChildren().slice().forEach((b) => {
-        if (b.y >= CFG.GROUND_Y + 1) {
-          Fx.spark(this, b.x, CFG.GROUND_Y);
+        if (T.isSolid(b.x, b.y)) {
+          Fx.spark(this, b.x, b.y);
           b.destroy();
         }
       }),
     );
+    // Tile collisions handle flat ground; slopes have no collision, so bombs that sink into one go off here.
+    this.pBombs.getChildren().slice().forEach((b) => b.active && T.inSlope(b.x, b.y + 2) && this.detonate(b));
+    this.eBombs.getChildren().slice().forEach((b) => b.active && T.inSlope(b.x, b.y + 2) && this.explodeEnemyBomb(b));
   }
 
   // ---------- projectiles & damage ----------
@@ -574,8 +609,46 @@ class LevelScene extends Phaser.Scene {
 
   onPlayerDeath(p) {
     p.lives--;
-    if (p.lives > 0) p.respawn(this.viewLeft + 60 + p.index * 24);
+    if (p.lives > 0) p.respawn(...this.spawnPoint(p));
     else this.beginContinue(p, false);
+  }
+
+  // Players (re)enter by dropping in from the top of the screen, over a column that has a floor in view.
+  spawnPoint(p) {
+    const T = this.terrain, top = this.viewTop, bottom = this.viewTop + CFG.VIEW_H;
+    const want = this.viewLeft + 60 + p.index * 24;
+    for (let i = 0; i < 24; i++) {
+      for (const x of [want + i * 16, want - i * 16]) {
+        if (x < this.viewLeft + 16 || x > this.viewLeft + CFG.VIEW_W - 16) continue;
+        const s = T.surfaceBelow(x, top + 24);
+        if (s !== null && s < bottom) return [x, top - 8];
+      }
+    }
+    return [want, top - 8];
+  }
+
+  // Where an object without an explicit y stands: street level at x (or the bottom row over a pit).
+  floorY(o) {
+    if (o.y !== undefined) return o.y;
+    const g = this.terrain.groundY(o.x);
+    return g === null ? this.levelH - TILE : g;
+  }
+
+  // Falling into a pit costs a life (in the combi too).
+  checkPits() {
+    const limit = this.levelH + 24;
+    for (const p of this.players) {
+      if (p.state !== 'play') continue;
+      const v = p.vehicle;
+      if (v && v.y > limit) {
+        v.fellIntoPit();
+        p.fallDeath();
+      } else if (!v && p.alive && p.y > limit) p.fallDeath();
+    }
+  }
+
+  inView(x, y, margin = 0) {
+    return x > this.viewLeft - margin && x < this.viewLeft + CFG.VIEW_W + margin && y > this.viewTop - margin && y < this.viewTop + CFG.VIEW_H + margin;
   }
 
   gameOver() {
@@ -628,7 +701,7 @@ class LevelScene extends Phaser.Scene {
 
   startBoss(type) {
     Sfx.rev();
-    const b = (this.boss = new BOSSES[type](this, this.levelW + 70, CFG.GROUND_Y));
+    const b = (this.boss = new BOSSES[type](this, this.levelW + 70, this.floorY({ x: this.levelW - 40 })));
     const P = this.physics.add;
     P.overlap(b, this.pBullets, (bb, bullet) => {
       if (!b.alive || !bullet.active) return;
