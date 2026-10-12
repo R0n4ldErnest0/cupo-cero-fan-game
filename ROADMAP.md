@@ -21,19 +21,23 @@ The driver ends the game as a folk hero and a fugitive ("going rogue").
 
 ## Vehicles
 
-- **Combi Slug** — armored combi (our "Metal Slug" tank). Roof cannon, can jump, route stickers = HP.
-- Mototaxi Slug — fast, light, machine gun. *(later)*
-- Bus "Chosicano" Slug — heavy, slow, for the highway chase. *(later)*
+- **Combi Slug** — armored combi (our "Metal Slug" tank). Roof cannon, can jump, route stickers = HP. ✅
+- Mototaxi Slug — fast, light, machine gun (Mission 2).
+- Helicopter bought with a pollada (or a lent crop-duster plane) — air level (Mission 5).
+- Rochabus — water-cannon truck (Mission 4).
+- "Chosicano" Bus Slug — undecided (was the Mission 5 highway chase).
 
 ## Missions
 
-| # | Mission | Enemies | Boss / story beat |
+Full design, weapons list and build order: `docs/LEVELS.md`.
+
+| # | Mission | Sections | Boss / story beat |
 |---|---|---|---|
-| 1 | Paradero / terminal in the cono | Gang foot soldiers, bikers | Armored mototaxi of El Cobrador. He shouts that he "has contacts at the comisaría". |
-| 2 | Gamarra-style market | Gangs extorting vendors | You find the **ledger** of payments to police. Boss: collection truck. |
-| 3 | Cerros + riding on a moving bus | Gangs + first corrupt cops | Gang leader escapes in a **police helicopter** (reveal). |
-| 4 | Comisaría | Police + gangs | Evidence room full of cupo money. Boss: the comisario. |
-| 5 | Vía Expresa chase → Municipalidad | Special police, private security, gang elite | Corrupt mayor mech. Bittersweet ending. |
+| 1 | ¡Paga o ya sabes! | Paradero → Terminal | El Cobrador's armored mototaxi; "tengo contactos en la comisaría". |
+| 2 | Gamarra no se cierra | Street → Galleries → Rooftops → Almacén | You find the **ledger**. Truck mid-boss, accountant boss. |
+| 3 | La ruta | Cerros → Train roof → Station | A **police helicopter** rescues El Cobrador (reveal). |
+| 4 | Su denuncia es importante para nosotros | Front desk → Cells → Evidence room → Escape | The comisario. |
+| 5 | Obra paralizada | Air level → Plaza (the town joins you) → Municipalidad → Mayor | Mayor mech; ending. |
 
 ## Milestones
 
@@ -76,26 +80,27 @@ The driver ends the game as a folk hero and a fugitive ("going rogue").
 - [x] Mission 2 greybox rebuilt with two multi-floor galleries, a trench and a rubble mound
 - [ ] Optional: Tiled (or LDtk) import into the same tile grid
 
-### M2 — Vertical slice (Mission 1 "for real")
-- [ ] Final art direction decided (see open questions)
-- [ ] Real sprites for Don Chato, gang grunt, abuelita, Combi Slug, boss
-- [ ] Real backgrounds (cerros, paradero, chicha posters)
-- [ ] Sound effects pass + voice lines ("¡COMBI SLUG!", "¡METRALLETA!", "¡MISIÓN CUMPLIDA!")
-- [ ] Music: chicha / cumbia psicodélica track for Mission 1
-- [ ] Intro cutscene (coworker's death → drivers' union assembly → hiring the mercenary)
-- [ ] Knife/melee at close range
+### M2 — Systems for the remaining missions (build order in `docs/LEVELS.md`)
+- [ ] Sections: missions made of several parts with transitions
+- [ ] Weapons: letter pickups, ammo; Cohetón, Anticuchera, Escopeta, Gallo de pelea; melee
+- [ ] Rescuable people (POWs) that drop weapons and items
+- [ ] Auto-scroll mode (train roof, air level)
+- [ ] Police enemy types; boss framework (mid-bosses, phases)
 
 ### M3 — Missions 2–3
-- [ ] Market level for real (greybox exists) + ledger story beat
-- [x] Level editing as text maps (Tiled import optional, see M1.7)
-- [ ] Moving-bus level + police helicopter reveal
-- [ ] Police enemy types; mixed gang + police encounters
-- [ ] Mototaxi Slug
+- [ ] Mission 2 complete: rooftops, Mototaxi Slug, collection-truck mid-boss, accountant boss, ledger beat
+- [ ] Art direction test on Mission 2 (decide the style before drawing everything)
+- [ ] Mission 3: cerros, train roof, police helicopter reveal and boss
 
 ### M4 — Missions 4–5 + ending
-- [ ] Comisaría level and comisario boss
-- [ ] Highway chase (Bus Slug) + Municipalidad + mayor mech
+- [ ] Mission 4: indoor tiles, comisaría, rochabus, comisario boss
+- [ ] Air-shooter mode, ally AI
+- [ ] Mission 5: air level, plaza with allies, Municipalidad, mayor mech
 - [ ] Ending cutscene; credits
+
+### M4.5 — Art, sound and story
+- [ ] Real sprites, backgrounds and tiles; music per mission; voice lines ("¡METRALLETA!", "¡MISIÓN CUMPLIDA!")
+- [ ] Intro cutscene (coworker's death → drivers' union assembly → hiring the mercenary) and story between missions
 
 ### M5 — Release
 - [ ] Balance, polish, accessibility options
@@ -125,3 +130,11 @@ Missions are designed in `docs/LEVELS.md`.
 12. **Language.** Spanish only, or Spanish + English?
 13. **How graphic?** Metal Slug-level cartoon violence only, or anything darker in cutscenes?
 14. **Credits defaults.** Currently 3 starting credits and 5 lives per credit. Keep score on continue (current) or reset it?
+15. **Train level.** Roof of the Línea 1 elevated train (fits the cerros of SJL) or of a Metropolitano bus?
+16. **Air level.** Helicopter bought with a pollada, or a crop-duster plane lent from the provinces? Who gives it?
+17. **Allies in Mission 5.** Who joins (honest police, vendors, mototaxistas, cobradores, students, rescued people)?
+    Can they die? Do they only fight in the plaza or until the end?
+18. **Weapon names.** Approve or change: Cohetón, Anticuchera, Escopeta, Gallo de pelea, melee weapon (tire iron?),
+    and whether to add the optional ones (bouncing, homing, laser).
+19. **Bus Slug.** Keep the "Chosicano" bus somewhere (e.g. the Metropolitano) or drop it?
+20. **Ladders.** Not planned (Metal Slug barely uses them). Do we want them anyway, e.g. in the comisaría?
