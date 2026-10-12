@@ -44,8 +44,11 @@ python tools/serve.py 8000   # then open http://localhost:8000
 `tools/serve.py` disables caching so edits show up on a plain reload. Opening `index.html` directly
 also works. Add `?debug` to the URL to see physics bodies.
 
-Controls: ←/→ move, ↑ aim up, ↓ crouch, Z jump, X shoot, C grenade, ↓ near the Combi Slug to board,
-↓+Z to exit it, P pause, M mute, Enter start.
+Controls (solo): ←/→ move, ↑ aim up, ↓ crouch (in the air: shoot down), Z jump, X shoot, C grenade,
+↓ near the Combi Slug to board, ↓+Z to exit it, P pause, M mute, Enter start.
+2 players: 1P WASD + F shoot / G jump / H grenade, 2P arrows + , shoot / . jump / / grenade; gamepads work
+(A jump, X shoot, B grenade, Start). Keys are defined in `CFG.KEYS`.
+Testing: **5** inserts a coin, **F2** toggles FREE PLAY (infinite credits, saved in localStorage).
 
 ## Layout
 
@@ -53,9 +56,10 @@ Controls: ←/→ move, ↑ aim up, ↓ crouch, Z jump, X shoot, C grenade, ↓ 
 index.html            entry; script load order lives here
 lib/phaser.min.js     vendored engine
 src/config.js         constants (sizes, speeds, tuning)
-src/systems/          Textures (procedural art), Sfx (synth audio), helpers
+src/systems/          Textures (procedural art), Sfx (synth audio), Session (credits), Controls (input), Fx
 src/entities/         Player, enemies, Abuelita (helper), CombiSlug (vehicle), bosses, projectiles
-src/scenes/           MenuScenes (Boot, Title, GameOver), HUDScene, Level1Scene
+src/scenes/           MenuScenes (Boot, Title, CharSelect, GameOver), HUDScene, Level1Scene
+docs/LEVELS.md        mission designs + what's missing for Missions 2–5
 tools/serve.py        no-cache dev server
 ```
 

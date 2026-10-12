@@ -1,27 +1,34 @@
-// HUD overlay at native 960x540. Reads values from the registry; listens for 'hud-message'.
+// HUD overlay at native 960x540: P1 top-left, P2 top-right, boss bar bottom, credits bottom-left.
 class HUDScene extends Phaser.Scene {
   constructor() {
     super('HUD');
   }
 
   create() {
+    this.level = this.scene.get('Level1');
     const big = { fontFamily: FONT, fontSize: '20px', fontStyle: 'bold', color: '#ffe066', stroke: '#000000', strokeThickness: 5 };
-    const small = Object.assign({}, big, { fontSize: '16px', color: '#ffffff', strokeThickness: 4 });
+    const small = Object.assign({}, big, { fontSize: '15px', color: '#ffffff', strokeThickness: 4 });
 
-    this.add.text(16, 10, 'DON CHATO', big);
-    this.tLives = this.add.text(16, 36, '', small);
-    this.tScore = this.add.text(16, 58, '', small);
-    this.tArms = this.add.text(230, 10, '', big);
-    this.tBombs = this.add.text(230, 36, '', small);
-    this.tCombi = this.add.text(230, 58, '', Object.assign({}, small, { color: '#9fd3f0' }));
+    this.slots = [0, 1].map((i) => {
+      const x = i ? 944 : 16, ox = i ? 1 : 0;
+      const mk = (y, st) => this.add.text(x, y, '', st).setOrigin(ox, 0);
+      return {
+        name: mk(8, big),
+        l1: mk(34, small),
+        l2: mk(54, small),
+        l3: mk(74, Object.assign({}, small, { color: '#9fd3f0' })),
+      };
+    });
 
     this.bossBar = this.add.graphics();
-    this.tBoss = this.add.text(940, 10, '', Object.assign({}, small, { fontSize: '14px' })).setOrigin(1, 0);
+    this.tBoss = this.add.text(480, 474, '', Object.assign({}, small, { fontSize: '14px' })).setOrigin(0.5, 1);
+    this.tCredits = this.add.text(16, 528, '', Object.assign({}, small, { fontSize: '14px', color: '#ffe066' })).setOrigin(0, 1);
+    this.add.text(944, 528, 'P pausa · M sonido · 5 moneda · F2 free play', Object.assign({}, small, { fontSize: '12px', strokeThickness: 3 }))
+      .setOrigin(1, 1).setAlpha(0.7);
 
-    this.msg = this.add.text(480, 200, '', Object.assign({}, big, { fontSize: '48px', strokeThickness: 8, align: 'center' })).setOrigin(0.5);
-    this.sub = this.add.text(480, 256, '', Object.assign({}, small, { fontSize: '22px', align: 'center', strokeThickness: 5 })).setOrigin(0.5);
-    this.pauseText = this.add.text(480, 320, 'PAUSA', Object.assign({}, big, { fontSize: '36px' })).setOrigin(0.5).setVisible(false);
-    this.add.text(944, 524, 'P: pausa   M: sonido', Object.assign({}, small, { fontSize: '12px', strokeThickness: 3 })).setOrigin(1, 1).setAlpha(0.7);
+    this.msg = this.add.text(480, 300, '', Object.assign({}, big, { fontSize: '48px', strokeThickness: 8, align: 'center' })).setOrigin(0.5);
+    this.sub = this.add.text(480, 354, '', Object.assign({}, small, { fontSize: '22px', align: 'center', strokeThickness: 5 })).setOrigin(0.5);
+    this.pauseText = this.add.text(480, 410, 'PAUSA', Object.assign({}, big, { fontSize: '36px' })).setOrigin(0.5).setVisible(false);
 
     const onMsg = (t, s, ms) => this.showMessage(t, s, ms);
     this.game.events.on('hud-message', onMsg);
@@ -52,22 +59,55 @@ class HUDScene extends Phaser.Scene {
     }
   }
 
-  update() {
-    const r = this.registry;
-    this.tLives.setText(`VIDAS x${Math.max(0, r.get('lives'))}`);
-    this.tScore.setText(`PUNTOS ${String(r.get('score')).padStart(7, '0')}`);
-    this.tArms.setText(`ARMAS ${r.get('arms')}`);
-    this.tBombs.setText(`GRANADAS ${r.get('bombs')}`);
-    this.tCombi.setText(r.get('inCombi') ? `COMBI ${'■'.repeat(Math.max(0, r.get('combiHp')))}  CAÑÓN ${r.get('cannon')}` : '');
+  update(time) {
+    const lv = this.level;
+    if (!lv || !lv.players) return;
+    lv.players.forEach((p, i) => this.drawSlot(this.slots[i], p, i, time));
+    this.tCredits.setText(Session.creditText());
 
     const g = this.bossBar;
     g.clear();
-    const hp = r.get('bossHp'), max = r.get('bossMax');
+    const hp = this.registry.get('bossHp'), max = this.registry.get('bossMax');
     if (hp > 0) {
-      const w = 320, x = 940 - w, y = 34;
+      const w = 360, x = 480 - w / 2, y = 480;
       g.fillStyle(0x000000, 0.8).fillRect(x - 3, y - 3, w + 6, 18);
       g.fillStyle(0xc0282e).fillRect(x, y, (w * hp) / max, 12);
-      this.tBoss.setText(r.get('bossName'));
+      this.tBoss.setText(this.registry.get('bossName'));
     } else this.tBoss.setText('');
+  }
+
+  drawSlot(s, p, i, time) {
+    const blink = Math.floor(time / 400) % 2 === 0;
+    const color = i ? '#5ad1ff' : '#ffe066';
+    const startKey = i ? '2' : Session.numPlayers === 1 ? 'ENTER' : '1';
+    const set = (a, b, c, d) => { s.name.setText(a); s.l1.setText(b); s.l2.setText(c); s.l3.setText(d); };
+
+    if (p.state === 'play') {
+      s.name.setColor(color);
+      const v = p.vehicle;
+      set(
+        `${i + 1}P ${p.info.name}`,
+        `VIDAS x${p.lives}   ${String(p.score).padStart(7, '0')}`,
+        `ARMAS ${p.weapon === 'mg' ? p.ammo : '∞'}   GRANADAS ${p.bombs}`,
+        v ? `COMBI ${'■'.repeat(Math.max(0, v.hp))}  CAÑÓN ${v.cannon}` : '',
+      );
+    } else if (p.state === 'continue') {
+      s.name.setColor('#ff6b6b');
+      const c = CFG.CHARACTERS.find((ch) => ch.id === p.pendingChar);
+      const sec = Math.max(0, Math.ceil(p.countdown / 1000));
+      const pay = Session.canPay(1);
+      set(
+        p.joining ? `${i + 1}P ¿ENTRAS? ${sec}` : `${i + 1}P ¿CONTINUAR? ${sec}`,
+        `< ${c.name} >`,
+        pay ? (blink ? `PRESIONA ${startKey}` : '') : 'SIN CRÉDITOS',
+        pay ? '' : blink ? 'INSERTA MONEDA (5)' : '',
+      );
+    } else if (p.state === 'inactive') {
+      s.name.setColor('#888888');
+      set(`${i + 1}P`, blink ? (Session.canPay(1) ? `PRESIONA ${startKey} PARA ENTRAR` : 'INSERTA MONEDA (5)') : '', '', '');
+    } else {
+      s.name.setColor('#888888');
+      set(`${i + 1}P GAME OVER`, String(p.score).padStart(7, '0'), '', '');
+    }
   }
 }

@@ -33,7 +33,7 @@ class Grunt extends Phaser.Physics.Arcade.Sprite {
 
   update(time, dt) {
     if (!this.alive) return;
-    const s = this.scene, t = s.target();
+    const s = this.scene, t = s.target(this.x);
     const dx = t.x - this.x, dist = Math.abs(dx);
     const onScreen = this.x > s.viewLeft + 4 && this.x < s.viewLeft + CFG.VIEW_W - 4;
     const fleeing = time < this.fleeUntil;
@@ -87,17 +87,17 @@ class Grunt extends Phaser.Physics.Arcade.Sprite {
     this.nextAction = time + Phaser.Math.Between(1400, 2600);
   }
 
-  hit(dmg, explosive) {
+  hit(dmg, explosive, owner) {
     if (!this.alive) return;
     this.hp -= dmg;
     Fx.flash(this);
-    if (this.hp <= 0) this.die(explosive);
+    if (this.hp <= 0) this.die(explosive, owner);
   }
 
-  die(explosive) {
+  die(explosive, owner) {
     this.alive = false;
     const s = this.scene;
-    s.addScore(this.score, this.x, this.y - 26);
+    s.addScore(this.score, this.x, this.y - 26, owner);
     Sfx.scream();
     if (Math.random() < 0.4) Fx.say(s, this, Phaser.Utils.Array.GetRandom(GRUNT_DEATH), 1200);
     this.setTexture(`${this.skin}_fwd_jump`);

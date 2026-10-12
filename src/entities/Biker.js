@@ -17,7 +17,7 @@ class Biker extends Phaser.Physics.Arcade.Sprite {
 
   update() {
     if (!this.alive) return;
-    const s = this.scene, t = s.target();
+    const s = this.scene, t = s.target(this.x);
     this.setVelocityX(-CFG.ENEMY.BIKER_SPEED);
     const onScreen = this.x < s.viewLeft + CFG.VIEW_W - 4;
     if (!this.shot && onScreen && this.x > t.x && this.x - t.x < 220) {
@@ -28,18 +28,18 @@ class Biker extends Phaser.Physics.Arcade.Sprite {
     }
   }
 
-  hit(dmg) {
+  hit(dmg, explosive, owner) {
     if (!this.alive) return;
     this.hp -= dmg;
     Fx.flash(this);
-    if (this.hp <= 0) this.die();
+    if (this.hp <= 0) this.die(explosive, owner);
   }
 
-  die() {
+  die(explosive, owner) {
     if (!this.alive) return;
     this.alive = false;
     const s = this.scene;
-    s.addScore(this.score, this.x, this.y - 26);
+    s.addScore(this.score, this.x, this.y - 26, owner);
     Sfx.scream();
     this.setVelocity(60, -180);
     s.tweens.add({ targets: this, angle: 360, duration: 600 });

@@ -12,12 +12,13 @@ class Level1Scene extends Phaser.Scene {
     this.bubbles = [];
     this.bossStarted = false;
     this.finished = false;
+    this.frozen = false;
     this.boss = null;
     this.copSpoke = false;
-    this.registry.set({
-      score: 0, lives: CFG.PLAYER.LIVES, arms: '∞', bombs: CFG.PLAYER.START_BOMBS,
-      inCombi: false, combiHp: 0, cannon: 0, bossHp: 0, bossMax: 1, bossName: '',
-    });
+    this.registry.set({ bossHp: 0, bossMax: 1, bossName: '' });
+    // Clock and tweens survive a scene restart; make sure a previous freeze doesn't carry over.
+    this.time.paused = false;
+    this.tweens.resumeAll();
 
     this.physics.world.setBounds(0, -400, this.levelW, 800);
     this.cameras.main.setZoom(CFG.ZOOM).setRoundPixels(true);
@@ -34,14 +35,13 @@ class Level1Scene extends Phaser.Scene {
     this.pBombs = this.physics.add.group();
     this.eBombs = this.physics.add.group();
 
-    this.player = new Player(this, 60, CFG.GROUND_Y);
+    this.createPlayers();
     this.combi = new CombiSlug(this, L.COMBI_X, CFG.GROUND_Y);
     this.abuelita = new Abuelita(this, L.ABUELITA_X, CFG.GROUND_Y);
     L.PICKUPS.forEach((p) => this.spawnPickup(p.x, CFG.GROUND_Y - 40, p.kind));
     this.spawns = L.SPAWNS.map((s) => Object.assign({}, s)).sort((a, b) => a.x - b.x);
 
     this.setupCollisions();
-    this.setupInput();
     this.updateCamera();
 
     this.scene.stop('HUD');
@@ -49,6 +49,109 @@ class Level1Scene extends Phaser.Scene {
     Sfx.startMusic();
     this.events.once('shutdown', () => Sfx.stopMusic());
     this.time.delayedCall(300, () => this.message('MISIÓN 1', '¡PAGA O YA SABES!', 2600));
+  }
+
+  // ---------- players ----------
+
+  createPlayers() {
+    const n = Session.numPlayers;
+    const c0 = Session.chars[0] || 'chato';
+    const c1 = Session.chars[1] || CFG.CHARACTERS.map((c) => c.id).find((id) => id !== c0);
+    this.players = [c0, c1].map((ch, i) => {
+      const p = new Player(this, i, ch, 60 - i * 24, CFG.GROUND_Y);
+      if (i >= n) {
+        p.state = 'inactive';
+        p.deactivate();
+      }
+      return p;
+    });
+    this.setupControls(n);
+  }
+
+  // Solo: P1 accepts every key layout. 2P: split keyboard (P1 WASD+F/G/H, P2 arrows+, . /) plus gamepads.
+  setupControls(n) {
+    const K = CFG.KEYS;
+    this.controls = [new Controls(this, n === 1 ? K.solo : K.p1, 0), new Controls(this, K.p2, 1)];
+  }
+
+  takenChars(except) {
+    return this.players.filter((o) => o !== except && o.state === 'play').map((o) => o.char);
+  }
+
+  nextFreeChar(p, dir) {
+    const ids = CFG.CHARACTERS.map((c) => c.id), taken = this.takenChars(p);
+    let i = ids.indexOf(p.pendingChar);
+    if (dir === 0 && !taken.includes(ids[i])) return ids[i];
+    for (let k = 0; k < ids.length; k++) {
+      i = (i + (dir || 1) + ids.length) % ids.length;
+      if (!taken.includes(ids[i])) return ids[i];
+    }
+    return p.pendingChar;
+  }
+
+  beginContinue(p, joining) {
+    p.state = 'continue';
+    p.joining = joining;
+    p.countdown = CFG.CREDITS.CONTINUE_SECONDS * 1000;
+    p.pendingChar = p.char;
+    p.pendingChar = this.nextFreeChar(p, 0);
+    p.deactivate();
+  }
+
+  tryContinue(p) {
+    if (!Session.pay(1)) {
+      Sfx.hit();
+      return;
+    }
+    p.pendingChar = this.nextFreeChar(p, 0);
+    p.setCharacter(p.pendingChar);
+    p.lives = CFG.CREDITS.LIVES_PER_CREDIT;
+    if (p.joining && Session.numPlayers === 1) {
+      Session.numPlayers = 2;
+      this.setupControls(2);
+      this.message('¡2 JUGADORES!', '1P: WASD + F G H     2P: FLECHAS + , . /', 3500);
+    }
+    p.joining = false;
+    p.respawn(this.viewLeft + 60 + p.index * 24);
+    Sfx.pickup();
+    Fx.say(this, p, '¡Aquí estoy!', 1200);
+  }
+
+  // Continue countdowns, character switching, drop-in join.
+  updateSlots(delta) {
+    if (this.finished) return;
+    for (const p of this.players) {
+      const c = p.ctrl;
+      if (p.state === 'inactive') {
+        if (c.startP) this.beginContinue(p, true);
+      } else if (p.state === 'continue') {
+        p.countdown -= delta;
+        if (c.leftP) p.pendingChar = this.nextFreeChar(p, -1);
+        if (c.rightP) p.pendingChar = this.nextFreeChar(p, 1);
+        if (c.startP || c.fireP || c.jumpP) this.tryContinue(p);
+        else if (p.countdown <= 0) {
+          p.state = p.joining ? 'inactive' : 'out';
+          p.joining = false;
+        }
+      }
+    }
+    if (this.players.every((p) => p.state === 'out' || p.state === 'inactive')) this.gameOver();
+  }
+
+  // Like the arcade: when nobody is in play, the action stops during the continue countdown.
+  updateFreeze() {
+    const anyPlay = this.players.some((p) => p.state === 'play');
+    if (!anyPlay && !this.frozen && !this.finished) {
+      this.frozen = true;
+      this.physics.world.pause();
+      this.tweens.pauseAll();
+      this.time.paused = true;
+    } else if ((anyPlay || this.finished) && this.frozen) {
+      this.frozen = false;
+      this.physics.world.resume();
+      this.tweens.resumeAll();
+      this.time.paused = false;
+    }
   }
 
   // ---------- world building ----------
@@ -101,7 +204,10 @@ class Level1Scene extends Phaser.Scene {
     };
 
     this.worldText(240, 70, 'Los cuperos mataron a tu compadre.\nHoy no se paga. Hoy se cobra.', { fontSize: '10px', color: '#ffe066' });
-    this.worldText(240, 104, '←→ MOVER   ↑ APUNTAR   ↓ AGACHARSE\nZ SALTAR   X DISPARAR   C GRANADA');
+    const help = Session.numPlayers === 1
+      ? '←→ MOVER   ↑ APUNTAR   ↓ AGACHARSE\nZ SALTAR   X DISPARAR   C GRANADA'
+      : '1P: WASD + F DISPARAR  G SALTAR  H GRANADA\n2P: FLECHAS + , DISPARAR  . SALTAR  / GRANADA';
+    this.worldText(240, 104, help);
 
     this.add.image(150, G, 'paradero').setOrigin(0.5, 1).setDepth(-2);
     graffiti(330, 'LOS CUPEROS\nMANDAN', '#c0282e');
@@ -127,28 +233,31 @@ class Level1Scene extends Phaser.Scene {
     const pick = (a, b, prop) => (a && a[prop] !== undefined ? a : b);
     const P = this.physics.add;
 
-    P.collider(this.player, solids);
     P.collider(this.enemies, solids);
     P.collider(this.abuelita, this.ground);
     P.collider(this.pickups, solids);
     P.collider(this.pBombs, solids, (a, b) => this.onPlayerBombGround(pick(a, b, 'kind')));
     P.collider(this.eBombs, solids, (a, b) => this.explodeEnemyBomb(pick(a, b, 'isEnemyBomb')));
-
     P.overlap(this.pBullets, this.enemies, (b, e) => this.bulletHitsEnemy(b, e));
     P.overlap(this.pBombs, this.enemies, (b, e) => e.alive && this.detonate(b));
-    P.overlap(this.player, this.eBullets, (p, b) => {
-      if (!this.player.canBeHit()) return;
-      b.destroy();
-      this.player.die();
-    });
-    P.overlap(this.player, this.eBombs, (p, b) => this.player.canBeHit() && this.explodeEnemyBomb(b));
-    P.overlap(this.player, this.enemies, (p, e) => e.alive && e.contactKills && this.player.canBeHit() && this.player.die());
-    P.overlap(this.player, this.pickups, (p, k) => k.collect());
-    P.overlap(this.player, this.abuelita, () => this.abuelita.free());
     P.overlap(this.abuelita, this.pBullets, (a, b) => {
       if (a.state !== 'tied') return;
+      const owner = b.owner;
       b.destroy();
-      a.free();
+      a.free(owner);
+    });
+
+    this.players.forEach((pl) => {
+      P.collider(pl, solids);
+      P.overlap(pl, this.eBullets, (p, b) => {
+        if (!pl.canBeHit()) return;
+        b.destroy();
+        pl.die();
+      });
+      P.overlap(pl, this.eBombs, (p, b) => pl.canBeHit() && this.explodeEnemyBomb(b));
+      P.overlap(pl, this.enemies, (p, e) => e.alive && e.contactKills && pl.canBeHit() && pl.die());
+      P.overlap(pl, this.pickups, (p, k) => k.collect(pl));
+      P.overlap(pl, this.abuelita, () => this.abuelita.free(pl));
     });
 
     const c = this.combi;
@@ -157,42 +266,27 @@ class Level1Scene extends Phaser.Scene {
       P.collider(c, solids),
       P.overlap(c, this.eBullets, (cc, b) => { if (driven()) { b.destroy(); c.damage(1); } }),
       P.overlap(c, this.eBombs, (cc, b) => driven() && this.explodeEnemyBomb(b)),
-      P.overlap(c, this.enemies, (cc, e) => { if (driven() && e.alive && e.contactKills) { e.die(true); c.damage(1); } }),
-      P.overlap(c, this.pickups, (cc, k) => driven() && k.collect()),
+      P.overlap(c, this.enemies, (cc, e) => { if (driven() && e.alive && e.contactKills) { e.die(true, c.driver); c.damage(1); } }),
+      P.overlap(c, this.pickups, (cc, k) => driven() && k.collect(c.driver)),
     ];
-  }
-
-  setupInput() {
-    this.keys = this.input.keyboard.addKeys({
-      left: 'LEFT', right: 'RIGHT', up: 'UP', down: 'DOWN', jump: 'Z', jump2: 'SPACE', fire: 'X', bomb: 'C',
-      a: 'A', d: 'D', w: 'W', s: 'S', j: 'J', k: 'K', l: 'L',
-    });
-    this.ctrl = {};
-  }
-
-  readControls() {
-    const k = this.keys, JD = Phaser.Input.Keyboard.JustDown;
-    const j1 = JD(k.jump), j2 = JD(k.jump2), j3 = JD(k.k);
-    const b1 = JD(k.bomb), b2 = JD(k.l);
-    const d1 = JD(k.down), d2 = JD(k.s);
-    this.ctrl = {
-      left: k.left.isDown || k.a.isDown,
-      right: k.right.isDown || k.d.isDown,
-      up: k.up.isDown || k.w.isDown,
-      down: k.down.isDown || k.s.isDown,
-      fire: k.fire.isDown || k.j.isDown,
-      jumpP: j1 || j2 || j3,
-      bombP: b1 || b2,
-      downP: d1 || d2,
-    };
   }
 
   // ---------- main loop ----------
 
   update(time, delta) {
-    this.readControls();
-    if (this.finished) this.ctrl = {};
-    this.player.update(time, delta);
+    const none = Controls.none();
+    this.players.forEach((p, i) => {
+      const c = this.controls[i].read();
+      p.ctrl = this.finished ? none : c;
+    });
+    this.updateSlots(delta);
+    this.updateFreeze();
+    if (this.frozen) {
+      Fx.updateBubbles(this, time);
+      return;
+    }
+
+    this.players.forEach((p) => p.update(time, delta));
     if (this.combi && this.combi.active) this.combi.update(time, delta);
 
     this.updateCamera();
@@ -207,35 +301,48 @@ class Level1Scene extends Phaser.Scene {
     if (this.abuelita.active) this.abuelita.update(time, delta);
     if (this.boss && this.boss.active) this.boss.update(time, delta);
 
-    if (!this.copSpoke && this.player.x > CFG.LEVEL1.COP_CAR_X - 130) {
+    if (!this.copSpoke && this.players.some((p) => p.targetable() && p.x > CFG.LEVEL1.COP_CAR_X - 130)) {
       this.copSpoke = true;
       Fx.say(this, this.copCar, 'Zzz... yo no he visto nada, causa...', 2600);
     }
 
     this.cleanupProjectiles();
     Fx.updateBubbles(this, time);
-    this.updateHudRegistry();
     if (!this.bossStarted && this.viewLeft >= this.arenaX - 0.5) this.startBoss();
   }
 
-  target() {
-    return this.player.vehicle || this.player;
+  // What enemies aim at: the nearest player (or their combi) to x.
+  target(x = this.viewLeft + CFG.VIEW_W / 2) {
+    let best = null, bd = Infinity;
+    for (const p of this.players) {
+      if (!p.targetable()) continue;
+      const o = p.vehicle || p;
+      const d = Math.abs(o.x - x);
+      if (d < bd) { bd = d; best = o; }
+    }
+    return best || this.players[0];
   }
 
+  // The camera only scrolls forward, and never leaves the rear player behind.
   updateCamera() {
-    const f = this.target();
-    if (this.player.alive) {
-      this.viewLeft = Phaser.Math.Clamp(Math.max(this.viewLeft, f.x - CFG.PLAYER.CAM_LEAD), 0, this.arenaX);
+    const objs = this.players.filter((p) => p.state === 'play' && (p.alive || p.vehicle)).map((p) => p.vehicle || p);
+    if (objs.length) {
+      const front = Math.max(...objs.map((o) => o.x)), back = Math.min(...objs.map((o) => o.x));
+      const want = Math.min(front - CFG.PLAYER.CAM_LEAD, back - 16);
+      this.viewLeft = Phaser.Math.Clamp(Math.max(this.viewLeft, want), 0, this.arenaX);
     }
     this.cameras.main.centerOn(this.viewLeft + CFG.VIEW_W / 2, CFG.VIEW_H / 2);
   }
 
   clampToView() {
-    const o = this.target();
-    const m = this.player.vehicle ? 32 : 8;
-    const min = this.viewLeft + m, max = this.viewLeft + CFG.VIEW_W - m;
-    if (o.x < min) { o.x = min; if (o.body.velocity.x < 0) o.body.velocity.x = 0; }
-    if (o.x > max) { o.x = max; if (o.body.velocity.x > 0) o.body.velocity.x = 0; }
+    for (const p of this.players) {
+      if (p.state !== 'play') continue;
+      const o = p.vehicle || p;
+      const m = p.vehicle ? 32 : 8;
+      const min = this.viewLeft + m, max = this.viewLeft + CFG.VIEW_W - m;
+      if (o.x < min) { o.x = min; if (o.body.velocity.x < 0) o.body.velocity.x = 0; }
+      if (o.x > max) { o.x = max; if (o.body.velocity.x > 0) o.body.velocity.x = 0; }
+    }
   }
 
   checkSpawns() {
@@ -257,46 +364,48 @@ class Level1Scene extends Phaser.Scene {
         if (b.x < minX || b.x > maxX || b.y > 300 || b.y < -150) b.destroy();
       });
     });
-  }
-
-  updateHudRegistry() {
-    const p = this.player, r = this.registry;
-    r.set('arms', p.weapon === 'mg' ? String(p.ammo) : '∞');
-    r.set('bombs', p.bombs);
-    r.set('inCombi', !!p.vehicle);
-    if (p.vehicle) {
-      r.set('combiHp', p.vehicle.hp);
-      r.set('cannon', p.vehicle.cannon);
-    }
+    // Bullets stop at the ground (the combi can now shoot down-diagonal).
+    [this.pBullets, this.eBullets].forEach((g) =>
+      g.getChildren().slice().forEach((b) => {
+        if (b.y >= CFG.GROUND_Y + 1) {
+          Fx.spark(this, b.x, CFG.GROUND_Y);
+          b.destroy();
+        }
+      }),
+    );
   }
 
   // ---------- projectiles & damage ----------
 
-  firePlayerBullet(x, y, angle, speed, damage, tex) {
+  firePlayerBullet(x, y, angle, speed, damage, tex, owner) {
     const b = this.pBullets.create(x, y, tex).setDepth(12).setRotation(angle);
     b.damage = damage;
+    b.owner = owner;
     this.physics.velocityFromRotation(angle, speed, b.body.velocity);
     return b;
   }
 
-  throwGrenade(x, y, vx, vy) {
+  throwGrenade(x, y, vx, vy, owner) {
     const g = this.pBombs.create(x, y, 'grenade').setDepth(12);
     g.kind = 'grenade';
+    g.owner = owner;
     g.bounces = 0;
     g.setBounce(0.45).setVelocity(vx, vy).setAngularVelocity(vx >= 0 ? 500 : -500);
     this.time.delayedCall(1600, () => this.detonate(g));
   }
 
-  fireShell(x, y, angle) {
+  fireShell(x, y, angle, owner) {
     const s = this.pBombs.create(x, y, 'shell').setDepth(12).setRotation(angle);
     s.kind = 'shell';
+    s.owner = owner;
     s.body.setAllowGravity(false);
     this.physics.velocityFromRotation(angle, CFG.COMBI.CANNON_SPEED, s.body.velocity);
   }
 
-  throwCup(x, y, vx, vy) {
+  throwCup(x, y, vx, vy, owner) {
     const c = this.pBombs.create(x, y, 'cup').setDepth(12);
     c.kind = 'cup';
+    c.owner = owner;
     c.setVelocity(vx, vy).setAngularVelocity(300);
   }
 
@@ -320,16 +429,16 @@ class Level1Scene extends Phaser.Scene {
 
   detonate(b) {
     if (!b || !b.active) return;
-    const { x, y, kind } = b;
+    const { x, y, kind, owner } = b;
     b.destroy();
     if (kind === 'cup') {
       Fx.splash(this, x, y);
       Sfx.splash();
-      this.damageEnemiesInRadius(x, y, CFG.ABUELITA.SPLASH, CFG.ABUELITA.DAMAGE, false);
+      this.damageEnemiesInRadius(x, y, CFG.ABUELITA.SPLASH, CFG.ABUELITA.DAMAGE, false, owner);
     } else if (kind === 'shell') {
-      this.explodeAt(x, y, CFG.COMBI.CANNON_RADIUS, CFG.COMBI.CANNON_DAMAGE, true, 1.1);
+      this.explodeAt(x, y, CFG.COMBI.CANNON_RADIUS, CFG.COMBI.CANNON_DAMAGE, true, 1.1, owner);
     } else {
-      this.explodeAt(x, y, CFG.GRENADE.radius, CFG.GRENADE.damage, true, 1);
+      this.explodeAt(x, y, CFG.GRENADE.radius, CFG.GRENADE.damage, true, 1, owner);
     }
   }
 
@@ -340,36 +449,38 @@ class Level1Scene extends Phaser.Scene {
     this.explodeAt(x, y, CFG.ENEMY.BOMB_RADIUS, 1, false, 0.7);
   }
 
-  explodeAt(x, y, radius, damage, friendly, scale = 1) {
+  explodeAt(x, y, radius, damage, friendly, scale = 1, owner = null) {
     Fx.boom(this, x, y, scale);
     Sfx.explode(scale > 1.4);
     this.cameras.main.shake(100, 0.003 * scale);
     if (!damage) return;
-    if (friendly) this.damageEnemiesInRadius(x, y, radius, damage, true);
+    if (friendly) this.damageEnemiesInRadius(x, y, radius, damage, true, owner);
     else this.hurtArea(x, y, radius);
   }
 
-  damageEnemiesInRadius(x, y, r, dmg, explosive) {
+  damageEnemiesInRadius(x, y, r, dmg, explosive, owner) {
     this.enemies.getChildren().slice().forEach((e) => {
-      if (e.alive && Phaser.Math.Distance.Between(x, y, e.x, e.y - 12) <= r + 8) e.hit(dmg, explosive);
+      if (e.alive && Phaser.Math.Distance.Between(x, y, e.x, e.y - 12) <= r + 8) e.hit(dmg, explosive, owner);
     });
     const b = this.boss;
-    if (b && b.alive && Phaser.Geom.Intersects.CircleToRectangle(new Phaser.Geom.Circle(x, y, r), b.getBounds())) b.hit(dmg);
+    if (b && b.alive && Phaser.Geom.Intersects.CircleToRectangle(new Phaser.Geom.Circle(x, y, r), b.getBounds())) b.hit(dmg, owner);
   }
 
   hurtArea(x, y, r) {
-    const p = this.player;
-    if (p.vehicle) {
-      if (Phaser.Geom.Intersects.CircleToRectangle(new Phaser.Geom.Circle(x, y, r), p.vehicle.getBounds())) p.vehicle.damage(1);
-    } else if (p.canBeHit() && Phaser.Math.Distance.Between(x, y, p.x, p.y - 12) < r + 6) {
-      p.die();
+    const circle = new Phaser.Geom.Circle(x, y, r);
+    for (const p of this.players) {
+      if (p.vehicle) {
+        if (Phaser.Geom.Intersects.CircleToRectangle(circle, p.vehicle.getBounds())) p.vehicle.damage(1);
+      } else if (p.canBeHit() && Phaser.Math.Distance.Between(x, y, p.x, p.y - 12) < r + 6) {
+        p.die();
+      }
     }
   }
 
   bulletHitsEnemy(b, e) {
     if (!e.alive || !b.active) return;
     Fx.spark(this, b.x, b.y);
-    e.hit(b.damage, false);
+    e.hit(b.damage, false, b.owner);
     b.destroy();
   }
 
@@ -392,30 +503,41 @@ class Level1Scene extends Phaser.Scene {
     return p;
   }
 
-  addScore(n, x, y) {
-    this.registry.set('score', this.registry.get('score') + n);
-    Fx.floatText(this, x, y, String(n));
+  // Points go to whoever caused them; unattributed points go to the nearest player.
+  addScore(n, x, y, owner) {
+    let p = owner && owner.index !== undefined ? owner : null;
+    if (!p) {
+      const t = this.target(x);
+      p = this.players.find((pl) => pl === t || pl.vehicle === t) || this.players[0];
+    }
+    p.score += n;
+    Fx.floatText(this, x, y, String(n), p.index ? '#5ad1ff' : '#ffe066');
   }
 
   message(title, sub, ms) {
     this.game.events.emit('hud-message', title, sub || '', ms || 2000);
   }
 
+  scores() {
+    return this.players.filter((p) => p.state !== 'inactive' || p.score > 0).map((p) => ({ index: p.index, name: p.info.name, score: p.score }));
+  }
+
   // ---------- flow ----------
 
-  onPlayerDeath() {
-    const lives = this.registry.get('lives') - 1;
-    if (lives < 0) return this.gameOver();
-    this.registry.set('lives', lives);
-    this.player.respawn(this.viewLeft + 60);
+  onPlayerDeath(p) {
+    p.lives--;
+    if (p.lives > 0) p.respawn(this.viewLeft + 60 + p.index * 24);
+    else this.beginContinue(p, false);
   }
 
   gameOver() {
+    if (this.finished) return;
     this.finished = true;
+    this.updateFreeze();
     Sfx.stopMusic();
     this.time.delayedCall(800, () => {
       this.scene.stop('HUD');
-      this.scene.start('GameOver', { score: this.registry.get('score') });
+      this.scene.start('GameOver', { scores: this.scores() });
     });
   }
 
@@ -428,11 +550,12 @@ class Level1Scene extends Phaser.Scene {
     P.overlap(b, this.pBullets, (bb, bullet) => {
       if (!b.alive || !bullet.active) return;
       Fx.spark(this, bullet.x, bullet.y);
+      const owner = bullet.owner;
       bullet.destroy();
-      b.hit(bullet.damage);
+      b.hit(bullet.damage, owner);
     });
     P.overlap(b, this.pBombs, (bb, bomb) => b.alive && this.detonate(bomb));
-    P.overlap(b, this.player, () => b.alive && this.player.canBeHit() && this.player.die());
+    this.players.forEach((pl) => P.overlap(b, pl, () => b.alive && pl.canBeHit() && pl.die()));
     if (this.combi) {
       this.combiColliders.push(
         P.overlap(b, this.combi, () => {
@@ -460,7 +583,7 @@ class Level1Scene extends Phaser.Scene {
     this.message('¡MISIÓN CUMPLIDA!', '...¿contactos en la comisaría?', 4500);
     this.time.delayedCall(5200, () => {
       this.scene.stop('HUD');
-      this.scene.start('Title', { completed: true, score: this.registry.get('score') });
+      this.scene.start('Title', { completed: true, scores: this.scores() });
     });
   }
 }

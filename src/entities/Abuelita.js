@@ -22,15 +22,16 @@ class Abuelita extends Phaser.Physics.Arcade.Sprite {
       .setDepth(7);
   }
 
-  free() {
+  free(by) {
     if (this.state !== 'tied') return;
     const s = this.scene;
+    this.rescuer = by || s.players[0];
     this.state = 'free';
     this.until = s.time.now + CFG.ABUELITA.DURATION;
     this.sign.destroy();
     this.setTexture('abu_stand');
     Sfx.pickup();
-    s.addScore(300, this.x, this.y - 30);
+    s.addScore(300, this.x, this.y - 30, this.rescuer);
     s.message('', '¡LA ABUELITA DEL EMOLIENTE SE UNE!', 1800);
     Fx.say(s, this, "¡Gracias, hijito! ¡Emoliente calientito pa' esos malditos!", 2400);
   }
@@ -53,7 +54,7 @@ class Abuelita extends Phaser.Physics.Arcade.Sprite {
       return;
     }
 
-    const t = s.target();
+    const t = s.target(this.x);
     const desired = t.x - (t.facing || 1) * 28;
     const dx = desired - this.x;
     let vx = 0;
@@ -91,7 +92,7 @@ class Abuelita extends Phaser.Physics.Arcade.Sprite {
     const fx = this.x + this.facing * 4, fy = this.y - 18;
     const vx = (e.x - fx) / T;
     const vy = (e.y - fy - 0.5 * g * T * T) / T;
-    this.scene.throwCup(fx, fy, vx, vy);
+    this.scene.throwCup(fx, fy, vx, vy, this.rescuer);
     Sfx.throw();
   }
 
@@ -100,7 +101,7 @@ class Abuelita extends Phaser.Physics.Arcade.Sprite {
     this.state = 'leaving';
     this.facing = -1;
     this.setFlipX(true);
-    s.spawnPickup(this.x, this.y - 20, s.player.weapon === 'mg' ? 'B' : 'H');
+    s.spawnPickup(this.x, this.y - 20, this.rescuer.weapon === 'mg' ? 'B' : 'H');
     Fx.say(s, this, '¡Cuídate, hijito! Me voy a mi puesto.', 2000);
   }
 }

@@ -8,9 +8,9 @@ class Pickup extends Phaser.Physics.Arcade.Sprite {
     this.setOrigin(0.5, 1).setDepth(5);
   }
 
-  collect() {
-    if (!this.active) return;
-    const s = this.scene, p = s.player;
+  collect(p) {
+    if (!this.active || !p) return;
+    const s = this.scene;
     if (this.kind === 'H') {
       p.setWeapon('mg');
       s.message('', '¡METRALLETA!', 1200);
@@ -18,7 +18,7 @@ class Pickup extends Phaser.Physics.Arcade.Sprite {
       p.bombs += 10;
       s.message('', '¡GRANADAS +10!', 1200);
     } else {
-      s.addScore(1000, this.x, this.y - 16);
+      s.addScore(1000, this.x, this.y - 16, p);
       s.message('', '¡PAN CON CHICHARRÓN!', 1200);
     }
     Sfx.pickup();

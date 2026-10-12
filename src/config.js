@@ -11,7 +11,31 @@ const CFG = {
   GRAVITY: 900,
   DEBUG: /[?&]debug/.test(location.search),
 
-  PLAYER: { SPEED: 95, JUMP: 330, LIVES: 3, INVULN_MS: 2500, START_BOMBS: 10, CAM_LEAD: 200 },
+  PLAYER: { SPEED: 95, JUMP: 330, INVULN_MS: 2500, START_BOMBS: 10, CAM_LEAD: 200 },
+
+  // Arcade-style credits. Key 5 inserts a coin, F2 toggles FREE PLAY (infinite credits).
+  CREDITS: { START: 3, LIVES_PER_CREDIT: 5, CONTINUE_SECONDS: 10, MAX: 99 },
+
+  // Placeholder names/roles — see ROADMAP open questions.
+  CHARACTERS: [
+    { id: 'chato', name: 'DON CHATO', role: 'Chofer de combi' },
+    { id: 'sargento', name: 'EL SARGENTO', role: 'Policía retirado (de los honestos)' },
+    { id: 'merc', name: 'EL MERCENARIO', role: 'Contratado por el gremio' },
+    { id: 'cobradora', name: 'LA COBRADORA', role: 'Cobradora de combi' },
+  ],
+
+  // Keyboard maps. Solo accepts every layout; 2P splits the keyboard (gamepads also work: A jump, X fire, B grenade).
+  KEYS: {
+    solo: {
+      left: ['LEFT', 'A'], right: ['RIGHT', 'D'], up: ['UP', 'W'], down: ['DOWN', 'S'],
+      fire: ['X', 'J', 'F'], jump: ['Z', 'SPACE', 'K', 'G'], bomb: ['C', 'L', 'H'], start: ['ENTER', 'ONE'],
+    },
+    p1: { left: ['A'], right: ['D'], up: ['W'], down: ['S'], fire: ['F'], jump: ['G'], bomb: ['H'], start: ['ONE'] },
+    p2: {
+      left: ['LEFT'], right: ['RIGHT'], up: ['UP'], down: ['DOWN'],
+      fire: ['COMMA', 'NUMPAD_ONE'], jump: ['PERIOD', 'NUMPAD_TWO'], bomb: ['FORWARD_SLASH', 'NUMPAD_THREE'], start: ['TWO'],
+    },
+  },
 
   WEAPONS: {
     pistol: { delay: 200, speed: 340, damage: 1, ammo: Infinity, tex: 'pbullet' },
@@ -26,6 +50,7 @@ const CFG = {
     SPEED: 115, JUMP: 300, HP: 5,
     CANNON_AMMO: 20, CANNON_DAMAGE: 6, CANNON_RADIUS: 30, CANNON_SPEED: 300,
     MG_DELAY: 90, MG_SPEED: 400, WRECK_DAMAGE: 10,
+    TURRET_SPEED: 0.006, // rad/ms; the gun turns toward the held direction and keeps its angle
   },
 
   ABUELITA: { DURATION: 22000, THROW_DELAY: 1000, RANGE: 230, DAMAGE: 2, SPLASH: 16 },

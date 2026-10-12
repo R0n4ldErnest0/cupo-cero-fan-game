@@ -10,8 +10,10 @@ The driver ends the game as a folk hero and a fugitive ("going rogue").
 
 | Character | Role |
 |---|---|
-| **Don Chato** (placeholder name) | Combi driver, player 1. Lost a coworker to the extortionists. |
-| **The Mercenary** (unnamed) | Hired by the drivers' union, player 2 / co-op. |
+| **Don Chato** (placeholder name) | Playable. Combi driver who lost a coworker to the extortionists. |
+| **El Sargento** (placeholder) | Playable. Retired policeman, one of the honest ones. |
+| **El Mercenario** (placeholder) | Playable. Hired by the drivers' union. |
+| **La Cobradora** (placeholder, 4th slot undecided) | Playable. The combi's fare collector. |
 | **Emoliente Abuelita** | Rescuable helper (our "Hyakutaro"): follows you and throws boiling emoliente cups. |
 | **El Cobrador de Cupos** | Mission 1 boss, rides an armored mototaxi. |
 | **Corrupt Comisario** | Mission 4 boss. |
@@ -50,6 +52,14 @@ The driver ends the game as a folk hero and a fugitive ("going rogue").
 - [x] Placeholder procedural art + synthesized SFX and music loop
 - [ ] Playtest and tune difficulty (needs human play)
 
+### M1.5 — Arcade structure ✅
+- [x] 4 playable characters + character select (all play the same for now, like Metal Slug 1–3)
+- [x] Credits: 5 lives per credit, 10 s continue countdown, change character on continue
+- [x] Test helpers: key 5 inserts a coin, F2 toggles FREE PLAY (remembered)
+- [x] 2 players: shared keyboard or gamepads, drop-in join mid-game
+- [x] Combi Slug turret aims in 8 directions incl. down-diagonals and keeps its angle
+- [x] Shoot straight down while jumping
+
 ### M2 — Vertical slice (Mission 1 "for real")
 - [ ] Final art direction decided (see open questions)
 - [ ] Real sprites for Don Chato, gang grunt, abuelita, Combi Slug, boss
@@ -57,7 +67,7 @@ The driver ends the game as a folk hero and a fugitive ("going rogue").
 - [ ] Sound effects pass + voice lines ("¡COMBI SLUG!", "¡METRALLETA!", "¡MISIÓN CUMPLIDA!")
 - [ ] Music: chicha / cumbia psicodélica track for Mission 1
 - [ ] Intro cutscene (coworker's death → drivers' union assembly → hiring the mercenary)
-- [ ] Gamepad support, knife/melee at close range
+- [ ] Knife/melee at close range
 
 ### M3 — Missions 2–3
 - [ ] Market level + ledger story beat
@@ -69,7 +79,6 @@ The driver ends the game as a folk hero and a fugitive ("going rogue").
 - [ ] Comisaría level and comisario boss
 - [ ] Highway chase (Bus Slug) + Municipalidad + mayor mech
 - [ ] Ending cutscene; credits
-- [ ] Co-op (player 2 = mercenary)
 
 ### M5 — Release
 - [ ] Balance, polish, accessibility options
@@ -78,20 +87,24 @@ The driver ends the game as a folk hero and a fugitive ("going rogue").
 
 ## Open questions (need answers)
 
+Answered: ripped Metal Slug assets → **private testing only** (`assets/_private/`, gitignored).
+Missions are designed in `docs/LEVELS.md`.
+
 1. **Final title.** "Cupo Cero" is a placeholder. Alternatives: "Combi Slug", "Al Fondo Hay Sitio",
    "Paga o Ya Sabes". Do we avoid "Metal Slug" in the name? (Recommended: yes, trademark.)
-2. **Character names.** Driver (placeholder "Don Chato"), the mercenary, the abuelita, El Cobrador,
-   the comisario, the mayor.
-3. **The mercenary's backstory.** Retired soldier? Foreign ex-con? A former cop who quit in disgust?
-4. **Art direction.** Detailed Metal Slug-like pixel art (expensive) vs. a simpler 32–64px style?
+2. **The 4th playable character.** Placeholder is La Cobradora (fare collector). Alternatives: a market
+   vendor (bodeguera), a school teacher (schools are extorted too), a mototaxista.
+3. **Names.** The 4 playable characters, the abuelita, El Cobrador, the comisario, the mayor.
+4. **Backstories.** The mercenary (retired soldier? foreigner?), and why the retired sergeant joins.
+5. **Do characters play differently?** Identical like Metal Slug 1–3 (current), or small perks like Metal Slug 6?
+6. **Art direction.** Detailed Metal Slug-like pixel art (expensive) vs. a simpler style?
    Hand-drawn, commissioned from a Peruvian artist, or AI-assisted + cleaned up in Aseprite?
-5. **Ripped Metal Slug assets.** Private placeholders only (recommended), or ship as a free fan game
-   and accept takedown risk?
-6. **Music.** Commission a musician, compose ourselves (LMMS/BeepBox), or use licensed CC tracks?
-7. **Other helpers.** Do we still add the Cobrador ("¡AL FONDO HAY SITIO!" shout wave) and the ONP
-   jubilado (paper "reclamo" blasts) in later missions?
-8. **Ending.** Bittersweet (a new extortionist shows up next morning) or triumphant?
-9. **Platform.** Browser/itch.io only, or also a desktop build (e.g., via Electron/Tauri or porting to Godot)?
-10. **Team.** Who draws, who composes, who writes dialogue?
-11. **Language.** Spanish only, or Spanish + English?
-12. **How graphic?** Metal Slug-level cartoon violence only, or anything darker in cutscenes?
+7. **Music.** Commission a musician, compose ourselves (LMMS/BeepBox), or use licensed CC tracks?
+8. **Other helpers.** Do we add the Cobrador ("¡AL FONDO HAY SITIO!" shout) and the ONP jubilado
+   (paper "reclamo" blasts) in later missions?
+9. **Ending.** Bittersweet (a new extortionist shows up next morning) or triumphant?
+10. **Platform.** Browser/itch.io only, or also a desktop build?
+11. **Team.** Who draws, who composes, who writes dialogue?
+12. **Language.** Spanish only, or Spanish + English?
+13. **How graphic?** Metal Slug-level cartoon violence only, or anything darker in cutscenes?
+14. **Credits defaults.** Currently 3 starting credits and 5 lives per credit. Keep score on continue (current) or reset it?

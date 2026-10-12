@@ -1,5 +1,6 @@
 // The Combi Slug — our "Metal Slug" tank. Board with ↓, exit with ↓+jump.
-// X = roof machine gun (aims with ↑), C = cannon. Route stickers = HP.
+// Fire = roof machine gun, grenade = cannon. Like the SV-001, the gun turns toward the held
+// direction (all 8, including down-diagonals) and keeps its angle when released. Route stickers = HP.
 class CombiSlug extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y) {
     super(scene, x, y, 'combi');
@@ -33,25 +34,27 @@ class CombiSlug extends Phaser.Physics.Arcade.Sprite {
     this.hurtUntil = 0;
     this.nextSmoke = 0;
     this.bubbleOffset = 44;
+    this.driver = null;
   }
 
   canBoard(p) {
-    return this.state === 'parked' && Math.abs(p.x - this.x) < 40 && Math.abs(p.y - this.y) < 36;
+    return this.state === 'parked' && p.targetable() && !p.vehicle && Math.abs(p.x - this.x) < 40 && Math.abs(p.y - this.y) < 36;
   }
 
-  board() {
+  board(driver) {
     this.state = 'driven';
+    this.driver = driver;
     if (this.label) { this.label.destroy(); this.label = null; }
     Sfx.horn();
     this.scene.message('¡COMBI SLUG!', '', 1200);
   }
 
   update(time, dt) {
-    const s = this.scene, p = s.player;
+    const s = this.scene;
     if (this.state === 'driven') this.drive(time, dt);
     else if (this.state === 'parked') this.setVelocityX(0);
 
-    const near = this.state === 'parked' && p.alive && !p.vehicle && Math.abs(p.x - this.x) < 110;
+    const near = this.state === 'parked' && s.players.some((p) => p.targetable() && !p.vehicle && Math.abs(p.x - this.x) < 110);
     this.hint.setVisible(near);
     this.hint.x = this.x;
     if (this.label) this.label.setPosition(this.x, this.y - 44);
@@ -65,7 +68,7 @@ class CombiSlug extends Phaser.Physics.Arcade.Sprite {
     this.turret.setPosition(this.x - f * 6, this.y - 35);
     this.turret.setRotation(this.aimAngle).setFlipY(Math.cos(this.aimAngle) < -0.01);
 
-    if (this.state === 'driven') p.setPosition(this.x, this.y - 8);
+    if (this.state === 'driven') this.driver.setPosition(this.x, this.y - 8);
     if (this.hp <= 1 && this.state !== 'wrecked' && time > this.nextSmoke) {
       Fx.puff(s, this.x + Phaser.Math.Between(-10, 10), this.y - 30, 1.2, 0x555555);
       this.nextSmoke = time + 180;
@@ -73,11 +76,12 @@ class CombiSlug extends Phaser.Physics.Arcade.Sprite {
   }
 
   drive(time, dt) {
-    const s = this.scene, c = s.ctrl, C = CFG.COMBI;
+    const s = this.scene, c = this.driver.ctrl, C = CFG.COMBI;
     if (c.down && c.jumpP) {
       this.state = 'parked';
       this.setVelocityX(0);
-      s.player.exitVehicle();
+      this.driver.exitVehicle();
+      this.driver = null;
       return;
     }
     const move = (c.left ? -1 : 0) + (c.right ? 1 : 0);
@@ -89,21 +93,20 @@ class CombiSlug extends Phaser.Physics.Arcade.Sprite {
       Sfx.jump();
     }
 
-    const target = c.up ? -Math.PI / 2 : this.facing > 0 ? 0 : Math.PI;
-    if (Math.abs(Phaser.Math.Angle.Wrap(target - this.aimAngle)) > 2.5) this.aimAngle = target; // snap on turnaround
-    else this.aimAngle = Phaser.Math.Angle.RotateTo(this.aimAngle, target, 0.012 * dt);
+    const ax = move, ay = (c.up ? -1 : 0) + (c.down ? 1 : 0);
+    if (ax || ay) this.aimAngle = Phaser.Math.Angle.RotateTo(this.aimAngle, Math.atan2(ay, ax), C.TURRET_SPEED * dt);
 
     const mx = this.turret.x + Math.cos(this.aimAngle) * 17;
     const my = this.turret.y + Math.sin(this.aimAngle) * 17;
     if (c.fire && time > this.lastMg + C.MG_DELAY) {
       this.lastMg = time;
-      s.firePlayerBullet(mx, my, this.aimAngle + Phaser.Math.FloatBetween(-0.05, 0.05), C.MG_SPEED, 1, 'mgbullet');
+      s.firePlayerBullet(mx, my, this.aimAngle + Phaser.Math.FloatBetween(-0.05, 0.05), C.MG_SPEED, 1, 'mgbullet', this.driver);
       Fx.spark(s, mx, my);
       Sfx.mg();
     }
     if (c.bombP && this.cannon > 0) {
       this.cannon--;
-      s.fireShell(mx, my, this.aimAngle);
+      s.fireShell(mx, my, this.aimAngle, this.driver);
       Fx.puff(s, mx, my, 1.4, 0xdddddd);
       Sfx.cannon();
     }
@@ -123,11 +126,13 @@ class CombiSlug extends Phaser.Physics.Arcade.Sprite {
     const s = this.scene;
     this.state = 'wrecked';
     this.setVelocityX(0);
-    s.player.exitVehicle();
-    Fx.say(s, s.player, '¡Mi combi! ¡Todavía la estaba pagando!', 1800);
+    const d = this.driver;
+    d.exitVehicle();
+    this.driver = null;
+    Fx.say(s, d, '¡Mi combi! ¡Todavía la estaba pagando!', 1800);
     s.tweens.add({ targets: this, alpha: 0.3, yoyo: true, repeat: 4, duration: 90 });
     s.time.delayedCall(900, () => {
-      s.explodeAt(this.x, this.y - 14, 40, CFG.COMBI.WRECK_DAMAGE, true, 1.6);
+      s.explodeAt(this.x, this.y - 14, 40, CFG.COMBI.WRECK_DAMAGE, true, 1.6, d);
       this.removeAll();
     });
   }

@@ -34,7 +34,7 @@ class BossCobrador extends Phaser.Physics.Arcade.Sprite {
   }
 
   update(time, dt) {
-    const s = this.scene, t = s.target(), sp = this.rage ? 1.3 : 1;
+    const s = this.scene, t = s.target(this.x), sp = this.rage ? 1.3 : 1;
     switch (this.state) {
       case 'enter':
         this.setVelocityX(-110);
@@ -140,9 +140,10 @@ class BossCobrador extends Phaser.Physics.Arcade.Sprite {
     this.wheels[1].setPosition(this.x - f * 17, this.y - 8).rotation += spin;
   }
 
-  hit(dmg) {
+  hit(dmg, owner) {
     if (!this.alive || this.state === 'enter') return;
     const s = this.scene;
+    if (owner) this.lastHitter = owner;
     this.hp = Math.max(0, this.hp - dmg);
     s.registry.set('bossHp', this.hp);
     Fx.flash(this);
@@ -162,7 +163,7 @@ class BossCobrador extends Phaser.Physics.Arcade.Sprite {
     this.alive = false;
     this.state = 'dying';
     this.setVelocityX(0);
-    s.addScore(5000, this.x, this.y - 50);
+    s.addScore(5000, this.x, this.y - 50, this.lastHitter);
     for (let i = 0; i < 12; i++) {
       s.time.delayedCall(i * 170, () =>
         s.explodeAt(this.x + Phaser.Math.Between(-40, 40), this.y - Phaser.Math.Between(5, 40), 0, 0, true, Phaser.Math.FloatBetween(0.6, 1.2)),

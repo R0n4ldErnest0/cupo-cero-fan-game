@@ -120,6 +120,12 @@ const Sfx = {
     const t = this.ctx.currentTime;
     [660, 880, 1320].forEach((f, i) => this.tone('square', f, f, 0.08, 0.08, { when: t + i * 0.06 }));
   },
+  coin() {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    this.tone('square', 988, 988, 0.07, 0.08, { when: t });
+    this.tone('square', 1319, 1319, 0.25, 0.08, { when: t + 0.07 });
+  },
   horn() {
     if (!this.ctx) return;
     const t = this.ctx.currentTime;
