@@ -195,6 +195,7 @@ const Textures = {
     this.pickups(scene);
     this.breakables(scene);
     this.door(scene);
+    this.ride(scene);
     this.props(scene);
     this.tiles(scene);
     this.backgrounds(scene);
@@ -591,6 +592,38 @@ const Textures = {
     for (let y = 3; y < 14; y += 2) p.rect(2, y, 18, 1, '#5a6068');
     p.rect(2, 13, 18, 1, '#2b2b33').outline();
     p.register(scene, 'door');
+  },
+
+  // Ride mode: the articulated Metropolitano bus (two cars + accordion), a pedestrian bridge seen side-on
+  // (deck + pillar) and lamp posts.
+  ride(scene) {
+    const b = new Painter(320, 50);
+    const car = (x0, x1) => {
+      b.rect(x0, 2, x1 - x0, 40, '#e8ecef').rect(x0, 0, x1 - x0, 3, '#9aa0a8'); // body + roof
+      b.rect(x0, 30, x1 - x0, 4, '#1e5fb4').rect(x0, 34, x1 - x0, 2, '#f2a33a'); // stripes
+      for (let x = x0 + 6; x < x1 - 14; x += 18) b.rect(x, 9, 14, 13, '#3b4a5a').rect(x + 1, 10, 4, 2, '#8fb8d8');
+      b.rect(x0, 36, x1 - x0, 6, '#5a6068');
+    };
+    car(0, 150);
+    car(166, 320);
+    for (let x = 150; x < 166; x += 2) b.rect(x, 4, 1, 36, '#3a3d45').rect(x + 1, 4, 1, 36, '#5a6068'); // accordion
+    b.rect(304, 9, 14, 20, '#8fd0ee').rect(306, 4, 12, 4, PAL.k); // windshield + route display
+    b.text('EXPRESO', 228, 24, '#1e5fb4');
+    [24, 120, 196, 290].forEach((x) => b.disc(x, 43, 6, PAL.k).set(x, 43, PAL.g));
+    b.outline();
+    b.register(scene, 'metro_bus');
+
+    const d = new Painter(48, 18);
+    d.rect(0, 6, 48, 12, '#9d9a92').rect(0, 6, 48, 2, '#c8c4b8').rect(0, 16, 48, 2, '#6e6a62');
+    for (let x = 1; x < 48; x += 5) d.rect(x, 0, 1, 6, '#5a6068');
+    d.rect(0, 0, 48, 1, '#5a6068').text('PASE', 16, 10, '#2e7d32');
+    d.outline();
+    d.register(scene, 'bridge_deck');
+    new Painter(14, 72).rect(1, 0, 12, 72, '#8a877f').rect(1, 0, 3, 72, '#a5a29a').outline().register(scene, 'bridge_pillar');
+
+    const lp = new Painter(14, 84);
+    lp.rect(6, 6, 2, 78, '#5a6068').rect(6, 4, 7, 2, '#5a6068').rect(10, 6, 4, 2, '#f2e2a0');
+    lp.register(scene, 'lamppost');
   },
 
   props(scene) {

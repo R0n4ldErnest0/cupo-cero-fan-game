@@ -35,7 +35,7 @@ Full design, weapons list and build order: `docs/LEVELS.md`.
 |---|---|---|---|
 | 1 | ¡Paga o ya sabes! | Paradero → Terminal | El Cobrador's armored mototaxi; "tengo contactos en la comisaría". |
 | 2 | Gamarra no se cierra | Street → Galleries → Rooftops → Almacén | You find the **ledger**. Truck mid-boss, accountant boss. |
-| 3 | La ruta | Cerros → Train roof → Station | A **police helicopter** rescues El Cobrador (reveal). |
+| 3 | La ruta | Cerros → Metropolitano roof → Station | A **police helicopter** rescues El Cobrador (reveal). |
 | 4 | Su denuncia es importante para nosotros | Front desk → Cells → Evidence room → Escape | The comisario. |
 | 5 | Obra paralizada | Air level → Plaza (the town joins you) → Municipalidad → Mayor | Mayor mech; ending. |
 
@@ -93,13 +93,16 @@ Full design, weapons list and build order: `docs/LEVELS.md`.
 - [x] Rescuable prisoners (POWs), prototype: honest cops tied up by the gang; freed by a shot or a touch, they
       hand over an item; rescue count + bonus on the tally, reset to 0 on death (arcade rule)
 - [ ] More prisoner types per mission (drivers, vendors, denunciantes, journalist...) and helpers that fight
-- [ ] Auto-scroll mode (train roof, air level)
+- [x] Ride mode: the section happens on a moving vehicle (Metropolitano bus roof): scrolling road and backgrounds,
+      a timeline of enemies jumping on and pedestrian bridges to duck under (lose a life), braking into the station.
+      Mission 3 greybox = the bus ride
+- [ ] Moving-camera auto-scroll over a normal map (chases, escapes)
 - [ ] Police enemy types; boss framework (mid-bosses, phases)
 
 ### M3 — Missions 2–3
 - [ ] Mission 2 complete: rooftops, Mototaxi Slug, collection-truck mid-boss, accountant boss, ledger beat
 - [ ] Art direction test on Mission 2 (decide the style before drawing everything)
-- [ ] Mission 3: cerros, train roof, police helicopter reveal and boss
+- [ ] Mission 3: cerros, Metropolitano (greybox ✅), police helicopter reveal and boss
 
 ### M4 — Missions 4–5 + ending
 - [ ] Mission 4: indoor tiles, comisaría, rochabus, comisario boss
@@ -120,6 +123,7 @@ Full design, weapons list and build order: `docs/LEVELS.md`.
 
 ## Open questions (need answers)
 
+Answered: the Mission 3 ride is on the roof of a Metropolitano bus (not the Línea 1 train).
 Answered: ripped Metal Slug assets → **private testing only** (`assets/_private/`, gitignored).
 Answered: weapons → see the decided list in `docs/LEVELS.md` (homing Cohetón, all optional weapons, Piedras,
 Molotov as second throwable, per-character melee, Metal Slug ammo rules).
@@ -143,7 +147,6 @@ Missions are designed in `docs/LEVELS.md`.
 12. **Language.** Spanish only, or Spanish + English?
 13. **How graphic?** Metal Slug-level cartoon violence only, or anything darker in cutscenes?
 14. **Credits defaults.** Currently 3 starting credits and 5 lives per credit. Keep score on continue (current) or reset it?
-15. **Train level.** Roof of the Línea 1 elevated train (fits the cerros of SJL) or of a Metropolitano bus?
 16. **Air level.** Helicopter bought with a pollada, or a crop-duster plane lent from the provinces? Who gives it?
 17. **Allies in Mission 5.** Who joins (honest police, vendors, mototaxistas, cobradores, students, rescued people)?
     Can they die? Do they only fight in the plaza or until the end?

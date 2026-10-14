@@ -16,6 +16,11 @@ class LevelScene extends Phaser.Scene {
     this.lastSection = this.sectionIndex === sections.length - 1;
     // The section's fields (terrain, enemies, arena, exit...) on top of the mission's (title, outro...).
     const M = (this.mission = Object.assign({}, mission, sections[this.sectionIndex]));
+    if (M.ride) {
+      M.terrain = Array(14).fill('|').join('\n');
+      M.width = CFG.VIEW_W;
+      M.vehicles = false;
+    }
     this.leaving = false;
     this.keepMusic = false;
     this.terrain = new Terrain(this, M);
@@ -44,6 +49,7 @@ class LevelScene extends Phaser.Scene {
     this.buildBackground();
     this.buildGround();
     this.buildDecor();
+    this.ride = M.ride ? new Ride(this, M.ride) : null;
 
     this.enemies = this.physics.add.group();
     this.pickups = this.physics.add.group();
@@ -172,7 +178,7 @@ class LevelScene extends Phaser.Scene {
 
   // Leaving a section: 'edge' (walk/drive to the right end of the map, the default) or 'door'.
   checkExit() {
-    if (this.lastSection || this.finished || this.mission.arena) return;
+    if (this.lastSection || this.finished || this.mission.arena || this.ride) return;
     const type = (this.mission.exit || {}).type || (this.doors.length ? 'door' : 'edge');
     for (const p of this.players) {
       if (p.state !== 'play' || !(p.alive || p.vehicle)) continue;
@@ -302,13 +308,15 @@ class LevelScene extends Phaser.Scene {
 
   // Backgrounds follow the camera; when it climbs, the far layers sink a little (vertical parallax).
   updateParallax() {
+    // In a ride the camera stands still and the distance travelled scrolls the backgrounds.
     const L = Math.round(this.viewLeft), top = Math.round(this.viewTop);
+    const D = this.ride ? Math.round(this.ride.dist) : L;
     const climb = Math.max(0, this.levelH - CFG.VIEW_H) - top;
     this.bgSky.setPosition(L, top);
     this.bgHills.setPosition(L, top + 70 + Math.round(climb * 0.15));
-    this.bgHills.tilePositionX = Math.round(L * 0.15);
+    this.bgHills.tilePositionX = Math.round(D * 0.15);
     this.bgCity.setPosition(L, top + CFG.GROUND_Y - 170 + Math.round(climb * 0.4));
-    this.bgCity.tilePositionX = Math.round(L * 0.45);
+    this.bgCity.tilePositionX = Math.round(D * 0.45);
   }
 
   // The terrain tile layer is built by Terrain; crates are extra one-way platforms (sprites).
@@ -469,7 +477,8 @@ class LevelScene extends Phaser.Scene {
 
     this.cleanupProjectiles();
     Fx.updateBubbles(this, time);
-    if (!this.arenaStarted && this.viewLeft >= this.arenaX - 0.5) this.startArena();
+    if (this.ride) this.ride.update(time, delta);
+    else if (!this.arenaStarted && this.viewLeft >= this.arenaX - 0.5) this.startArena();
     if (this.waves) this.updateWaves();
     this.checkExit();
   }
@@ -791,6 +800,15 @@ class LevelScene extends Phaser.Scene {
       }
     }
     return [want, top - 8];
+  }
+
+  // Is there something to stand on just ahead (terrain, crates, a bus roof)? Used by enemies to stay on their floor.
+  hasFloor(x, footY) {
+    if (this.terrain.hasFloor(x, footY)) return true;
+    return this.platforms.getChildren().some((c) => {
+      const b = c.body;
+      return x >= b.left && x <= b.right && Math.abs(footY - b.top) <= 4;
+    });
   }
 
   // Where an object without an explicit y stands: street level at x (or the bottom row over a pit).

@@ -12,7 +12,7 @@ Status: ✅ built · 🚧 greybox (playable, placeholder) · 📝 designed only 
 |---|---|---|---|
 | 1 | ¡Paga o ya sabes! | A Paradero → B Terminal (boss) | ✅ prototype (both sections) |
 | 2 | Gamarra no se cierra | A Market street → B Galleries (climb) → C Rooftops → D Almacén (boss) | 🚧 A+B greybox (sections built) |
-| 3 | La ruta | A Cerros (climb) → B Roof of the moving train ❓ → C Station (boss) | 📝 |
+| 3 | La ruta | A Cerros (climb) → B Roof of the Metropolitano → C Station (boss) | 🚧 B greybox |
 | 4 | Su denuncia es importante para nosotros | A Front desk → B Offices and cells → C Evidence room → D Escape (boss) | 📝 |
 | 5 | Obra paralizada | A Air level ❓ → B Plaza: the town joins you → C Municipalidad → D Mayor (final boss) | 📝 |
 
@@ -47,17 +47,17 @@ metal shutter); rooftop sniper; Mototaxi Slug; collection truck; accountant boss
 **Defined:**
 - A **Cerros:** stairs up the hill (slopes), unfinished houses, rebar, water tanks; climbs upward (vertical camera ✅).
   The **first police** appear: at first they ignore the gangs, later they shoot at you.
-- B **On the roof of a moving train** (Metal Slug train-level style, auto-scroll): enemies jump on from motorcycles
-  and from the station platforms; duck under signs and bridges.
+- B **On the roof of a Metropolitano bus** (ride mode, built as a greybox): the articulated bus rushes along the
+  busway; cuperos jump on from motorbikes alongside or are already on the roof; **pedestrian bridges** pass at head
+  height: crouch or lose a life (a "¡AGÁCHATE!" warning comes first); falling off the bus = run over. At the end the
+  bus brakes into the station. Timeline in `src/levels/mission3.js` (`ride.events`). ✅ greybox
 - C **Station:** a police helicopter lands and rescues El Cobrador from Mission 1 (the reveal). Boss: the helicopter.
 - Optional helper: a Cobrador whose "¡AL FONDO HAY SITIO!" shout pushes enemies back.
 
-**Missing:** auto-scroll mode; train and station art; police enemy types; helicopter boss.
+**Missing:** sections A and C; bus/busway/station art; more ride events (cars alongside, throwers on the bridges);
+police enemy types; helicopter boss.
 
-**❓ Train or Metropolitano?** The Metropolitano is articulated buses on dedicated lanes (Vía Expresa);
-the elevated train is the **Línea 1 del Metro**, which runs up to the cerros of San Juan de Lurigancho.
-A train-roof level fits Línea 1 best (cerros → station → elevated track). The Metropolitano works as a bus-roof
-level (lower, with traffic alongside). Pick one, or use the Metropolitano somewhere else (Mission 5).
+**Decided:** the Metropolitano (bus roof at street level, traffic alongside) instead of the Línea 1 elevated train.
 
 ## Mission 4 — "Su denuncia es importante para nosotros" 📝
 
@@ -171,10 +171,11 @@ Systems first (each one unlocks several missions), then the missions, then art/s
 2. **Sections:** a mission made of several parts with transitions, each with its own map or mode
 3. **Weapons system:** letter pickups, ammo, HUD; the 9 new weapons, Molotov and Super granada; per-character melee
 4. **Rescuable people (POWs):** free them, they drop weapons and items (core Metal Slug loop)
-5. **Auto-scroll mode** (train roof; reused by the air level)
+5. ✅ **Ride mode** (Metropolitano roof; reused by the air level). A moving-camera auto-scroll over a normal map
+   (chases, the Mission 4 escape) is still to do.
 6. **Police enemies** (patrol, riot shield, motorcycle cop, sniper) and the boss framework (mid-bosses, phases)
 7. **Mission 2 complete** (rooftops, Mototaxi Slug, truck mid-boss, accountant boss) → **art direction test** on it
-8. **Mission 3** (cerros, train, helicopter boss)
+8. **Mission 3** (cerros, Metropolitano ✅ greybox, helicopter boss)
 9. **Mission 4** (indoor tiles, comisaría, rochabus, comisario)
 10. **Air-shooter mode + ally AI**, then **Mission 5** and the ending
 11. Real art and music for everything, voice lines

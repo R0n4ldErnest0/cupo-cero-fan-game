@@ -117,6 +117,14 @@ const CFG = {
   // each at the end of a mission, and goes back to 0 when you die (arcade rule).
   PRISONER: { BONUS: 1000, WALK: 45, GIVE_AFTER: 2500, RUN: 130 },
 
+  // Ride mode (src/systems/Ride.js): the Metropolitano bus roof. The ride section's map is 384 wide and 14 rows
+  // (224) tall; the road is at ROAD_Y, the roof at ROOF_Y. ROOFS: [x0, x1, dy] of each roof part, relative to the
+  // bus (two cars and the lower accordion joint). A bridge deck passes DUCK_CLEARANCE above the roof: crouch!
+  RIDE: {
+    ROAD_Y: 200, ROOF_Y: 152, BUS_X: 32, ROOFS: [[2, 150, 0], [150, 166, 4], [166, 318, 0]],
+    DUCK_CLEARANCE: 15, WARN_MS: 1600, BRAKE_MS: 2500, POST_EVERY: 260,
+  },
+
   // Melee: when an enemy is this close in front, fire hits it instead of shooting.
   MELEE: { RANGE: 22, DAMAGE: 5, DELAY: 200 },
 

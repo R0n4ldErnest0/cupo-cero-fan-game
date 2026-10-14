@@ -79,7 +79,7 @@ class Grunt extends Phaser.Physics.Arcade.Sprite {
       vx = this.facing * E.GRUNT_SPEED * 1.5;
     }
     // Stay on this floor: don't walk off ledges (crates and the street edge excepted).
-    if (vx && this.body.blocked.down && !s.terrain.hasFloor(this.x + Math.sign(vx) * 6, this.y)) vx = 0;
+    if (vx && this.body.blocked.down && !s.hasFloor(this.x + Math.sign(vx) * 6, this.y)) vx = 0;
     this.setVelocityX(vx);
 
     if (onScreen && !fleeing && this.variant !== 'knife' && time > this.nextAction) this.act(time, t);
