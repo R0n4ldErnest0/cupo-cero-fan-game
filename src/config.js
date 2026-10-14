@@ -10,6 +10,7 @@ const CFG = {
   GROUND_Y: 240,
   GRAVITY: 900,
   DEBUG: /[?&]debug/.test(location.search),
+  SHOW_FPS: /[?&](fps|debug)/.test(location.search), // FPS meter + worst frame of the last 3 s (HUD, bottom)
 
   PLAYER: { SPEED: 95, JUMP: 330, INVULN_MS: 2500, START_BOMBS: 10, CAM_LEAD: 160 },
 
@@ -157,6 +158,8 @@ const CFG = {
   SNIPER: { AIM_MS: 1100, LOCK_MS: 380, BULLET_SPEED: 260, RELOAD: [1800, 2800] },
 
   BOSS1: { HP: 70, RAGE_AT: 35, CHARGE_SPEED: 250, BULLET_SPEED: 100, RAGE_BULLET_SPEED: 125 },
+  // Mission 2 mid-boss (src/entities/BossTruck.js): the armored collection truck.
+  TRUCK: { HP: 80, TURRET_HP: 14, RAM_SPEED: 230, BULLET_SPEED: 120 },
   // Mission 3 boss (src/entities/BossHeli.js): hovers HOVER px above the floor, comes down to DROP_HOVER to lower cops.
   HELI: { HP: 90, PART_HP: 15, HOVER: 100, DROP_HOVER: 64, DRIFT: 70, BULLET_SPEED: 130, MISSILE_SPEED: 120, MAX_ENEMIES: 3 },
 

@@ -31,7 +31,7 @@
 //   events [{ x, say | message | run }]
 //                              fire once when a player passes x. say: { who, text, ms },
 //                              message: [title, sub, ms], run: (scene) => {}
-//   arena                      { alert: [title, sub], boss: 'cobrador' | 'heli' } (see BOSSES in LevelScene) or
+//   arena                      { alert: [title, sub], boss: 'cobrador' | 'truck' | 'heli' } (BOSSES in LevelScene) or
 //                              { alert, waves: [[{ dx, t, ... }], ...] } (dx relative to arenaX; < 0 enters from the left,
 //                              past the view width = runs in from the right edge)
 //   outro { title, sub }       mission-complete banner

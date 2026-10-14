@@ -2,7 +2,7 @@
 // Start with this.scene.start('Level', { mission: index, section: index }). A mission can be split into
 // `sections` (areas joined by a fade); each one is a fresh scene start with { carry: true }, so players keep
 // their lives, weapons, bombs, fat/drunk state and the Combi Slug they're driving.
-const BOSSES = { cobrador: BossCobrador, heli: BossHeli };
+const BOSSES = { cobrador: BossCobrador, heli: BossHeli, truck: BossTruck };
 
 class LevelScene extends Phaser.Scene {
   constructor() {
@@ -424,7 +424,13 @@ class LevelScene extends Phaser.Scene {
         b.destroy();
         pl.die();
       });
-      P.overlap(pl, this.eBombs, (p, b) => pl.canBeHit() && this.explodeEnemyBomb(b));
+      P.overlap(pl, this.eBombs, (p, b) => {
+        if (!pl.canBeHit()) return;
+        if (b.coin) {
+          b.destroy();
+          pl.die();
+        } else this.explodeEnemyBomb(b);
+      });
       P.overlap(pl, this.enemies, (p, e) => e.alive && e.contactKills && pl.canBeHit() && pl.die());
       P.overlap(pl, this.pickups, (p, k) => k.collect(pl));
       this.abuelitas.forEach((ab) => P.overlap(pl, ab, () => ab.free(pl)));
@@ -675,11 +681,14 @@ class LevelScene extends Phaser.Scene {
     this.physics.velocityFromRotation(angle, speed, b.body.velocity);
   }
 
+  // Thrown in an arc to land at (tx, ty) after T seconds. Coins hurt in flight but just clink when they land.
   enemyLob(x, y, tx, ty, tex, T = 0.9) {
     const b = this.eBombs.create(x, y, tex).setDepth(12);
     b.isEnemyBomb = true;
+    b.coin = tex === 'coin';
     const g = CFG.GRAVITY;
     b.setVelocity((tx - x) / T, (ty - y - 0.5 * g * T * T) / T).setAngularVelocity(tx < x ? -400 : 400);
+    return b;
   }
 
   // Player projectiles that touch the ground or a slope (where: 'ground' | 'slope'); see Weapons.PROJECTILES.
@@ -700,6 +709,10 @@ class LevelScene extends Phaser.Scene {
     if (!b || !b.active) return;
     const { x, y } = b;
     b.destroy();
+    if (b.coin) {
+      Fx.spark(this, x, y);
+      return;
+    }
     this.explodeAt(x, y, CFG.ENEMY.BOMB_RADIUS, 1, false, 0.7);
   }
 
@@ -815,6 +828,7 @@ class LevelScene extends Phaser.Scene {
   }
 
   // Players (re)enter by dropping in from the top of the screen, over a column that has a floor in view.
+  // Indoors (a ceiling in view) they drop from just under the ceiling instead, never from inside it.
   spawnPoint(p) {
     const T = this.terrain, top = this.viewTop, bottom = this.viewTop + CFG.VIEW_H;
     const want = this.viewLeft + 60 + p.index * 24;
@@ -822,7 +836,15 @@ class LevelScene extends Phaser.Scene {
       for (const x of [want + i * 16, want - i * 16]) {
         if (x < this.viewLeft + 16 || x > this.viewLeft + CFG.VIEW_W - 16) continue;
         const s = T.surfaceBelow(x, top + 24);
-        if (s !== null && s < bottom) return [x, top - 8];
+        if (s === null || s >= bottom) continue;
+        let y = top - 8;
+        for (let r = Math.floor(s / TILE) - 1; r * TILE >= top - 40 && r >= 0; r--) {
+          if (T.isSolid(x, r * TILE + 8)) {
+            y = Math.max(y, (r + 1) * TILE + 26); // the body (20 tall) starts below the ceiling
+            break;
+          }
+        }
+        if (y < s - 4) return [x, y];
       }
     }
     return [want, top - 8];
@@ -854,6 +876,16 @@ class LevelScene extends Phaser.Scene {
         v.fellIntoPit();
         p.fallDeath();
       } else if (!v && p.alive && p.y > limit) p.fallDeath();
+      // Safety net: stuck at the top edge (e.g. pushed on top of a ceiling; the camera can't follow above the map)
+      // for longer than any jump -> drop back in.
+      if (!v && p.alive && p.y < this.viewTop + 12) {
+        p.aboveSince = p.aboveSince || this.time.now;
+        if (this.time.now - p.aboveSince > 1500) {
+          p.setPosition(...this.spawnPoint(p));
+          p.setVelocity(0, 0);
+          p.aboveSince = 0;
+        }
+      } else p.aboveSince = 0;
     }
   }
 

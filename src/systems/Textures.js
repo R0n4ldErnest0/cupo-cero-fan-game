@@ -214,6 +214,7 @@ const Textures = {
     this.police(scene);
     this.heli(scene);
     this.mototaxi(scene);
+    this.truck(scene);
     this.combi(scene);
     this.boss(scene);
     this.biker(scene);
@@ -319,6 +320,23 @@ const Textures = {
     sn.grid([...HUMAN.HEADS.thug, ...HUMAN.TORSO.fwd.slice(0, 4), ...HUMAN.CROUCH_LEGS], 0, 7, pal);
     sn.rect(10, 14, 17, 2, PAL.k).rect(12, 13, 4, 1, PAL.G).rect(10, 16, 3, 2, '#5b3a20');
     sn.register(scene, 'sniper_thug');
+  },
+
+  // Mission 2 mid-boss: the armored collection truck (facing left, 112x54), its roof turret and the coins it spits.
+  truck(scene) {
+    const t = new Painter(112, 54);
+    t.rect(4, 22, 26, 22, '#c0282e').rect(8, 25, 14, 10, '#8fd0ee').rect(9, 26, 3, 3, '#ffffff'); // cab + windshield
+    t.rect(2, 40, 6, 4, PAL.G).disc(5, 38, 2, '#ffe066'); // bumper + headlight
+    t.rect(30, 6, 80, 38, '#5a6068').rect(30, 6, 80, 3, '#7d838b'); // armored box
+    for (let x = 34; x < 108; x += 8) t.rect(x, 12, 1, 28, '#4a4f56');
+    t.rect(46, 16, 48, 12, '#f2c94c').text('RECAUDACION', 48, 20, '#c0282e');
+    t.text('$', 98, 32, '#2e7d32').text('$', 38, 32, '#2e7d32');
+    t.rect(40, 34, 8, 3, PAL.k); // coin slot
+    t.rect(2, 44, 108, 4, '#3a3d45');
+    t.outline();
+    t.register(scene, 'truck');
+    new Painter(16, 10).rect(2, 3, 12, 7, '#4a4f56').rect(0, 5, 6, 2, PAL.k).rect(5, 1, 6, 3, '#5a6068').outline().register(scene, 'truck_turret');
+    new Painter(6, 6).disc(3, 3, 2, '#f2c94c').set(3, 3, '#c8a165').outline().register(scene, 'coin');
   },
 
   // Prisoner extras: tied up sitting on the floor, and saluting.

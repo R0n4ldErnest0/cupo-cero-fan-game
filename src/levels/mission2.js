@@ -1,7 +1,7 @@
 // Mission 2 — "Gamarra no se cierra" (greybox). A) market street with the first multi-floor gallery, the municipal
 // trench (pit) and a rubble mound (slopes), ending at the door of the second gallery; B) the second gallery and the
-// almacén yard, where the cuperos ambush you; C) the rooftops, with the Mototaxi Slug. Still missing (docs/LEVELS.md):
-// the almacén with the collection-truck mid-boss, the accountant boss and the ledger; market art.
+// almacén yard, where the cuperos ambush you; C) the rooftops, with the Mototaxi Slug; D) the almacén, with the
+// collection-truck mid-boss. Still missing (docs/LEVELS.md): the accountant boss and the ledger; market art.
 //
 // Map key: see src/systems/Terrain.js. Floors are 3 tiles apart (the player jumps ~3.7 tiles).
 // Rows 0-23, street top at row 22 (y = 352). Column c is at x = c * 16.
@@ -177,6 +177,45 @@ MISSIONS.push({
           [{ dx: 500, t: 'grunt', variant: 'thrower', y: 224 }, { dx: 500, t: 'shieldthug', y: 224 }, { dx: -20, t: 'grunt', y: 224 }],
         ],
       },
+    },
+    // D — Almacén: the gang's warehouse (indoor: ceiling, back wall, shelves 3 tiles apart). At the end the
+    // Camión Recaudador arrives with the day's cupos (mid-boss). Rows 0-15: ceiling 0-1, floor top row 14 (y = 224).
+    {
+      area: 'ALMACÉN',
+      bg: { sky: 0x505058, hills: 0x404048, city: 0x48484f },
+      terrain: String.raw`
+        |%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        |%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        |::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+        |::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+        |::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+        |::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+        |::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+        |:::::::::::::::::::::::::::::::u::::::::::::::::::::::::::::::::::u:::::::::::::::::::::::::::::::::::::::::::::::::::::
+        |::::::::::::::::::::::::::::=======::::::::::::::::::::::::::::========:::::::::::::::::::::::::::::::::::::::::::::::::
+        |::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+        |::::::::::::::::::g::::::::::::::g::::::::::::::::T:::::::::::g:::::::t:::::::::::::g:::::::::::::::::::::::::::::::::::
+        |::::::::::::=========:::::===========:::::::::=========:::::=============:::::::=========::::::::====::::::::::::::====:
+        |::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+        |:::@::::::::::g:::::::::k:::::::::::::::e:::t:::::::::::g:k:::::::::::::::::e:::::::::::::k:::::::::::::::::::::::::::::
+        |########################################################################################################################
+        |########################################################################################################################`,
+      crates: [{ x: 600, stack: 1 }, { x: 622, stack: 2 }, { x: 1210, stack: 1 }],
+      props: [
+        { x: 150, type: 'box', drop: 'random' }, { x: 175, type: 'box', drop: 'none' },
+        { x: 340, type: 'barrel', drop: 'none' }, { x: 470, type: 'lootbag', drop: 'random' },
+        { x: 700, type: 'box', drop: 'enemy' }, { x: 860, type: 'box', drop: 'prisoner' },
+        { x: 990, type: 'barrel', drop: 'none' }, { x: 1120, type: 'lootbag', drop: 'lomo' },
+        { x: 1290, type: 'box', drop: 'random' }, { x: 1440, type: 'lootbag', drop: 'B' },
+      ],
+      pickups: [{ x: 520, kind: 'A' }, { x: 1380, kind: 'H' }],
+      decor: [
+        { type: 'text', x: 192, y: 120, text: 'El almacén de los cuperos.\nAquí guardan la recaudación... y las cuentas.', style: { fontSize: '10px', color: '#ffe066' } },
+        { type: 'sign', x: 420, y: 100, text: 'PROHIBIDO EL PASO\n(SALVO PARA PAGAR)', bg: '#c0282e' },
+        { type: 'sign', x: 950, y: 100, text: 'RECAUDACIÓN DIARIA\nMETA: S/ 50,000', bg: '#1b1b22' },
+        { type: 'sign', x: 1700, y: 100, text: 'ZONA DE CARGA', bg: '#c06a1e' },
+      ],
+      arena: { alert: ['¡ALERTA!', 'CAMIÓN RECAUDADOR'], boss: 'truck' },
     },
   ],
 });

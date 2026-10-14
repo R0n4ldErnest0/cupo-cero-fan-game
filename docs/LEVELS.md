@@ -11,7 +11,7 @@ Status: ✅ built · 🚧 greybox (playable, placeholder) · 📝 designed only 
 | # | Mission | Sections | Status |
 |---|---|---|---|
 | 1 | ¡Paga o ya sabes! | A Paradero → B Terminal (boss) | ✅ prototype (both sections) |
-| 2 | Gamarra no se cierra | A Market street → B Galleries (climb) → C Rooftops → D Almacén (boss) | 🚧 A+B+C greybox |
+| 2 | Gamarra no se cierra | A Market street → B Galleries (climb) → C Rooftops → D Almacén (boss) | 🚧 A–D greybox (no final boss yet) |
 | 3 | La ruta | A Cerros (climb) → B Roof of the Metropolitano → C Station (boss) | 🚧 greybox (all sections) |
 | 4 | Su denuncia es importante para nosotros | A Front desk → B Offices and cells → C Evidence room → D Escape (boss) | 📝 |
 | 5 | Obra paralizada | A Air level ❓ → B Plaza: the town joins you → C Municipalidad → D Mayor (final boss) | 📝 |
@@ -39,11 +39,14 @@ and the boss).
   1 tile, so they're fair on foot), water tanks and laundry lines as platforms, cupero snipers on the tanks,
   cuperos behind metal shutters, an ambush at the end. The **Mototaxi Slug** is parked up here (the combi stays
   below). ✅ greybox
-- D **Almacén:** mid-boss collection truck that spits coins and money bags; you find **"EL LIBRO DE CUPOS"**
-  (payments to a "Comisaría Sectorial"); boss: the gang's accountant in a mech of money counters and safes. 📝
+- D **Almacén:** the gang's warehouse (indoor: ceiling, back wall, shelves at two heights; snipers on the high
+  shelves). Mid-boss **Camión Recaudador** ✅ greybox: spits coins in arcs (they hurt in flight, just clink when
+  they land), throws money bags, honks and rams across the floor (jump over it), and its roof turret (breakable)
+  fires 3-shot bursts; angry under 50%.
+- E (to build) **The accountant's office:** boss "El Contador" in a mech of money counters and safes; you find
+  **"EL LIBRO DE CUPOS"** (payments to a "Comisaría Sectorial"). 📝
 
-**Missing:** section D (almacén: collection-truck mid-boss, accountant boss, the ledger scene); rescuable vendors;
-market art.
+**Missing:** section E (accountant boss, the ledger scene); rescuable vendors; market and warehouse art.
 
 **Mototaxi Slug** (`src/entities/MototaxiSlug.js`, built on the Combi Slug): fast, jumps high, 3 hits. Fire = the
 canopy machine gun, forward or up (diagonal with ↑ + direction). C = the passenger throws a grenade (15).
@@ -155,7 +158,8 @@ a shake), never repeats the same attack twice in a row, and plays the death sequ
 arcade): the boss smokes more and more as it gets hurt. A boss in a middle section is a **mid-boss**: beating it
 leads to the next section. A simple boss is just one phase and one or two attacks.
 
-Built on it: El Cobrador's mototaxi (Mission 1) and the police helicopter (Mission 3).
+Built on it: El Cobrador's mototaxi (Mission 1), the Camión Recaudador (Mission 2 mid-boss) and the police
+helicopter (Mission 3).
 
 ## Corrupt police — built
 

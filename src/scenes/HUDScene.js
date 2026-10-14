@@ -27,6 +27,10 @@ class HUDScene extends Phaser.Scene {
     this.msg = this.add.text(480, 300, '', Object.assign({}, big, { fontSize: '48px', strokeThickness: 8, align: 'center' })).setOrigin(0.5);
     this.sub = this.add.text(480, 354, '', Object.assign({}, small, { fontSize: '22px', align: 'center', strokeThickness: 5 })).setOrigin(0.5);
     this.pauseText = this.add.text(480, 410, 'PAUSA', Object.assign({}, big, { fontSize: '36px' })).setOrigin(0.5).setVisible(false);
+    if (CFG.SHOW_FPS) {
+      this.fpsText = this.add.text(480, 528, '', Object.assign({}, small, { fontSize: '13px', color: '#9fd3f0', strokeThickness: 3 })).setOrigin(0.5, 1);
+      this.frameLog = [];
+    }
 
     const onMsg = (t, s, ms) => this.showMessage(t, s, ms);
     this.game.events.on('hud-message', onMsg);
@@ -57,12 +61,24 @@ class HUDScene extends Phaser.Scene {
     }
   }
 
-  update(time) {
+  update(time, delta) {
+    if (this.fpsText) this.updateFps(time, delta);
     const lv = this.level;
     // During a restart (new section) the old players are already destroyed for a frame.
     if (!lv || !lv.players || lv.players.some((p) => !p.scene)) return;
     lv.players.forEach((p, i) => this.drawSlot(this.slots[i], p, i, time));
     this.tCredits.setText(Session.creditText());
+  }
+
+  // ?fps: frames per second and the slowest frame of the last 3 seconds (a hitch shows up as a big number there).
+  updateFps(time, delta) {
+    this.frameLog.push([time, delta]);
+    while (this.frameLog.length && this.frameLog[0][0] < time - 3000) this.frameLog.shift();
+    if (time < (this.nextFpsText || 0)) return;
+    this.nextFpsText = time + 250;
+    const worst = Math.max(...this.frameLog.map((f) => f[1]));
+    this.fpsText.setText(`FPS ${Math.round(this.game.loop.actualFps)}   peor cuadro (3 s) ${Math.round(worst)} ms`);
+    this.fpsText.setColor(worst > 50 ? '#ff6b6b' : '#9fd3f0');
   }
 
   drawSlot(s, p, i, time) {

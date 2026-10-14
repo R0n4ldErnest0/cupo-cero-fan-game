@@ -43,7 +43,7 @@ python tools/serve.py 8000   # then open http://localhost:8000
 ```
 
 `tools/serve.py` disables caching so edits show up on a plain reload. Opening `index.html` directly
-also works. Add `?debug` to the URL to see physics bodies.
+also works. Add `?debug` to the URL to see physics bodies, `?fps` for an FPS meter (with the worst recent frame).
 
 Controls (solo): ←/→ move, ↑ aim up, ↓ crouch (in the air: shoot down), Z jump (↓+Z on a thin floor: drop down), X shoot, C grenade,
 ↓ near the Combi Slug (or Mototaxi Slug) to board, ↓+Z to exit it; in the mototaxi ↓+C is the bocinazo.
@@ -64,7 +64,7 @@ src/systems/          Textures (procedural art), Sfx (synth audio), Voice (annou
                       Fx, Terrain (text-map tiles, one-way floors, slopes), Weapons (guns, melee, player projectiles),
                       Ride (sections on a moving vehicle: the Metropolitano roof)
 src/entities/         Player, enemies (Grunt + cop preset, Biker + motocop, RiotCop, Sniper), Abuelita (helper),
-                      CombiSlug (vehicle base) + MototaxiSlug, Boss (framework) + BossCobrador, BossHeli, Pickup,
+                      CombiSlug (vehicle base) + MototaxiSlug, Boss (framework) + BossCobrador, BossTruck, BossHeli, Pickup,
                       Breakable (gang props),
                       Vendor (food carts), Prisoner (honest cops to rescue)
 src/levels/           missions.js (registry + data schema), missionN.js (one data file per mission)
