@@ -1,5 +1,7 @@
 // Generic run-and-gun level, built from a mission definition in MISSIONS (src/levels/).
-// Start with this.scene.start('Level', { mission: index }).
+// Start with this.scene.start('Level', { mission: index, section: index }). A mission can be split into
+// `sections` (areas joined by a fade); each one is a fresh scene start with { carry: true }, so players keep
+// their lives, weapons, bombs, fat/drunk state and the Combi Slug they're driving.
 const BOSSES = { cobrador: BossCobrador };
 
 class LevelScene extends Phaser.Scene {
@@ -9,7 +11,13 @@ class LevelScene extends Phaser.Scene {
 
   create(data = {}) {
     this.missionIndex = Phaser.Math.Clamp(data.mission || 0, 0, MISSIONS.length - 1);
-    const M = (this.mission = MISSIONS[this.missionIndex]);
+    const mission = MISSIONS[this.missionIndex], sections = mission.sections || [{}];
+    this.sectionIndex = Phaser.Math.Clamp(data.section || 0, 0, sections.length - 1);
+    this.lastSection = this.sectionIndex === sections.length - 1;
+    // The section's fields (terrain, enemies, arena, exit...) on top of the mission's (title, outro...).
+    const M = (this.mission = Object.assign({}, mission, sections[this.sectionIndex]));
+    this.leaving = false;
+    this.keepMusic = false;
     this.terrain = new Terrain(this, M);
     this.levelW = M.width || this.terrain.width;
     this.levelH = this.terrain.height;
@@ -47,9 +55,15 @@ class LevelScene extends Phaser.Scene {
     // Objects come from the mission lists (x, optional y) and from letter markers in the terrain map.
     const marks = this.terrain.objects;
     const start = marks.find((o) => o.start) || M.start || { x: 60 };
-    this.createPlayers(start);
-    const combi = M.combi || marks.find((o) => o.combi);
-    this.combi = combi ? new CombiSlug(this, combi.x, this.floorY(combi)) : null;
+    this.createPlayers(start, data.carry);
+    this.combi = null;
+    const run = Session.run || {};
+    if (data.carry && run.combi && M.vehicles !== false) this.carryCombi(run.combi, start);
+    else {
+      const combi = M.combi || marks.find((o) => o.combi);
+      if (combi) this.combi = new CombiSlug(this, combi.x, this.floorY(combi));
+    }
+    this.doors = (M.doors || []).concat(marks.filter((o) => o.door)).map((d) => this.buildDoor(d));
     this.abuelitas = (M.abuelitas || []).concat(marks.filter((o) => o.abuelita)).map((a) => new Abuelita(this, a.x, this.floorY(a)));
     this.props = this.physics.add.group({ allowGravity: false, immovable: true });
     (M.props || []).forEach((d) => this.props.add(new Breakable(this, d.x, this.floorY(d), d)));
@@ -66,16 +80,19 @@ class LevelScene extends Phaser.Scene {
     this.scene.stop('HUD');
     this.scene.launch('HUD');
     Sfx.startMusic();
-    this.events.once('shutdown', () => Sfx.stopMusic());
-    const sub = M.subtitle + (M.draft ? '\n(BORRADOR)' : '');
-    this.time.delayedCall(300, () => this.message(M.title, sub, 2600));
+    this.events.once('shutdown', () => { if (!this.keepMusic) Sfx.stopMusic(); });
+    if (data.carry) this.cameras.main.fadeIn(400, 0, 0, 0);
+    else {
+      const sub = M.subtitle + (M.draft ? '\n(BORRADOR)' : '');
+      this.time.delayedCall(300, () => this.message(M.title, sub, 2600));
+    }
   }
 
   // ---------- players ----------
 
   // Fresh run: characters from the select screen. Next mission: lives, scores and characters carry over
   // (players that were out or still deciding come back as 'inactive' and can rejoin with start).
-  createPlayers(start) {
+  createPlayers(start, carry) {
     const n = Session.numPlayers;
     const saved = Session.run && Session.run.players;
     const c0 = Session.chars[0] || 'chato';
@@ -88,6 +105,7 @@ class LevelScene extends Phaser.Scene {
         p.score = s.score;
         p.lives = s.lives;
         p.state = s.state;
+        if (carry && s.kit) this.applyKit(p, s.kit);
       } else if (i >= n) p.state = 'inactive';
       if (p.state !== 'play') p.deactivate();
       return p;
@@ -95,14 +113,89 @@ class LevelScene extends Phaser.Scene {
     this.setupControls(n);
   }
 
-  savePlayers() {
+  // kit = also carry weapons, bombs and fat/drunk state (between sections; a new mission starts fresh, like
+  // the arcade). The driven Combi Slug is carried when `combi` is true.
+  savePlayers(kit = false, combi = false) {
+    const now = this.time.now;
     Session.run = Session.run || {};
     Session.run.players = this.players.map((p) => ({
       char: p.char,
       score: p.score,
       lives: p.state === 'play' ? p.lives : CFG.CREDITS.LIVES_PER_CREDIT,
       state: p.state === 'play' ? 'play' : 'inactive',
+      kit: kit && p.state === 'play' ? {
+        weapon: p.weapon, ammo: p.ammo, bombs: p.bombs, bombType: p.bombType, superBombs: p.superBombs,
+        fat: p.fat, fullness: p.fullness, ateAgo: now - p.lastAte, drunkLeft: Math.max(0, p.drunkUntil - now),
+      } : null,
     }));
+    const c = this.combi;
+    Session.run.combi = combi && c && c.active && c.state === 'driven'
+      ? { hp: c.hp, cannon: c.cannon, driver: c.driver.index } : null;
+  }
+
+  applyKit(p, k) {
+    const now = this.time.now;
+    Object.assign(p, { weapon: k.weapon, ammo: k.ammo, bombs: k.bombs, bombType: k.bombType, superBombs: k.superBombs });
+    p.fullness = k.fullness;
+    p.lastAte = now - k.ateAgo;
+    p.drunkUntil = k.drunkLeft ? now + k.drunkLeft : 0;
+    if (k.fat) {
+      p.fat = true;
+      p.setScale(CFG.FAT.SCALE_X, 1);
+    }
+  }
+
+  // The Combi Slug someone drove out of the last section, with its damage and ammo, driver already inside.
+  carryCombi(c, start) {
+    const p = this.players[c.driver];
+    const x = start.x + 30;
+    const combi = (this.combi = new CombiSlug(this, x, this.floorY({ x, y: start.y })));
+    combi.hp = c.hp;
+    combi.cannon = c.cannon;
+    if (p && p.state === 'play') p.enterVehicle(combi);
+  }
+
+  // ---------- sections ----------
+
+  // A door marker ('>' in the map): walking into it on foot leads to the next section.
+  buildDoor(d) {
+    const y = this.floorY(d);
+    this.add.image(d.x, y, 'door').setOrigin(0.5, 1).setDepth(-1);
+    const arrow = this.worldText(d.x, y - 42, '▼ ENTRAR', { color: '#ffe066' });
+    this.tweens.add({ targets: arrow, y: y - 46, yoyo: true, repeat: -1, duration: 400 });
+    return { x: d.x, y };
+  }
+
+  // Leaving a section: 'edge' (walk/drive to the right end of the map, the default) or 'door'.
+  checkExit() {
+    if (this.lastSection || this.finished || this.mission.arena) return;
+    const type = (this.mission.exit || {}).type || (this.doors.length ? 'door' : 'edge');
+    for (const p of this.players) {
+      if (p.state !== 'play' || !(p.alive || p.vehicle)) continue;
+      const o = p.vehicle || p;
+      if (type === 'edge' && o.x >= this.levelW - (p.vehicle ? 40 : 24)) return this.nextSection();
+      if (type === 'door' && !p.vehicle && this.doors.some((d) => Math.abs(p.x - d.x) < 10 && Math.abs(p.y - d.y) < 24)) {
+        return this.nextSection(false);
+      }
+    }
+  }
+
+  // Fade out and start the next section. Through a door the combi stays behind.
+  nextSection(withCombi = true) {
+    if (this.lastSection || this.finished || this.leaving) return;
+    const next = this.sectionIndex + 1;
+    this.leaving = true;
+    this.finished = true; // freezes input and makes everyone untouchable during the fade
+    this.savePlayers(true, withCombi);
+    this.keepMusic = true;
+    this.cameras.main.fadeOut(400, 0, 0, 0);
+    this.cameras.main.once('camerafadeoutcomplete', () => this.scene.restart({ mission: this.missionIndex, section: next, carry: true }));
+  }
+
+  // The section's arena (boss or ambush) is done: next section, or the mission is complete.
+  sectionCleared() {
+    if (this.lastSection) this.onBossDefeated();
+    else this.time.delayedCall(1200, () => this.nextSection());
   }
 
   // Solo: P1 accepts every key layout. 2P: split keyboard (P1 WASD+F/G/H, P2 arrows+, . /) plus gamepads.
@@ -362,6 +455,7 @@ class LevelScene extends Phaser.Scene {
     Fx.updateBubbles(this, time);
     if (!this.arenaStarted && this.viewLeft >= this.arenaX - 0.5) this.startArena();
     if (this.waves) this.updateWaves();
+    this.checkExit();
   }
 
   // The combi is 58px wide: it rides on the terrain under its center (so it follows slopes instead of
@@ -712,13 +806,18 @@ class LevelScene extends Phaser.Scene {
 
   startArena() {
     this.arenaStarted = true;
-    const A = this.mission.arena || {};
+    const A = this.mission.arena;
+    // No arena: a middle section leaves by its exit; a last section (or a mission without one) just ends here.
+    if (!A) {
+      if (this.lastSection) this.onBossDefeated();
+      return;
+    }
     if (A.alert) this.message(A.alert[0], A.alert[1], 2200);
     if (A.boss) this.startBoss(A.boss);
     else if (A.waves) {
       this.waves = { list: A.waves, index: -1, pending: 0 };
       this.time.delayedCall(1200, () => this.nextWave());
-    } else this.onBossDefeated();
+    } else this.sectionCleared();
   }
 
   // Locked-screen ambush: the next wave comes when the current one is dead.
@@ -744,7 +843,7 @@ class LevelScene extends Phaser.Scene {
       this.time.delayedCall(900, () => { W.pending = 0; this.nextWave(); });
     } else {
       W.done = true;
-      this.onBossDefeated();
+      this.sectionCleared();
     }
   }
 

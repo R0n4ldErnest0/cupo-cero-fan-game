@@ -81,7 +81,9 @@ Full design, weapons list and build order: `docs/LEVELS.md`.
 - [ ] Optional: Tiled (or LDtk) import into the same tile grid
 
 ### M2 — Systems for the remaining missions (build order in `docs/LEVELS.md`)
-- [ ] Sections: missions made of several parts with transitions
+- [x] Sections: missions made of several parts joined by a fade (exit by the right edge, a door, or clearing an
+      ambush/mid-boss); players keep their kit and the driven Combi Slug. Mission 1 = Paradero → Terminal,
+      Mission 2 = Mercado → Galerías
 - [x] Weapons: letter pickups, ammo, HUD; Rocket Launcher, Anticuchera, Escopeta, Gallo de pelea, Pelota, Dron, Láser,
       Piedras; Molotov, Súper granada; per-character melee; tap-to-shoot pistol cadence
 - [x] Enemy feel: slower bullets, aim before shooting, knife attack, knife runners; camera zoom 2.5 (bigger characters)

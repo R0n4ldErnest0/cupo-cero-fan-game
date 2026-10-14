@@ -19,7 +19,8 @@ const game = new Phaser.Game({
 });
 
 // Arcade-style global keys, active in every scene: 5 = insert coin, F2 = toggle FREE PLAY,
-// F4 = finish the current mission, F6 / F7 = drop the next item crate / food in front of 1P (testing).
+// F4 = finish the current mission, F6 / F7 = drop the next item crate / food in front of 1P,
+// F8 = skip to the next section (testing).
 window.addEventListener('keydown', (e) => {
   if (e.repeat) return;
   if (e.code === 'Digit5' || e.code === 'Numpad5') {
@@ -35,6 +36,10 @@ window.addEventListener('keydown', (e) => {
     e.preventDefault();
     const lv = game.scene.getScene('Level');
     if (game.scene.isActive('Level') && !lv.finished && !lv.frozen) lv.missionComplete();
+  } else if (e.code === 'F8') {
+    e.preventDefault();
+    const lv = game.scene.getScene('Level');
+    if (game.scene.isActive('Level') && !lv.finished && !lv.frozen) lv.nextSection();
   } else if (e.code === 'F6') {
     e.preventDefault();
     const lv = game.scene.getScene('Level');

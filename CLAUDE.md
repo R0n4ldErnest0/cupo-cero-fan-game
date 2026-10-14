@@ -50,8 +50,8 @@ Controls (solo): ←/→ move, ↑ aim up, ↓ crouch (in the air: shoot down), 
 2 players: 1P WASD + F shoot / G jump / H grenade, 2P arrows + , shoot / . jump / / grenade; gamepads work
 (A jump, X shoot, B grenade, Start). Keys are defined in `CFG.KEYS`.
 Testing: **5** inserts a coin, **F2** toggles FREE PLAY (infinite credits, saved in localStorage),
-**F3** on the title picks the starting mission, **F4** finishes the current mission, **F6** / **F7** drop the next weapon crate / food,
-`?mission=2` preselects a mission.
+**F3** on the title picks the starting mission, **F4** finishes the current mission, **F6** / **F7** drop the next weapon crate / food, **F8** skips to the next section,
+`?mission=2` preselects a mission and `&section=2` a section of it.
 
 ## Layout
 
@@ -74,6 +74,7 @@ tools/serve.py        no-cache dev server
 - One class per entity file; entities extend Phaser sprites/containers and expose `update(time, dt)`.
 - Tuning numbers go in `src/config.js`, not scattered literals. Level layouts go in `src/levels/`.
 - New missions: add `src/levels/missionN.js` (push onto `MISSIONS`) and a `<script>` tag in `index.html`.
+  A mission is a list of `sections` (areas joined by a fade; schema in `src/levels/missions.js`).
   Terrain is a text map (key at the top of `src/systems/Terrain.js`): symbols are tiles, letters (and @ = start) are markers.
   The player jumps ~60px, so floors meant to be climbed are at most 3 tiles (48px) apart.
 - Arcade physics has no slopes: `Terrain.snap` puts walkers on slope surfaces after each physics step.

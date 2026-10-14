@@ -175,7 +175,7 @@ class BossCobrador extends Phaser.Physics.Arcade.Sprite {
       this.wheels.forEach((w) => w.destroy());
       this.setVisible(false);
       this.body.enable = false;
-      s.onBossDefeated();
+      s.sectionCleared(); // a mid-boss leads to the next section, the last boss ends the mission
     });
   }
 

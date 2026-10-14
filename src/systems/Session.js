@@ -6,6 +6,7 @@ const Session = {
   numPlayers: 1,
   chars: ['chato', null],
   startMission: 0,
+  startSection: 0, // ?section=N (testing): the first mission starts in that section
   run: null,
 
   load() {
@@ -14,6 +15,8 @@ const Session = {
     } catch (e) { /* storage unavailable: keep default */ }
     const m = /[?&]mission=(\d+)/.exec(location.search);
     if (m) this.startMission = Phaser.Math.Clamp(+m[1] - 1, 0, MISSIONS.length - 1);
+    const sec = /[?&]section=(\d+)/.exec(location.search);
+    if (sec) this.startSection = Math.max(0, +sec[1] - 1);
   },
 
   newRun() {
@@ -23,6 +26,7 @@ const Session = {
   // Stage select (testing): cycles the mission a new game starts on.
   cycleStartMission() {
     this.startMission = (this.startMission + 1) % MISSIONS.length;
+    this.startSection = 0;
   },
 
   toggleFreePlay() {

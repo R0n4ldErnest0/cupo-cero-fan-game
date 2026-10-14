@@ -26,9 +26,10 @@ const SLOPE = { up: 1, down: 1 };
 
 // Default object markers. Missions can add their own in `legend` (same format).
 // Lowercase = enemies (spawn definitions { t, skin, variant, hp }; k = knife runner). Uppercase = item crates, using the letter
-// the crate shows (CFG.WEAPONS / CFG.THROWABLES: H R A E G F D L P guns, B M S throwables).
+// the crate shows (CFG.WEAPONS / CFG.THROWABLES: H R A E G F D L guns, B M P S throwables).
 // Food uses CFG.FOOD[].marker: O pan con chicharrón, U mote, N makis, Z chicha morada, Y lomo saltado,
-// Q caldo de gallina, J chicha de jora, X pisco. Others: @ player start, W abuelita, V Combi Slug.
+// Q caldo de gallina, J chicha de jora, X pisco, K emoliente.
+// Others: @ player start, W abuelita, V Combi Slug, > door to the next section.
 const MAP_LEGEND = {
   g: { t: 'grunt' },
   s: { t: 'grunt', skin: 'thug2' },
@@ -38,6 +39,7 @@ const MAP_LEGEND = {
   W: { abuelita: true },
   V: { combi: true },
   '@': { start: true },
+  '>': { door: true },
 };
 Object.values(CFG.WEAPONS).forEach((w) => { if (w.letter) MAP_LEGEND[w.letter] = { pickup: w.letter }; });
 Object.keys(CFG.THROWABLES).forEach((letter) => (MAP_LEGEND[letter] = { pickup: letter }));
@@ -81,7 +83,7 @@ class Terrain {
         if (TERRAIN_CHARS[ch]) line.push(TERRAIN_CHARS[ch]);
         else {
           line.push(null);
-          if (/[A-Za-z@]/.test(ch)) {
+          if (/[A-Za-z@>]/.test(ch)) {
             if (legend[ch]) this.objects.push(Object.assign({ x: c * TILE + TILE / 2, y: (r + 1) * TILE, ch }, legend[ch]));
             else console.warn(`Terrain: unknown marker '${ch}' at row ${r}, column ${c}`);
           }

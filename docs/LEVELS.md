@@ -10,8 +10,8 @@ Status: ✅ built · 🚧 greybox (playable, placeholder) · 📝 designed only 
 
 | # | Mission | Sections | Status |
 |---|---|---|---|
-| 1 | ¡Paga o ya sabes! | A Paradero → B Terminal (boss) | ✅ prototype |
-| 2 | Gamarra no se cierra | A Market street → B Galleries (climb) → C Rooftops → D Almacén (boss) | 🚧 A+B greybox |
+| 1 | ¡Paga o ya sabes! | A Paradero → B Terminal (boss) | ✅ prototype (both sections) |
+| 2 | Gamarra no se cierra | A Market street → B Galleries (climb) → C Rooftops → D Almacén (boss) | 🚧 A+B greybox (sections built) |
 | 3 | La ruta | A Cerros (climb) → B Roof of the moving train ❓ → C Station (boss) | 📝 |
 | 4 | Su denuncia es importante para nosotros | A Front desk → B Offices and cells → C Evidence room → D Escape (boss) | 📝 |
 | 5 | Obra paralizada | A Air level ❓ → B Plaza: the town joins you → C Municipalidad → D Mayor (final boss) | 📝 |
@@ -24,7 +24,10 @@ Status: ✅ built · 🚧 greybox (playable, placeholder) · 📝 designed only 
 sleeping cop ("DENUNCIAS: VUELVA MAÑANA"); "Estado de emergencia, prorrogado por 7ma vez" banner;
 boss El Cobrador de Cupos in an armored mototaxi, who escapes shouting he has contacts at the comisaría.
 
-**Missing:** real art and music; split into two sections (street, terminal); balance after human playtests.
+Sections: A Paradero (street; leave by the right edge, on foot or in the Combi Slug) → B Terminal (short run-up
+and the boss).
+
+**Missing:** real art and music; balance after human playtests.
 
 ## Mission 2 — "Gamarra no se cierra" 🚧
 

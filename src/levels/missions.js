@@ -31,4 +31,14 @@
 //                              { alert, waves: [[{ dx, t, ... }], ...] } (dx relative to arenaX; < 0 enters from the left,
 //                              past the view width = runs in from the right edge)
 //   outro { title, sub }       mission-complete banner
+//
+// Sections: a mission can instead list `sections: [{ ... }]`, areas joined by a quick fade (like Metal Slug's
+// doors, holes and vehicles). Each section takes the per-area fields above (terrain, width, spawns, props,
+// arena, ...) on top of the mission's (title, subtitle, outro, bg, legend). Per section:
+//   area                       short name of the area (for the docs/tools; not shown in game)
+//   exit { type }              how a middle section ends: 'edge' (reach the right end; default) or 'door'
+//                              (walk into a '>' marker; default when the map has one). A middle section with an
+//                              `arena` continues when it's cleared instead.
+//   vehicles: false            the Combi Slug can't come in (indoors); a door always leaves it behind
+// Players keep lives, score, weapon, ammo, bombs and fat/drunk state between sections; the driven combi too.
 const MISSIONS = [];

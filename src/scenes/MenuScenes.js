@@ -155,7 +155,7 @@ class CharSelectScene extends Phaser.Scene {
       Session.chars = this.sel.map((s) => CFG.CHARACTERS[s.idx].id);
       Session.newRun();
       Sfx.horn();
-      this.time.delayedCall(700, () => this.scene.start('Level', { mission: Session.startMission }));
+      this.time.delayedCall(700, () => this.scene.start('Level', { mission: Session.startMission, section: Session.startSection }));
     }
   }
 }

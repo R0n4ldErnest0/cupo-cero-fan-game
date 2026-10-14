@@ -192,6 +192,7 @@ const Textures = {
     this.fx(scene);
     this.pickups(scene);
     this.breakables(scene);
+    this.door(scene);
     this.props(scene);
     this.tiles(scene);
     this.backgrounds(scene);
@@ -564,6 +565,16 @@ const Textures = {
     for (let i = 0; i < 3; i++) {
       new Painter(4, 3).rect(0, 0, 4 - i, 3 - (i % 2), ['#b88a52', '#5a6068', '#8a5a33'][i]).register(scene, `debris${i}`);
     }
+  },
+
+  // Doorway to the next section: a half-raised metal shutter (22x32).
+  door(scene) {
+    const p = new Painter(22, 32);
+    p.rect(0, 0, 22, 32, '#3a3d45').rect(2, 2, 18, 30, '#151518');
+    p.rect(2, 2, 18, 12, '#7d838b');
+    for (let y = 3; y < 14; y += 2) p.rect(2, y, 18, 1, '#5a6068');
+    p.rect(2, 13, 18, 1, '#2b2b33').outline();
+    p.register(scene, 'door');
   },
 
   props(scene) {
