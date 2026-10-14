@@ -1,7 +1,7 @@
 // Mission 2 — "Gamarra no se cierra" (greybox). A) market street with the first multi-floor gallery, the municipal
 // trench (pit) and a rubble mound (slopes), ending at the door of the second gallery; B) the second gallery and the
-// almacén yard, where the cuperos ambush you. Still missing (docs/LEVELS.md): rooftops and almacén sections, market
-// art, shield thugs, snipers, rescuable vendors, Mototaxi Slug, collection-truck mid-boss and the accountant boss.
+// almacén yard, where the cuperos ambush you; C) the rooftops, with the Mototaxi Slug. Still missing (docs/LEVELS.md):
+// the almacén with the collection-truck mid-boss, the accountant boss and the ledger; market art.
 //
 // Map key: see src/systems/Terrain.js. Floors are 3 tiles apart (the player jumps ~3.7 tiles).
 // Rows 0-23, street top at row 22 (y = 352). Column c is at x = c * 16.
@@ -121,6 +121,60 @@ MISSIONS.push({
           [{ dx: 500, t: 'grunt' }, { dx: 520, t: 'grunt', skin: 'thug2' }, { dx: -20, t: 'grunt', variant: 'thrower' }, { dx: 500, t: 'grunt', variant: 'knife' }],
           [{ dx: 500, t: 'biker' }, { dx: 500, t: 'grunt', hp: 3 }, { dx: 264, y: 304, t: 'grunt' }, { dx: -40, t: 'grunt', skin: 'thug2' }],
           [{ dx: 500, t: 'grunt', variant: 'thrower' }, { dx: 94, y: 304, t: 'grunt', variant: 'thrower' }, { dx: -20, t: 'grunt', hp: 3, skin: 'thug2' }, { dx: 500, t: 'biker' }],
+        ],
+      },
+    },
+    // C — Azoteas: across the Gamarra rooftops (gaps between buildings are a long fall). The Mototaxi Slug is
+    // parked up here (the combi stays below). Snipers on the water tanks, cuperos behind metal shutters, and an
+    // ambush at the end. Rows 0-23; roofs between rows 13 and 17.
+    {
+      area: 'AZOTEAS',
+      vehicles: false,
+      mototaxi: { x: 200 },
+      bg: { sky: 0xffb880, hills: 0xd09070, city: 0xd8a888 },
+      terrain: String.raw`
+        |
+        |
+        |
+        |
+        |
+        |
+        |
+        |
+        |
+        |                                                                                                                                     u
+        |                                                                    t        u                                                      ===
+        |                                         u                      ----------- ===                                                     :::                         ===
+        |                                        ===                                 :::                                                     :::  e                      :::
+        |                                        :::                   k         g   :::                  g     k                        /%%%%%%%%%%%%         g   k     :::
+        |                                        :::   g   e       %%%%%%%%%%%%%%%%%%%%%%%               === ------                     /%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        |   @              g     g       %%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%               :::                   b   g   /%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        |%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%       g   T   :::        e     %%%%%%%%%%%%%%%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        |%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        |%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        |%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        |%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        |%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        |%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        |%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%`,
+      vendors: [{ x: 1500, food: 'pan' }],
+      props: [
+        { x: 600, type: 'box', drop: 'random' }, { x: 1180, type: 'lootbag', drop: 'B' },
+        { x: 1660, type: 'box', drop: 'prisoner' }, { x: 2380, type: 'barrel', drop: 'none' },
+        { x: 2560, type: 'lootbag', drop: 'emoliente' },
+      ],
+      pickups: [{ x: 1020, kind: 'H' }, { x: 2100, kind: 'R' }],
+      decor: [
+        { type: 'text', x: 192, y: 178, text: 'El almacén de los cuperos está al otro lado.\n¡Por las azoteas!', style: { fontSize: '10px', color: '#ffe066' } },
+        { type: 'sign', x: 300, y: 222, text: 'MOTOTAXI SLUG:\n↓+C ¡BOCINAZO!', bg: '#d8343a' },
+        { type: 'sign', x: 1240, y: 120, text: 'SE ALQUILA AZOTEA\n(CUPO NO INCLUIDO)', bg: '#1b1b22' },
+        { type: 'sign', x: 2620, y: 150, text: 'ALMACÉN →', bg: '#1b1b22' },
+      ],
+      arena: {
+        alert: ['¡EMBOSCADA!', 'EN LA AZOTEA'],
+        waves: [
+          [{ dx: 500, t: 'shieldthug', y: 224 }, { dx: 500, t: 'grunt', y: 224 }, { dx: -20, t: 'grunt', variant: 'knife', y: 224 }],
+          [{ dx: 500, t: 'grunt', variant: 'thrower', y: 224 }, { dx: 500, t: 'shieldthug', y: 224 }, { dx: -20, t: 'grunt', y: 224 }],
         ],
       },
     },

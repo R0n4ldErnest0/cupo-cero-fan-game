@@ -46,7 +46,8 @@ python tools/serve.py 8000   # then open http://localhost:8000
 also works. Add `?debug` to the URL to see physics bodies.
 
 Controls (solo): ←/→ move, ↑ aim up, ↓ crouch (in the air: shoot down), Z jump (↓+Z on a thin floor: drop down), X shoot, C grenade,
-↓ near the Combi Slug to board, ↓+Z to exit it, P pause, M mute, Enter start.
+↓ near the Combi Slug (or Mototaxi Slug) to board, ↓+Z to exit it; in the mototaxi ↓+C is the bocinazo.
+P pause, M mute, Enter start.
 2 players: 1P WASD + F shoot / G jump / H grenade, 2P arrows + , shoot / . jump / / grenade; gamepads work
 (A jump, X shoot, B grenade, Start). Keys are defined in `CFG.KEYS`.
 Testing: **5** inserts a coin, **F2** toggles FREE PLAY (infinite credits, saved in localStorage),
@@ -63,7 +64,8 @@ src/systems/          Textures (procedural art), Sfx (synth audio), Voice (annou
                       Fx, Terrain (text-map tiles, one-way floors, slopes), Weapons (guns, melee, player projectiles),
                       Ride (sections on a moving vehicle: the Metropolitano roof)
 src/entities/         Player, enemies (Grunt + cop preset, Biker + motocop, RiotCop, Sniper), Abuelita (helper),
-                      CombiSlug (vehicle), Boss (framework) + BossCobrador, BossHeli, Pickup, Breakable (gang props),
+                      CombiSlug (vehicle base) + MototaxiSlug, Boss (framework) + BossCobrador, BossHeli, Pickup,
+                      Breakable (gang props),
                       Vendor (food carts), Prisoner (honest cops to rescue)
 src/levels/           missions.js (registry + data schema), missionN.js (one data file per mission)
 src/scenes/           MenuScenes (Boot, Title, CharSelect, MissionEnd, Ending, GameOver), HUDScene, LevelScene

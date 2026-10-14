@@ -213,6 +213,7 @@ const Textures = {
     this.prisoner(scene);
     this.police(scene);
     this.heli(scene);
+    this.mototaxi(scene);
     this.combi(scene);
     this.boss(scene);
     this.biker(scene);
@@ -287,6 +288,37 @@ const Textures = {
     new Painter(18, 8).rect(0, 1, 18, 6, '#5a6068').disc(2, 4, 2, '#c0282e').disc(7, 4, 2, '#c0282e').outline().register(scene, 'heli_pod');
     new Painter(6, 9).rect(1, 1, 4, 8, '#9aa0a8').rect(1, 0, 4, 1, '#5a6068').rect(1, 4, 4, 1, '#f2c94c').outline().register(scene, 'teargas');
     new Painter(12, 4).rect(0, 1, 8, 2, '#d8d8d8').rect(8, 0, 3, 4, '#c0282e').rect(0, 0, 2, 4, '#9aa0a8').register(scene, 'emissile');
+  },
+
+  // Mototaxi Slug (facing right, 48x34): canopy, driver's seat in front, passenger bench behind; its canopy gun;
+  // the bocinazo sound wave; the gang's metal-shutter shield and the gang sniper.
+  mototaxi(scene) {
+    const m = new Painter(48, 34);
+    m.rect(4, 2, 36, 4, '#d8343a').rect(4, 2, 36, 1, '#f26a6a').rect(4, 6, 36, 1, '#8a1f24'); // canopy
+    m.rect(5, 7, 2, 14, PAL.G).rect(37, 7, 2, 14, PAL.G); // canopy poles
+    m.rect(5, 8, 22, 10, '#3b4a5a').rect(8, 9, 6, 4, '#8fb8d8'); // passenger cabin + back window
+    m.rect(3, 18, 30, 9, '#f2c94c').rect(3, 21, 30, 2, '#1e5fb4'); // body
+    m.rect(33, 16, 9, 9, '#f2c94c').rect(40, 10, 2, 8, PAL.G).rect(38, 10, 6, 2, PAL.k); // front fork + handlebar
+    m.disc(30, 14, 3, PAL.s).rect(28, 10, 5, 2, PAL.k); // driver's head (helmet)
+    m.text('MOTO', 9, 19, '#c0282e');
+    m.outline();
+    m.register(scene, 'mototaxi');
+    new Painter(14, 5).rect(0, 1, 11, 3, PAL.k).rect(9, 0, 5, 5, PAL.G).register(scene, 'moto_gun');
+    const w = new Painter(10, 20);
+    for (let y = 0; y < 20; y++) { const dx = Math.round(Math.abs(y - 9.5) * 0.35); w.set(dx, y, '#ffe066').set(dx + 1, y, '#ffffff'); }
+    w.register(scene, 'honk_wave');
+
+    const sh = new Painter(9, 24);
+    sh.rect(0, 0, 9, 24, '#5a6068');
+    for (let x = 1; x < 9; x += 2) sh.rect(x, 0, 1, 24, '#8d939b');
+    sh.rect(0, 0, 9, 1, '#3a3d45').rect(0, 23, 9, 1, '#3a3d45').set(3, 8, '#a8743f').set(6, 15, '#a8743f');
+    sh.register(scene, 'shutter_shield');
+
+    const pal = Object.assign({}, PAL, SKINS.thug.pal);
+    const sn = new Painter(28, 24);
+    sn.grid([...HUMAN.HEADS.thug, ...HUMAN.TORSO.fwd.slice(0, 4), ...HUMAN.CROUCH_LEGS], 0, 7, pal);
+    sn.rect(10, 14, 17, 2, PAL.k).rect(12, 13, 4, 1, PAL.G).rect(10, 16, 3, 2, '#5b3a20');
+    sn.register(scene, 'sniper_thug');
   },
 
   // Prisoner extras: tied up sitting on the floor, and saluting.

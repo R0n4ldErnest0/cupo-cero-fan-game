@@ -2,11 +2,16 @@
 // the laser, melee). Grenades and other explosions go around it, and so do shots from behind or from well above.
 // The shield breaks after CFG.RIOT.SHIELD hits (heavy weapons count double). Now and then he lowers it to shoot,
 // and up close he swings his baton (with a wind-up, like the knife).
+// { gang: true }: the cupero version, behind a metal shutter ("calamina") with a pipe.
 const RIOT_LINES = ['¡Retrocedan!', '¡Dispersen!', '¡Esto es una manifestación ilegal!', '¡Nadie pasa sin colaborar!'];
+const SHIELD_THUG_LINES = ['¡Detrás de la calamina no me haces nada!', '¡Paga y te dejo pasar!', '¡Esta azotea es nuestra!'];
 
 class RiotCop extends Phaser.Physics.Arcade.Sprite {
-  constructor(scene, x, y) {
-    super(scene, x, y, 'riot_fwd_stand');
+  constructor(scene, x, y, opts = {}) {
+    const skin = opts.gang ? 'thug2' : 'riot';
+    super(scene, x, y, `${skin}_fwd_stand`);
+    this.skin = skin;
+    this.gang = !!opts.gang;
     scene.add.existing(this);
     scene.physics.add.existing(this);
     this.setOrigin(0.5, 1).setDepth(6);
@@ -16,14 +21,14 @@ class RiotCop extends Phaser.Physics.Arcade.Sprite {
     this.shield = R.SHIELD;
     this.alive = true;
     this.facing = -1;
-    this.score = 300;
+    this.score = this.gang ? 250 : 300;
     this.contactKills = false;
     this.bubbleOffset = 28;
     this.walkT = 0;
     this.lowerUntil = 0; // shield lowered (shooting) until then
     this.nextPeek = scene.time.now + Phaser.Math.Between(...R.PEEK_EVERY);
     this.swing = null;
-    this.shieldImg = scene.add.image(x, y, 'riot_shield').setOrigin(0.5, 1).setDepth(7);
+    this.shieldImg = scene.add.image(x, y, this.gang ? 'shutter_shield' : 'riot_shield').setOrigin(0.5, 1).setDepth(7);
     this.nextTalk = scene.time.now + Phaser.Math.Between(1500, 4000);
   }
 
@@ -33,6 +38,12 @@ class RiotCop extends Phaser.Physics.Arcade.Sprite {
 
   update(time, dt) {
     if (!this.alive) return;
+    if (time < this.stunUntil) {
+      if (this.body.blocked.down) this.setVelocityX(this.body.velocity.x * 0.85);
+      this.setAngle(Math.sin(time / 60) * 8);
+      return this.placeShield(time);
+    }
+    this.setAngle(0);
     const s = this.scene, R = CFG.RIOT, t = s.target(this.x, this.y);
     const onScreen = s.inView(this.x, this.y - 10, -4);
     if (!this.swing) this.facing = t.x < this.x ? -1 : 1;
@@ -54,13 +65,13 @@ class RiotCop extends Phaser.Physics.Arcade.Sprite {
     this.setVelocityX(vx);
 
     if (onScreen && time > this.nextTalk) {
-      Fx.say(s, this, Phaser.Utils.Array.GetRandom(RIOT_LINES), 1400);
+      Fx.say(s, this, Phaser.Utils.Array.GetRandom(this.gang ? SHIELD_THUG_LINES : RIOT_LINES), 1400);
       this.nextTalk = time + Phaser.Math.Between(6000, 10000);
     }
     if (vx) {
       this.walkT += dt;
-      this.setTexture(`riot_fwd_${RUN_CYCLE[Math.floor(this.walkT / 140) % 4]}`);
-    } else this.setTexture('riot_fwd_stand');
+      this.setTexture(`${this.skin}_fwd_${RUN_CYCLE[Math.floor(this.walkT / 140) % 4]}`);
+    } else this.setTexture(`${this.skin}_fwd_stand`);
     this.setFlipX(this.facing < 0);
     this.placeShield(time);
   }
@@ -142,7 +153,7 @@ class RiotCop extends Phaser.Physics.Arcade.Sprite {
 
   breakShield() {
     const s = this.scene, img = this.shieldImg;
-    Fx.say(s, this, '¡Mi escudo!', 1000);
+    Fx.say(s, this, this.gang ? '¡Mi calamina!' : '¡Mi escudo!', 1000);
     Sfx.crunch();
     s.tweens.add({ targets: img, y: img.y + 10, angle: this.facing * 90, alpha: 0, duration: 400, onComplete: () => img.destroy() });
   }

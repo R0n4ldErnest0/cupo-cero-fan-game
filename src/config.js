@@ -143,6 +143,13 @@ const CFG = {
     TURRET_SPEED: 0.006, // rad/ms; the gun turns toward the held direction and keeps its angle
   },
 
+  // Mototaxi Slug (src/entities/MototaxiSlug.js): fast, high jump, few hits. Grenades thrown by the passenger;
+  // ↓ + grenade = bocinazo (stuns STUN_MS and pushes back enemies within HONK_RANGE in front).
+  MOTOTAXI: {
+    HP: 3, SPEED: 150, JUMP: 360, MG_DELAY: 100, MG_SPEED: 400,
+    GRENADES: 15, HONKS: 3, HONK_REFILL: 6000, HONK_RANGE: 96, STUN_MS: 1600,
+  },
+
   ABUELITA: { DURATION: 22000, THROW_DELAY: 1000, RANGE: 230, DAMAGE: 2, SPLASH: 16 },
 
   // Corrupt police (Mission 3 on). Patrullero = Grunt preset 'cop' (2 hp, 2-shot bursts); motocop = Biker preset.

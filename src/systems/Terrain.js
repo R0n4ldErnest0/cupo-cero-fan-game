@@ -26,7 +26,8 @@ const SLOPE = { up: 1, down: 1 };
 
 // Default object markers. Missions can add their own in `legend` (same format).
 // Lowercase = enemies (spawn definitions { t, skin, variant, hp }; k = knife runner; police: p patrullero,
-// r antimotines, m motorbike cop (rides in from the right edge), f francotirador). Uppercase = item crates, using the letter
+// r antimotines, m motorbike cop (rides in from the right edge), f francotirador; gang: e cupero behind a metal
+// shutter, u gang sniper). Uppercase = item crates, using the letter
 // the crate shows (CFG.WEAPONS / CFG.THROWABLES: H R A E G F D L guns, B M P S throwables).
 // Food uses CFG.FOOD[].marker: O pan con chicharrón, U mote, N makis, Z chicha morada, Y lomo saltado,
 // Q caldo de gallina, J chicha de jora, X pisco, K emoliente.
@@ -42,6 +43,8 @@ const MAP_LEGEND = {
   r: { t: 'riot' },
   m: { t: 'motocop' },
   f: { t: 'sniper' },
+  e: { t: 'shieldthug' },
+  u: { t: 'gangsniper' },
   W: { abuelita: true },
   T: { prisoner: true },
   V: { combi: true },

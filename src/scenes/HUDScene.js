@@ -78,7 +78,7 @@ class HUDScene extends Phaser.Scene {
         `${i + 1}P ${p.info.name}`,
         `VIDAS x${p.lives}   ${String(p.score).padStart(7, '0')}`,
         `${CFG.WEAPONS[p.weapon].name} ${p.ammo === Infinity ? '∞' : p.ammo}   ${CFG.THROW_TYPES[p.bombType].name} ${p.bombs}${p.superBombs ? ` +${p.superBombs} SÚPER` : ''}`,
-        v ? `COMBI ${'■'.repeat(Math.max(0, v.hp))}  CAÑÓN ${v.cannon}` : [p.fat && 'GORDITO', p.drunk && 'MAREADO'].filter(Boolean).join('  '),
+        v ? v.hudText() : [p.fat && 'GORDITO', p.drunk && 'MAREADO'].filter(Boolean).join('  '),
       );
     } else if (p.state === 'continue') {
       s.name.setColor('#ff6b6b');

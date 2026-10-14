@@ -11,7 +11,7 @@ Status: ✅ built · 🚧 greybox (playable, placeholder) · 📝 designed only 
 | # | Mission | Sections | Status |
 |---|---|---|---|
 | 1 | ¡Paga o ya sabes! | A Paradero → B Terminal (boss) | ✅ prototype (both sections) |
-| 2 | Gamarra no se cierra | A Market street → B Galleries (climb) → C Rooftops → D Almacén (boss) | 🚧 A+B greybox (sections built) |
+| 2 | Gamarra no se cierra | A Market street → B Galleries (climb) → C Rooftops → D Almacén (boss) | 🚧 A+B+C greybox |
 | 3 | La ruta | A Cerros (climb) → B Roof of the Metropolitano → C Station (boss) | 🚧 greybox (all sections) |
 | 4 | Su denuncia es importante para nosotros | A Front desk → B Offices and cells → C Evidence room → D Escape (boss) | 📝 |
 | 5 | Obra paralizada | A Air level ❓ → B Plaza: the town joins you → C Municipalidad → D Mayor (final boss) | 📝 |
@@ -35,12 +35,23 @@ and the boss).
 - A **Market street:** stalls, the municipal trench ("OBRA: INICIADA EN 2019") as a pit, a rubble mound.
   Gag: "Fiscalización municipal" confiscates a vendor's sweaters and doesn't see the gunmen. ✅ greybox
 - B **Galleries:** multi-floor galleries, enemies on every floor. ✅ greybox
-- C **Rooftops:** water tanks, laundry lines; get the **Mototaxi Slug**. 📝
+- C **Rooftops:** jumping between buildings (gaps are a long fall; 3 tiles wide, and gaps that go up only climb
+  1 tile, so they're fair on foot), water tanks and laundry lines as platforms, cupero snipers on the tanks,
+  cuperos behind metal shutters, an ambush at the end. The **Mototaxi Slug** is parked up here (the combi stays
+  below). ✅ greybox
 - D **Almacén:** mid-boss collection truck that spits coins and money bags; you find **"EL LIBRO DE CUPOS"**
   (payments to a "Comisaría Sectorial"); boss: the gang's accountant in a mech of money counters and safes. 📝
 
-**Missing:** rescuable vendors (Metal Slug POWs: free them, they drop weapons); shield thug (behind a stall's
-metal shutter); rooftop sniper; Mototaxi Slug; collection truck; accountant boss; the ledger cutscene; market art.
+**Missing:** section D (almacén: collection-truck mid-boss, accountant boss, the ledger scene); rescuable vendors;
+market art.
+
+**Mototaxi Slug** (`src/entities/MototaxiSlug.js`, built on the Combi Slug): fast, jumps high, 3 hits. Fire = the
+canopy machine gun, forward or up (diagonal with ↑ + direction). C = the passenger throws a grenade (15).
+**↓ + C = ¡BOCINAZO!**: the horn stuns and pushes back the enemies in front ("¡Bájale, causa!"); 3 charges that
+refill every 6 s. It carries over between sections like the combi.
+
+**Gang enemies added:** cupero behind a **metal shutter** (`e`, the riot-shield behavior) and the **gang sniper**
+(`u`, the police sniper's laser sight).
 
 ## Mission 3 — "La ruta" 📝
 

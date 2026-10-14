@@ -47,6 +47,7 @@ class Grunt extends Phaser.Physics.Arcade.Sprite {
 
   update(time, dt) {
     if (!this.alive) return;
+    if (time < this.stunUntil) return this.dazed(dt);
     const s = this.scene, E = CFG.ENEMY, t = s.target(this.x, this.y);
     const dx = t.x - this.x, dist = Math.abs(dx);
     const onScreen = s.inView(this.x, this.y - 10, -4);
@@ -95,7 +96,15 @@ class Grunt extends Phaser.Physics.Arcade.Sprite {
     this.pose(time, dt, vx);
   }
 
+  // Stunned by a bocinazo: slides to a stop, dizzy.
+  dazed() {
+    if (this.body.blocked.down) this.setVelocityX(this.body.velocity.x * 0.85);
+    this.setTexture(`${this.skin}_fwd_stand`).setAngle(Math.sin(this.scene.time.now / 60) * 8);
+    this.aimUntil = 0;
+  }
+
   pose(time, dt, vx) {
+    this.setAngle(0);
     let key;
     if (time < this.crouchUntil) key = `${this.skin}_crouch`;
     else if (!this.body.blocked.down && !this.body.touching.down) key = `${this.skin}_fwd_jump`;

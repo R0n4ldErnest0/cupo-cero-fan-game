@@ -64,6 +64,7 @@ class LevelScene extends Phaser.Scene {
     this.combi = null;
     const run = Session.run || {};
     if (data.carry && run.combi && M.vehicles !== false) this.carryCombi(run.combi, start);
+    else if (M.mototaxi) this.combi = new MototaxiSlug(this, M.mototaxi.x, this.floorY(M.mototaxi));
     else {
       const combi = M.combi || marks.find((o) => o.combi);
       if (combi) this.combi = new CombiSlug(this, combi.x, this.floorY(combi));
@@ -142,7 +143,7 @@ class LevelScene extends Phaser.Scene {
     }));
     const c = this.combi;
     Session.run.combi = combi && c && c.active && c.state === 'driven'
-      ? { hp: c.hp, cannon: c.cannon, driver: c.driver.index } : null;
+      ? Object.assign(c.saveState(), { driver: c.driver.index }) : null;
   }
 
   applyKit(p, k) {
@@ -157,14 +158,24 @@ class LevelScene extends Phaser.Scene {
     }
   }
 
-  // The Combi Slug someone drove out of the last section, with its damage and ammo, driver already inside.
+  // The vehicle someone drove out of the last section, with its damage and ammo, driver already inside.
   carryCombi(c, start) {
     const p = this.players[c.driver];
-    const x = start.x + 30;
-    const combi = (this.combi = new CombiSlug(this, x, this.floorY({ x, y: start.y })));
-    combi.hp = c.hp;
-    combi.cannon = c.cannon;
-    if (p && p.state === 'play') p.enterVehicle(combi);
+    const x = start.x + 30, y = this.floorY({ x, y: start.y });
+    const v = (this.combi = c.kind === 'mototaxi' ? new MototaxiSlug(this, x, y) : new CombiSlug(this, x, y));
+    v.loadState(c);
+    if (p && p.state === 'play') p.enterVehicle(v);
+  }
+
+  // Bocinazo: stun an enemy and push it back (dir = which way). Enemies without a stun just take a hit.
+  stun(e, dir) {
+    if (e.stunUntil === undefined && !(e instanceof Grunt) && !(e instanceof RiotCop)) return e.hit(1, false, null);
+    e.stunUntil = this.time.now + CFG.MOTOTAXI.STUN_MS;
+    if (e.dropKnife) e.dropKnife();
+    if (e.dropBaton) e.dropBaton();
+    e.aimUntil = 0;
+    e.setVelocity(dir * 140, -150);
+    if (Math.random() < 0.6) Fx.say(this, e, Phaser.Utils.Array.GetRandom(BOCINA_LINES), 1000);
   }
 
   // ---------- sections ----------
@@ -547,13 +558,16 @@ class LevelScene extends Phaser.Scene {
   }
 
   // Enemies without a y stand at street level. Bikers always ride in from the right edge.
-  // t: 'grunt' | 'biker' | 'cop' (patrullero) | 'motocop' | 'riot' (antimotines) | 'sniper'.
+  // t: 'grunt' | 'biker' | 'shieldthug' (cupero behind a metal shutter) | 'gangsniper' |
+  // 'cop' (patrullero) | 'motocop' | 'riot' (antimotines) | 'sniper'.
   // Riders always come in from the right edge.
   spawnEnemy(s, x) {
     if (s.t === 'biker' || s.t === 'motocop') x = this.viewLeft + CFG.VIEW_W + 30;
     const y = this.floorY({ x, y: s.y });
     const make = {
       biker: () => new Biker(this, x, y),
+      shieldthug: () => new RiotCop(this, x, y, { gang: true }),
+      gangsniper: () => new Sniper(this, x, y, { gang: true }),
       motocop: () => new Biker(this, x, y, { tex: 'motocop', hp: 3, shots: 3, score: 300, shout: '¡PAPELETA!' }),
       cop: () => new Grunt(this, x, y, Object.assign({ skin: 'tombo', hp: 2, burst: 2, cop: true }, s)),
       riot: () => new RiotCop(this, x, y),

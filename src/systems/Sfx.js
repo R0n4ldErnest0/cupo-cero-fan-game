@@ -136,6 +136,15 @@ const Sfx = {
     if (this.rotorTimer) clearInterval(this.rotorTimer);
     this.rotorTimer = null;
   },
+  // Mototaxi horn: a long, loud two-tone "PIIII PIIII".
+  bocina() {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    [0, 0.32].forEach((d) => {
+      this.tone('square', 740, 740, 0.26, 0.12, { when: t + d });
+      this.tone('square', 932, 932, 0.26, 0.1, { when: t + d });
+    });
+  },
   whack() { this.tone('square', 200, 60, 0.08, 0.14); this.noise(0.06, 0.2, { f0: 1500 }); },
   firework() {
     if (!this.ctx) return;

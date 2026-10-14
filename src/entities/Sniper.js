@@ -1,9 +1,11 @@
 // Francotirador: a corrupt cop crouched on a rooftop with a rifle. A red laser follows the nearest player for
 // CFG.SNIPER.AIM_MS, then locks (stops following and blinks) for LOCK_MS and fires a fast shot along that line:
 // keep moving after the lock and it misses. Doesn't move; one hit kills him, if you can get there.
+// { gang: true }: a cupero sniper on the Gamarra rooftops.
 class Sniper extends Phaser.Physics.Arcade.Sprite {
-  constructor(scene, x, y) {
-    super(scene, x, y, 'sniper');
+  constructor(scene, x, y, opts = {}) {
+    super(scene, x, y, opts.gang ? 'sniper_thug' : 'sniper');
+    this.gang = !!opts.gang;
     scene.add.existing(this);
     scene.physics.add.existing(this);
     this.setOrigin(0.5, 1).setDepth(6);
@@ -79,7 +81,7 @@ class Sniper extends Phaser.Physics.Arcade.Sprite {
     this.beam.clear();
     s.addScore(this.score, this.x, this.y - 20, owner);
     Sfx.scream();
-    if (Math.random() < 0.5) Fx.say(s, this, '¡Mi puntería de academia!', 1200);
+    if (Math.random() < 0.5) Fx.say(s, this, this.gang ? '¡Me vendieron mala mira!' : '¡Mi puntería de academia!', 1200);
     if (how === 'fire') this.setTint((this.baseTint = 0x2b2522));
     this.setVelocity(-this.facing * 60, -200);
     s.tweens.add({ targets: this, angle: -this.facing * 360, duration: 600 });

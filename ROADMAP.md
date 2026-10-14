@@ -103,7 +103,8 @@ Full design, weapons list and build order: `docs/LEVELS.md`.
       (the boss smokes as it gets hurt). El Cobrador rebuilt on it; police helicopter boss (Mission 3 station)
 
 ### M3 — Missions 2–3
-- [ ] Mission 2 complete: rooftops, Mototaxi Slug, collection-truck mid-boss, accountant boss, ledger beat
+- [x] Mission 2 rooftops (greybox) + Mototaxi Slug (machine gun, grenades, bocinazo); gang shield thug and sniper
+- [ ] Mission 2 almacén: collection-truck mid-boss, accountant boss, ledger beat
 - [ ] Art direction test on Mission 2 (decide the style before drawing everything)
 - [ ] Mission 3: cerros, Metropolitano, station + helicopter boss (all greybox ✅); real art
 

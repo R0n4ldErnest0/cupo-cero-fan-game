@@ -14,6 +14,7 @@
 //   bg                         optional tints { sky, hills, city }
 // Objects can be listed here or placed as letter markers in the map. Without a y they stand at street level.
 //   combi { x }                parked Combi Slug (optional)
+//   mototaxi { x }             parked Mototaxi Slug instead (one vehicle per section)
 //   abuelitas [{ x }]          tied-up helpers
 //   crates [{ x, stack }]      one-way platforms
 //   props [{ x, type, drop }]  breakable gang property (CFG.PROPS: box, lootbag, trash, barrel, moto); drop: an item
