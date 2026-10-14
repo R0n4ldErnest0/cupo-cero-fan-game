@@ -16,7 +16,10 @@
 //   combi { x }                parked Combi Slug (optional)
 //   abuelitas [{ x }]          tied-up helpers
 //   crates [{ x, stack }]      one-way platforms
-//   pickups [{ x, kind }]      a crate letter (guns H R A E G F D L P, throwables B M S; see CFG) or 'food'
+//   props [{ x, type, drop }]  breakable gang property (CFG.PROPS: box, lootbag, trash, barrel, moto); drop: an item
+//                              kind, 'random', 'enemy' (a cupero jumps out) or 'none'
+//   vendors [{ x, food }]      street vendor with a cart, tosses that CFG.FOOD to a player walking by
+//   pickups [{ x, kind }]      a crate letter (guns H R A E G F D L, throwables B M P S) or a food id (CFG.FOOD)
 //   spawns [{ x, t, ... }]     enemies, spawned when x reaches the right screen edge.
 //                              t: 'grunt' (skin, variant 'gunner' | 'thrower' | 'knife', y, hp) or 'biker'
 //   decor [{ type, ... }]      'text' | 'controls' | 'image' | 'graffiti' | 'sign' | 'copcar'; an `id`

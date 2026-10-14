@@ -1,6 +1,6 @@
-// Item drops. kind = a crate letter (guns: CFG.WEAPONS[].letter, throwables: CFG.THROWABLES) or 'food'
-// (pan con chicharrón, score). Crates announce their name like the arcade ("HEAVY MACHINE GUN!").
-// Icon items (Piedras) are a drawing instead of a lettered crate, with a little sign bobbing above them.
+// Item drops. kind = a crate letter (guns: CFG.WEAPONS[].letter, throwables: CFG.THROWABLES) or a food id
+// (CFG.FOOD). Crates announce their name like the arcade ("HEAVY MACHINE GUN!").
+// Drawn items (Piedras, food) have no letter: a little sign bobs above them instead.
 class Pickup extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y, kind) {
     super(scene, x, y, `pick_${kind}`);
@@ -9,7 +9,7 @@ class Pickup extends Phaser.Physics.Arcade.Sprite {
     this.kind = kind;
     this.setOrigin(0.5, 1).setDepth(5);
     const thr = CFG.THROWABLES[kind];
-    if (thr && thr.icon) this.sign = scene.add.image(x, y, `sign_${kind}`).setOrigin(0.5, 1).setDepth(5);
+    if ((thr && thr.icon) || CFG.FOOD[kind]) this.sign = scene.add.image(x, y, `sign_${kind}`).setOrigin(0.5, 1).setDepth(5);
   }
 
   preUpdate(time, delta) {
@@ -41,8 +41,10 @@ class Pickup extends Phaser.Physics.Arcade.Sprite {
       voice = thr.voice;
       id = thr.id;
     } else {
-      s.addScore(1000, this.x, this.y - 16, p);
-      name = 'PAN CON CHICHARRÓN';
+      const f = CFG.FOOD[k];
+      s.addScore(f.points, this.x, this.y - 16, p);
+      p.eat(k);
+      name = f.name;
     }
     s.message('', lang === 'en' ? `${name}!` : `¡${name}!`, 1200);
     if (voice) Voice.say(id, voice.charAt(0) + voice.slice(1).toLowerCase(), lang);

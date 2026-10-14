@@ -147,6 +147,7 @@ const SKINS = {
   thug: { head: 'thug', pal: { Q: '#2a2a30', X: '#c0282e', C: '#3a3d45', P: '#3a5fa0', F: '#e8e8e8' } },
   thug2: { head: 'thug', pal: { Q: '#3c6e3a', X: '#1b1b22', C: '#7a2e2e', P: '#2b2b33', F: '#e8e8e8' } },
   thug3: { head: 'thug', pal: { Q: '#c0282e', X: '#1b1b22', C: '#e8e8e8', P: '#2b2b33', F: '#c0282e' } }, // knife runner
+  vendor: { head: 'cobradora', pal: { h: '#2b1d14', C: '#f4f4f4', P: '#3a5fa0', F: '#5b3a20' } }, // street vendor
   cobrador: { head: 'driver', pal: { H: '#f4f4f4', M: '#1b1b22', C: '#e3b23c', P: '#1b1b22', F: '#f4f4f4' } },
 };
 
@@ -190,6 +191,7 @@ const Textures = {
     this.projectiles(scene);
     this.fx(scene);
     this.pickups(scene);
+    this.breakables(scene);
     this.props(scene);
     this.tiles(scene);
     this.backgrounds(scene);
@@ -395,6 +397,10 @@ const Textures = {
       .register(scene, 'melee_baton');
     new Painter(17, 6).rect(0, 2, 4, 2, '#5b3a20').rect(4, 1, 11, 3, '#c9ced6').rect(15, 2, 1, 2, '#c9ced6').rect(4, 1, 11, 1, '#f4f4f4').outline()
       .register(scene, 'melee_machete');
+    // Fat melee: a big soup ladle.
+    new Painter(16, 8).rect(0, 3, 9, 1, '#c9ced6').disc(12, 4, 3, '#c9ced6').disc(12, 3, 2, '#8a8f96').outline()
+      .register(scene, 'melee_cucharon');
+
     const cb = new Painter(16, 12);
     cb.line(0, 6, 5, 6, '#8a5a33').disc(10, 6, 4, '#c9a86a').rect(5, 5, 2, 3, '#8a5a33').text('$', 9, 4, '#2e7d32').outline();
     cb.register(scene, 'melee_coinbag');
@@ -454,14 +460,110 @@ const Textures = {
     });
     st.rect(2, 12, 18, 1, '#6e6a62').outline();
     st.register(scene, 'pick_P');
-    const sg = new Painter(Painter.textWidth('PIEDRAS') + 6, 11);
-    sg.rect(0, 0, sg.w, 8, '#c8955a').rect(0, 7, sg.w, 1, '#6e4a26').text('PIEDRAS', 3, 2, '#1b1b22');
-    sg.rect(Math.floor(sg.w / 2), 8, 1, 3, '#6e4a26').outline();
-    sg.register(scene, 'sign_P');
-    const f = new Painter(16, 12);
-    f.rect(1, 1, 14, 3, '#e2b26a').rect(1, 4, 14, 2, '#7a3b1e').rect(1, 6, 14, 1, '#d23b6a').rect(1, 7, 14, 1, '#f2e2c0').rect(1, 8, 14, 2, '#e2b26a');
-    f.set(4, 2, '#f2d29a').set(9, 2, '#f2d29a').outline();
-    f.register(scene, 'pick_food');
+    this.sign(scene, 'sign_P', 'PIEDRAS');
+    this.food(scene);
+  },
+
+  // Floating label used by drawn pickups (Piedras, food): a little wooden sign on a stick.
+  sign(scene, key, text) {
+    const p = new Painter(Painter.textWidth(text) + 8, 13);
+    p.rect(1, 1, p.w - 2, 8, '#c8955a').rect(1, 8, p.w - 2, 1, '#6e4a26').text(text, 4, 3, '#1b1b22');
+    p.rect(Math.floor(p.w / 2), 9, 1, 3, '#6e4a26').outline();
+    p.register(scene, key);
+  },
+
+  // Peruvian food (pickup kind = CFG.FOOD id) + one vendor cart per food.
+  food(scene) {
+    const draw = {
+      pan: (p) => {
+        p.rect(1, 3, 14, 3, '#e2b26a').rect(1, 6, 14, 2, '#7a3b1e').rect(1, 8, 14, 1, '#d23b6a').rect(1, 9, 14, 1, '#f2e2c0').rect(1, 10, 14, 2, '#e2b26a');
+        p.set(4, 4, '#f2d29a').set(9, 4, '#f2d29a');
+      },
+      mote: (p) => {
+        p.rect(1, 7, 14, 4, '#c96b4b').rect(3, 11, 10, 1, '#c96b4b'); // clay bowl
+        [[3, 5], [6, 4], [9, 5], [12, 5], [5, 6], [8, 6], [11, 6]].forEach(([x, y]) => p.rect(x, y, 2, 2, '#f4ecd0').set(x, y, '#e8d27a'));
+      },
+      makis: (p) => {
+        [2, 7, 12].forEach((x) => p.disc(x, 7, 2, '#1f3b2a').disc(x, 7, 1, '#f4f4f4').set(x, 7, '#ff7a4a'));
+        p.rect(0, 10, 16, 2, '#8a5a33');
+      },
+      morada: (p) => {
+        p.rect(5, 2, 7, 10, '#d8eef8').rect(6, 4, 5, 7, '#5a1a6b').rect(6, 4, 5, 1, '#8a3aa0').rect(10, 0, 1, 5, '#f2c94c');
+      },
+      lomo: (p) => {
+        p.rect(0, 9, 16, 2, '#f4f4f4').rect(1, 11, 14, 1, '#d8d8d8'); // plate
+        p.disc(4, 7, 2, '#ffffff'); // rice
+        [[7, 6], [9, 7], [11, 6], [8, 8]].forEach(([x, y]) => p.rect(x, y, 2, 2, '#6b3a1e')); // beef
+        p.set(10, 5, '#d8343a').set(12, 8, '#d8343a').set(7, 8, '#7a3a8a'); // tomato, onion
+        [[12, 4], [13, 6], [14, 5]].forEach(([x, y]) => p.rect(x, y, 1, 3, '#f2c94c')); // fries
+      },
+      caldo: (p) => {
+        p.set(5, 0, '#ffffffaa').set(8, 1, '#ffffffaa').set(10, 0, '#ffffffaa'); // steam
+        p.rect(1, 5, 14, 5, '#f4f4f4').rect(3, 10, 10, 1, '#f4f4f4').rect(2, 5, 12, 2, '#e8b830'); // broth
+        p.rect(9, 2, 2, 4, '#e8c08a').disc(10, 2, 1, '#f4e4c0'); // chicken leg
+        p.set(5, 6, '#3c8f4a').set(7, 6, '#f4ecd0');
+      },
+      jora: (p) => {
+        p.rect(3, 1, 10, 11, '#d8eef8').rect(4, 4, 8, 7, '#d9a441').rect(4, 2, 8, 2, '#f8f0d8');
+      },
+      emoliente: (p) => {
+        p.set(6, 0, '#ffffffaa').set(9, 1, '#ffffffaa'); // steam
+        p.rect(4, 3, 8, 9, '#d8eef8').rect(5, 5, 6, 6, '#8a6a2a').rect(5, 5, 6, 1, '#b8943a').rect(9, 2, 1, 4, '#3c8f4a');
+      },
+      pisco: (p) => {
+        p.rect(6, 0, 3, 3, '#5a3a20').rect(6, 3, 3, 2, '#d8eef8').rect(4, 5, 7, 7, '#d8eef8').rect(5, 6, 5, 5, '#eef6fa');
+        p.rect(4, 8, 7, 3, '#c0282e').text('P', 6, 7, '#f4f4f4');
+      },
+    };
+    for (const [id, f] of Object.entries(CFG.FOOD)) {
+      const p = new Painter(16, 13);
+      draw[id](p);
+      p.outline();
+      p.register(scene, `pick_${id}`);
+      this.sign(scene, `sign_${id}`, f.sign);
+
+      // Vendor cart: umbrella, counter with the food's sign. The vendor stands behind it (separate sprite).
+      const c = new Painter(40, 34);
+      c.rect(19, 0, 2, 14, PAL.G);
+      for (let y = 0; y < 6; y++) c.rect(8 - y, 2 + y, 24 + y * 2, 1, y % 2 ? '#2c6fd1' : '#f2c94c');
+      c.rect(2, 16, 36, 12, '#e0d4b8').rect(2, 16, 36, 2, '#a8743f').rect(2, 26, 36, 2, '#a8743f');
+      const w = Painter.textWidth(f.sign);
+      if (w <= 34) c.text(f.sign, 20 - Math.floor(w / 2), 20, '#c0282e');
+      c.disc(8, 30, 3, PAL.k).disc(32, 30, 3, PAL.k).set(8, 30, PAL.g).set(32, 30, PAL.g);
+      c.outline();
+      c.register(scene, `stall_${id}`);
+    }
+  },
+
+  // Breakable gang property (CFG.PROPS), standing on the floor.
+  breakables(scene) {
+    const box = new Painter(20, 16);
+    box.rect(0, 0, 20, 16, '#b88a52').rect(0, 0, 20, 2, '#d4a86a').rect(9, 0, 2, 16, '#c8a165').text('CUPO', 2, 6, '#5b3a20').outline();
+    box.register(scene, 'prop_box');
+
+    const bag = new Painter(16, 16);
+    bag.disc(8, 10, 5, '#c9a86a').rect(6, 2, 4, 3, '#8a5a33').rect(5, 4, 6, 1, '#5b3a20').text('$', 7, 8, '#2e7d32').outline();
+    bag.register(scene, 'prop_lootbag');
+
+    const tr = new Painter(14, 20);
+    tr.rect(1, 2, 12, 18, '#3c8f4a').rect(0, 0, 14, 3, '#2e6b3a').rect(3, 6, 1, 12, '#2e6b3a').rect(7, 6, 1, 12, '#2e6b3a').rect(10, 6, 1, 12, '#2e6b3a').outline();
+    tr.register(scene, 'prop_trash');
+
+    const br = new Painter(14, 20);
+    br.rect(1, 0, 12, 20, '#c0282e').rect(1, 4, 12, 1, '#7a1a1e').rect(1, 15, 12, 1, '#7a1a1e').rect(3, 0, 2, 20, '#e0484e').text('!', 6, 8, PAL.y).outline();
+    br.register(scene, 'prop_barrel');
+
+    // The gang's parked motorbike (the biker's bike without its rider), facing left.
+    const mo = new Painter(32, 18);
+    mo.rect(6, 7, 20, 5, PAL.r).rect(14, 6, 9, 2, PAL.k).rect(24, 8, 4, 2, PAL.G);
+    mo.line(6, 13, 8, 3, PAL.G).rect(4, 2, 5, 1, PAL.k);
+    mo.disc(6, 13, 4, PAL.k).disc(25, 13, 4, PAL.k).set(6, 13, PAL.g).set(25, 13, PAL.g);
+    mo.outline();
+    mo.register(scene, 'prop_moto');
+
+    for (let i = 0; i < 3; i++) {
+      new Painter(4, 3).rect(0, 0, 4 - i, 3 - (i % 2), ['#b88a52', '#5a6068', '#8a5a33'][i]).register(scene, `debris${i}`);
+    }
   },
 
   props(scene) {

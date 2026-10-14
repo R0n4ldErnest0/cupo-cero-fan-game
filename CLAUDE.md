@@ -50,7 +50,7 @@ Controls (solo): ←/→ move, ↑ aim up, ↓ crouch (in the air: shoot down), 
 2 players: 1P WASD + F shoot / G jump / H grenade, 2P arrows + , shoot / . jump / / grenade; gamepads work
 (A jump, X shoot, B grenade, Start). Keys are defined in `CFG.KEYS`.
 Testing: **5** inserts a coin, **F2** toggles FREE PLAY (infinite credits, saved in localStorage),
-**F3** on the title picks the starting mission, **F4** finishes the current mission, **F6** drops the next weapon crate,
+**F3** on the title picks the starting mission, **F4** finishes the current mission, **F6** / **F7** drop the next weapon crate / food,
 `?mission=2` preselects a mission.
 
 ## Layout
@@ -61,7 +61,8 @@ lib/phaser.min.js     vendored engine
 src/config.js         constants (sizes, speeds, tuning)
 src/systems/          Textures (procedural art), Sfx (synth audio), Voice (announcer), Session (credits), Controls (input),
                       Fx, Terrain (text-map tiles, one-way floors, slopes), Weapons (guns, melee, player projectiles)
-src/entities/         Player, enemies, Abuelita (helper), CombiSlug (vehicle), bosses, projectiles
+src/entities/         Player, enemies, Abuelita (helper), CombiSlug (vehicle), bosses, Pickup, Breakable (gang props),
+                      Vendor (food carts)
 src/levels/           missions.js (registry + data schema), missionN.js (one data file per mission)
 src/scenes/           MenuScenes (Boot, Title, CharSelect, MissionEnd, Ending, GameOver), HUDScene, LevelScene
 docs/LEVELS.md        mission designs + what's missing for Missions 2–5

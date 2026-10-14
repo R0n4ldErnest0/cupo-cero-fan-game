@@ -117,6 +117,14 @@ const Sfx = {
   stone() { this.noise(0.08, 0.1, { type: 'bandpass', f0: 2500, f1: 1200 }); },
   knifeDraw() { this.tone('triangle', 1400, 2600, 0.1, 0.05); },
   slash() { this.noise(0.12, 0.25, { type: 'highpass', f0: 2500, f1: 6000 }); },
+  gulp() {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    [0, 0.08].forEach((d) => this.tone('sine', 300, 180, 0.07, 0.15, { when: t + d }));
+  },
+  burp() { this.tone('sawtooth', 110, 70, 0.45, 0.18, { vibrato: 18 }); this.noise(0.3, 0.08, { f0: 400 }); },
+  hic() { this.tone('square', 500, 900, 0.07, 0.07); },
+  crunch() { this.noise(0.18, 0.3, { type: 'bandpass', f0: 1500, f1: 500 }); },
   whack() { this.tone('square', 200, 60, 0.08, 0.14); this.noise(0.06, 0.2, { f0: 1500 }); },
   firework() {
     if (!this.ctx) return;

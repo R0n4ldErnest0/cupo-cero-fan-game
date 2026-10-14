@@ -51,6 +51,9 @@ class LevelScene extends Phaser.Scene {
     const combi = M.combi || marks.find((o) => o.combi);
     this.combi = combi ? new CombiSlug(this, combi.x, this.floorY(combi)) : null;
     this.abuelitas = (M.abuelitas || []).concat(marks.filter((o) => o.abuelita)).map((a) => new Abuelita(this, a.x, this.floorY(a)));
+    this.props = this.physics.add.group({ allowGravity: false, immovable: true });
+    (M.props || []).forEach((d) => this.props.add(new Breakable(this, d.x, this.floorY(d), d)));
+    this.vendors = (M.vendors || []).map((d) => new Vendor(this, d.x, this.floorY(d), d));
     (M.pickups || []).forEach((p) => this.spawnPickup(p.x, this.floorY(p) - 40, p.kind));
     marks.filter((o) => o.pickup).forEach((p) => this.spawnPickup(p.x, p.y - 8, p.pickup));
     this.spawns = (M.spawns || []).concat(marks.filter((o) => o.t)).map((s) => Object.assign({}, s)).sort((a, b) => a.x - b.x);
@@ -278,6 +281,8 @@ class LevelScene extends Phaser.Scene {
     P.collider(this.eBombs, solids, (a, b) => this.explodeEnemyBomb(pick(a, b, 'isEnemyBomb')));
     P.overlap(this.pBullets, this.enemies, (b, e) => this.bulletHits(b, e));
     P.overlap(this.pBombs, this.enemies, (b, e) => e.alive && this.detonate(b));
+    P.overlap(this.pBullets, this.props, (b, o) => this.bulletHits(b, o));
+    P.overlap(this.pBombs, this.props, (b, o) => o.alive && this.detonate(b));
     this.abuelitas.forEach((ab) => {
       P.collider(ab, solids, null, notDropping);
       P.overlap(ab, this.pBullets, (a, b) => {
@@ -346,6 +351,8 @@ class LevelScene extends Phaser.Scene {
       if (e.active && (e.x < this.viewLeft - 80 || e.y > this.levelH + 40)) e.destroy();
     });
     this.abuelitas.forEach((a) => a.active && a.update(time, delta));
+    this.vendors.forEach((v) => v.update(time));
+    this.cameras.main.setRotation(this.players.some((p) => p.state === 'play' && p.alive && p.drunk) ? Math.sin(time / 500) * CFG.DRUNK.SWAY : 0);
     if (this.boss && this.boss.active) this.boss.update(time, delta);
     // Homing rockets, drones, roosters, flames...
     [this.pBullets, this.pBombs].forEach((g) => g.getChildren().slice().forEach((b) => b.active && b.step && b.step(time, delta)));
@@ -489,6 +496,7 @@ class LevelScene extends Phaser.Scene {
       st.kind = 'stone';
       st.owner = owner;
       st.setVelocity(Math.sign(vx) * CFG.STONE.vx + (vx - Math.sign(vx) * CFG.GRENADE.vx), CFG.STONE.vy).setAngularVelocity(720);
+      if (owner && owner.fat) st.setScale(CFG.FAT.BOULDER_SCALE);
       return;
     }
     const g = this.pBombs.create(x, y, kind === 'molotov' ? 'molotov' : 'grenade').setDepth(12);
@@ -496,6 +504,7 @@ class LevelScene extends Phaser.Scene {
     g.owner = owner;
     g.bounces = 0;
     if (kind === 'super') g.setScale(2);
+    else if (kind === 'grenade' && owner && owner.fat) g.setScale(CFG.FAT.GRENADE_SCALE);
     if (kind !== 'molotov') g.setBounce(0.45);
     g.setVelocity(vx, vy).setAngularVelocity(vx >= 0 ? 500 : -500);
     this.time.delayedCall(kind === 'molotov' ? 3000 : 1600, () => this.detonate(g));
@@ -562,6 +571,9 @@ class LevelScene extends Phaser.Scene {
   damageEnemiesInRadius(x, y, r, dmg, explosive, owner, how) {
     this.enemies.getChildren().slice().forEach((e) => {
       if (e.alive && Phaser.Math.Distance.Between(x, y, e.x, e.y - 12) <= r + 8) e.hit(dmg, explosive, owner, how);
+    });
+    this.props.getChildren().slice().forEach((o) => {
+      if (o.alive && Phaser.Math.Distance.Between(x, y, o.x, o.y - o.height / 2) <= r + o.width / 2) o.hit(dmg, explosive, owner, how);
     });
     const b = this.boss;
     if (b && b.alive && Phaser.Geom.Intersects.CircleToRectangle(new Phaser.Geom.Circle(x, y, r), b.getBounds())) b.hit(dmg, owner);

@@ -40,6 +40,14 @@ MISSIONS.push({
     |######################################################################################   #####################################################################################################################
     |######################################################################################   #####################################################################################################################`,
   crates: [{ x: 300, stack: 1 }, { x: 322, stack: 2 }],
+  // Gamarra: food carts, the gang's loot and a chichería stand (3 jora + pisco = drunk; the caldo cures it).
+  vendors: [{ x: 560, food: 'makis' }, { x: 1830, food: 'jora' }, { x: 1890, food: 'caldo' }, { x: 2470, food: 'lomo' }],
+  props: [
+    { x: 700, type: 'box', drop: 'random' }, { x: 735, type: 'box', drop: 'enemy' },
+    { x: 1250, type: 'lootbag', drop: 'random' }, { x: 1760, type: 'barrel', drop: 'none' },
+    { x: 1990, type: 'trash', drop: 'pisco' }, { x: 2050, type: 'moto', drop: 'jora' },
+    { x: 2700, type: 'lootbag', drop: 'emoliente' },
+  ],
   // Greybox: one of every new weapon crate to try them out.
   pickups: [
     { x: 230, kind: 'R' }, { x: 420, kind: 'A' }, { x: 960, kind: 'E' }, { x: 1150, kind: 'M' }, { x: 1560, kind: 'G' },

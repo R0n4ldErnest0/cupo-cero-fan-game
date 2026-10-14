@@ -85,6 +85,8 @@ Full design, weapons list and build order: `docs/LEVELS.md`.
 - [x] Weapons: letter pickups, ammo, HUD; Rocket Launcher, Anticuchera, Escopeta, Gallo de pelea, Pelota, Dron, Láser,
       Piedras; Molotov, Súper granada; per-character melee; tap-to-shoot pistol cadence
 - [x] Enemy feel: slower bullets, aim before shooting, knife attack, knife runners; camera zoom 2.5 (bigger characters)
+- [x] Food (Peruvian), getting fat (Metal Slug rules, emoliente = diet, cucharón melee), getting drunk (caldo cures);
+      breakable gang props that drop items; vendors who toss food
 - [x] Announcer voice on pickups (browser speech placeholder until clips are recorded in `assets/voice/`)
 - [ ] Rescuable people (POWs) that drop weapons and items
 - [ ] Auto-scroll mode (train roof, air level)

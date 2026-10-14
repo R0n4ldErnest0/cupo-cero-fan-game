@@ -126,6 +126,22 @@ faster shoots faster, like the arcade pistol. Holding fire repeats at a slower r
 All placeholder art and tuning; damage numbers need playtesting. Testing: **F6** drops the next crate in front of 1P;
 the Mission 2 greybox has one crate of each.
 
+## Food, fat and drunk — built
+
+Metal Slug 2/X/3 rules, with Peruvian food (`CFG.FOOD`, `CFG.FAT`, `CFG.DRUNK`):
+
+- **Where food comes from:** lying in the street (map markers), **gang property you shoot apart** (`props`: "CUPO"
+  boxes, loot bags, trash bins, barrels and parked motorbikes that explode; they drop food/items, sometimes a cupero
+  jumps out), **street vendors** who toss you food when you walk by (`vendors`; our Rumi Aikawa; never targets), and
+  later the rescued prisoners.
+- **Food:** pan con chicharrón, mote, makis, chicha morada, lomo saltado (very filling), caldo de gallina.
+- **Fat:** eat enough in one life and you get fat ("¡BURP!"): slower, but the pistol and machine gun fire big bullets
+  (2 damage), the laser is thick with an energy ball where it hits, flame/shotgun/rockets hit harder, grenades are
+  bigger, stones become boulders and melee is a **cucharón**. Ends with an **emoliente** (our diet powder), after
+  40 s without eating, or by dying.
+- **Drunk (ours):** 3 drinks (chicha de jora, pisco) within 20 s: 8 s of stumbling, wobbly aim, swaying screen and
+  hiccups. **Caldo de gallina** sobers you up.
+
 **Announcer voice:** `src/systems/Voice.js` plays recorded clips from `assets/voice/` (see its README) and falls
 back to the browser's speech synthesis until we have them. Direction: a **fictional** announcer in the style of a
 chicha/cumbia show host (over-the-top tropical energy). Not a real person's voice (no cloning or imitating real

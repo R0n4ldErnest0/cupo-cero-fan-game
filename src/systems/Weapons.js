@@ -12,11 +12,25 @@ Object.entries(CFG.WEAPONS).forEach(([id, w]) => { if (w.letter) WEAPON_BY_LETTE
 const FIREWORK_COLORS = [0xff3fa4, 0xffe600, 0x3cff6a, 0x5ad1ff, 0xff7a00];
 
 const Weapons = {
-  // Gun position and angle for the player's current aim.
+  // Gun position and angle for the player's current aim (it wobbles when drunk).
   muzzle(p) {
-    if (p.aim === 'up') return { x: p.x + p.facing * 4, y: p.y - 26, angle: -Math.PI / 2 };
-    if (p.aim === 'down') return { x: p.x, y: p.y - 2, angle: Math.PI / 2 };
-    return { x: p.x + p.facing * 9, y: p.y - (p.crouching ? 6 : 13), angle: p.facing > 0 ? 0 : Math.PI };
+    let m;
+    if (p.aim === 'up') m = { x: p.x + p.facing * 4, y: p.y - 26, angle: -Math.PI / 2 };
+    else if (p.aim === 'down') m = { x: p.x, y: p.y - 2, angle: Math.PI / 2 };
+    else m = { x: p.x + p.facing * 9 * p.scaleX, y: p.y - (p.crouching ? 6 : 13), angle: p.facing > 0 ? 0 : Math.PI };
+    if (p.drunk) m.angle += Math.sin(p.scene.time.now / 140) * CFG.DRUNK.AIM_WOBBLE;
+    return m;
+  },
+
+  // Damage multiplier when fat: `big` for the guns that get big bullets (pistol, machine gun, laser).
+  fatMult(p, big) {
+    return p.fat ? (big ? CFG.FAT.DAMAGE : CFG.FAT.WEAPON) : 1;
+  },
+
+  // Fat players shoot big bullets.
+  fatBullet(b, p) {
+    if (p.fat) b.setScale(CFG.FAT.BULLET_SCALE);
+    return b;
   },
 
   fire(p, id, time) {
@@ -26,14 +40,14 @@ const Weapons = {
 
   FIRE: {
     pistol(s, p, w, m) {
-      s.firePlayerBullet(m.x, m.y, m.angle, w.speed, w.damage, w.tex, p);
+      this.fatBullet(s.firePlayerBullet(m.x, m.y, m.angle, w.speed, w.damage * this.fatMult(p, true), w.tex, p), p);
       Fx.spark(s, m.x, m.y);
       Sfx.shoot();
     },
 
     mg(s, p, w, m) {
       const a = m.angle + Phaser.Math.FloatBetween(-w.spread, w.spread);
-      s.firePlayerBullet(m.x, m.y, a, w.speed, w.damage, w.tex, p);
+      this.fatBullet(s.firePlayerBullet(m.x, m.y, a, w.speed, w.damage * this.fatMult(p, true), w.tex, p), p);
       Fx.spark(s, m.x, m.y);
       Sfx.mg();
     },
@@ -43,6 +57,7 @@ const Weapons = {
       const r = s.pBombs.create(m.x, m.y, 'rocket').setDepth(12).setRotation(m.angle);
       r.kind = 'rocket';
       r.owner = p;
+      r.damage = w.damage * this.fatMult(p);
       r.body.setAllowGravity(false);
       r.body.setSize(6, 6);
       s.physics.velocityFromRotation(m.angle, w.speed, r.body.velocity);
@@ -60,7 +75,7 @@ const Weapons = {
 
     // Street-grill flamethrower: a short-range fireball that goes through enemies and leaves them charred.
     flame(s, p, w, m, time) {
-      const b = s.firePlayerBullet(m.x, m.y, m.angle, w.speed, w.damage, 'flame', p);
+      const b = s.firePlayerBullet(m.x, m.y, m.angle, w.speed, w.damage * this.fatMult(p), 'flame', p);
       b.pierce = true;
       b.how = 'fire';
       b.body.setSize(10, 10);
@@ -89,7 +104,7 @@ const Weapons = {
           }
         }
       });
-      hit.forEach((t) => s.hitTarget(t, w.damage, true, p));
+      hit.forEach((t) => s.hitTarget(t, w.damage * this.fatMult(p), true, p));
       s.cameras.main.shake(70, 0.003);
       Sfx.shotgun();
     },
@@ -157,16 +172,18 @@ const Weapons = {
     laser(s, p, w, m, time) {
       const line = this.beamLine(p, w);
       this.targets(s).forEach((t) => {
-        if (Phaser.Geom.Intersects.LineToRectangle(line, t.getBounds())) s.hitTarget(t, w.damage, false, p, 'laser');
+        const r = t.getBounds();
+        if (p.fat) Phaser.Geom.Rectangle.Inflate(r, 4, 4); // the fat laser is thicker
+        if (Phaser.Geom.Intersects.LineToRectangle(line, r)) s.hitTarget(t, w.damage * this.fatMult(p, true), false, p, 'laser');
       });
       p.beamUntil = time + w.delay + 30;
       Sfx.laser();
     },
   },
 
-  // Everything a weapon can hurt right now: live enemies and the boss.
+  // Everything a weapon can hurt right now: live enemies, breakable props and the boss.
   targets(s) {
-    const list = s.enemies.getChildren().filter((e) => e.alive);
+    const list = s.enemies.getChildren().filter((e) => e.alive).concat(s.props.getChildren().filter((o) => o.alive));
     if (s.boss && s.boss.alive && s.boss.state !== 'enter') list.push(s.boss);
     return list;
   },
@@ -198,12 +215,14 @@ const Weapons = {
     if (!(p.beamUntil > time) || !p.alive || p.vehicle) return this.clearBeam(p);
     const g = p.beam || (p.beam = p.scene.add.graphics().setDepth(12));
     const L = this.beamLine(p);
-    const flick = Math.floor(time / 40) % 2;
+    const flick = Math.floor(time / 40) % 2, k = p.fat ? 2.2 : 1;
     g.clear();
-    g.lineStyle(5, 0x3cff6a, flick ? 0.35 : 0.25).lineBetween(L.x1, L.y1, L.x2, L.y2);
-    g.lineStyle(2, 0x9dff9d, 0.9).lineBetween(L.x1, L.y1, L.x2, L.y2);
-    g.lineStyle(1, 0xffffff, 1).lineBetween(L.x1, L.y1, L.x2, L.y2);
-    g.fillStyle(0xeaffea, 1).fillCircle(L.x2, L.y2, flick ? 3 : 2);
+    g.lineStyle(5 * k + (p.fat && flick ? 2 : 0), 0x3cff6a, flick ? 0.35 : 0.25).lineBetween(L.x1, L.y1, L.x2, L.y2);
+    g.lineStyle(2 * k, 0x9dff9d, 0.9).lineBetween(L.x1, L.y1, L.x2, L.y2);
+    g.lineStyle(1 * k, 0xffffff, 1).lineBetween(L.x1, L.y1, L.x2, L.y2);
+    // Fat: an unstable ball of energy where the beam hits.
+    g.fillStyle(0xeaffea, 1).fillCircle(L.x2, L.y2, p.fat ? 5 + (flick ? 2 : 0) : flick ? 3 : 2);
+    if (p.fat) g.fillStyle(0x3cff6a, 0.4).fillCircle(L.x2, L.y2, 9 + (flick ? 2 : 0));
   },
 
   clearBeam(p) {
@@ -216,7 +235,7 @@ const Weapons = {
     const s = p.scene, C = CFG.MELEE;
     s.hitTarget(foe, C.DAMAGE, false, p, 'melee');
     const f = p.facing;
-    const tool = s.add.image(p.x + f * 4, p.y - 14, p.info.melee).setOrigin(0, 0.5).setDepth(11).setFlipX(f < 0);
+    const tool = s.add.image(p.x + f * 4, p.y - 14, p.fat ? 'melee_cucharon' : p.info.melee).setOrigin(0, 0.5).setDepth(11).setFlipX(f < 0);
     if (f < 0) tool.setOrigin(1, 0.5);
     tool.setRotation(-1.4 * f);
     s.tweens.add({ targets: tool, rotation: 0.7 * f, duration: 110, onComplete: () => tool.destroy() });
@@ -229,7 +248,10 @@ const Weapons = {
   PROJECTILES: {
     grenade: {
       ground: (s, b) => { if (++b.bounces >= 2) s.detonate(b); },
-      burst: (s, b) => s.explodeAt(b.x, b.y, CFG.GRENADE.radius, CFG.GRENADE.damage, true, 1, b.owner),
+      burst: (s, b) => {
+        const fat = b.owner && b.owner.fat, F = CFG.FAT;
+        s.explodeAt(b.x, b.y, CFG.GRENADE.radius * (fat ? F.GRENADE_RADIUS : 1), CFG.GRENADE.damage * (fat ? F.WEAPON : 1), true, fat ? 1.5 : 1, b.owner);
+      },
     },
     super: {
       ground: (s, b) => { if (++b.bounces >= 2) s.detonate(b); },
@@ -266,7 +288,7 @@ const Weapons = {
         const w = CFG.WEAPONS.rocket;
         Fx.firework(s, b.x, b.y);
         Sfx.firework();
-        s.damageEnemiesInRadius(b.x, b.y, w.radius, w.damage, true, b.owner);
+        s.damageEnemiesInRadius(b.x, b.y, w.radius, b.damage || w.damage, true, b.owner);
       },
     },
     rooster: {
@@ -290,8 +312,11 @@ const Weapons = {
     },
     stone: {
       burst: (s, b) => {
-        Fx.spark(s, b.x, b.y);
-        s.damageEnemiesInRadius(b.x, b.y, 4, CFG.STONE.damage, false, b.owner);
+        // Fat players throw boulders.
+        const boulder = b.owner && b.owner.fat;
+        if (boulder) Fx.puff(s, b.x, b.y, 1, 0x9a9a9a);
+        else Fx.spark(s, b.x, b.y);
+        s.damageEnemiesInRadius(b.x, b.y, boulder ? 12 : 4, boulder ? CFG.FAT.BOULDER_DAMAGE : CFG.STONE.damage, false, b.owner);
       },
     },
   },

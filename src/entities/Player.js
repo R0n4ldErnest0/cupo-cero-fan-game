@@ -31,6 +31,79 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     this.invulnUntil = 0;
     this.vehicle = null;
     this.bubbleOffset = 28;
+    this.resetBelly();
+  }
+
+  // ---------- food: fat and drunk ----------
+
+  resetBelly() {
+    this.fullness = 0;
+    this.fat = false;
+    this.lastAte = 0;
+    this.drinks = [];
+    this.drunkUntil = 0;
+    this.nextStumble = 0;
+    this.setScale(1);
+  }
+
+  get drunk() {
+    return this.scene.time.now < this.drunkUntil;
+  }
+
+  eat(id) {
+    const f = CFG.FOOD[id], s = this.scene, now = s.time.now;
+    this.lastAte = now;
+    Sfx.gulp();
+    if (f.diet && this.fat) return this.setFat(false);
+    if (f.cures && this.drunk) {
+      this.drunkUntil = 0;
+      this.drinks = [];
+      Fx.say(s, this, '¡Ya se me pasó!', 1200);
+    }
+    if (f.drink) {
+      const D = CFG.DRUNK;
+      this.drinks = this.drinks.filter((t) => now - t < D.WINDOW).concat(now);
+      if (this.drinks.length >= D.DRINKS) {
+        if (!this.drunk) Fx.say(s, this, '¡Hic! ¡Salud, causa!', 1400);
+        this.drunkUntil = now + D.MS;
+        this.drinks = [];
+      }
+    }
+    this.fullness += f.fill;
+    if (!this.fat && this.fullness >= CFG.FAT.AT) this.setFat(true);
+  }
+
+  setFat(on) {
+    const s = this.scene;
+    this.fat = on;
+    this.fullness = 0;
+    this.setScale(on ? CFG.FAT.SCALE_X : 1, 1);
+    if (on) {
+      Sfx.burp();
+      Fx.say(s, this, '¡BURP!', 1200);
+      s.message('', '¡GORDITO!', 1200);
+    } else {
+      Sfx.pickup();
+      Fx.say(s, this, '¡Ahora sí, en forma!', 1200);
+    }
+  }
+
+  // Drunk: random stumbles, hiccups. Fat: wears off after a while without eating.
+  updateBelly(time, move) {
+    const D = CFG.DRUNK;
+    if (this.fat && time - this.lastAte > CFG.FAT.SLIM_MS) this.setFat(false);
+    if (!this.drunk) return 0;
+    if (time > this.nextStumble) {
+      this.nextStumble = time + Phaser.Math.Between(...D.STUMBLE);
+      this.stumbleDir = Math.random() < 0.5 ? -1 : 1;
+      this.stumbleUntil = time + 260;
+      if (Math.random() < 0.35) {
+        Fx.say(this.scene, this, '¡hic!', 500);
+        Sfx.hic();
+      }
+    }
+    const sway = Math.sin(time / 260) * 25;
+    return (time < this.stumbleUntil ? this.stumbleDir * D.STUMBLE_SPEED : 0) + sway * (move ? 0.5 : 1);
   }
 
   get info() {
@@ -100,12 +173,13 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       else this.body.setSize(8, 20).setOffset(4, 4);
     }
 
-    this.setVelocityX(move * (this.crouching ? P.SPEED * 0.4 : P.SPEED));
+    const speed = P.SPEED * (this.fat ? CFG.FAT.SPEED : 1) * (this.crouching ? 0.4 : 1);
+    this.setVelocityX(move * speed + this.updateBelly(time, move));
     if (c.jumpP && onGround) {
       // ↓ + jump on a one-way floor drops through it instead of jumping.
       if (c.down && s.terrain.isOneWayAt(this.x, this.y + 2)) this.dropUntil = time + 250;
       else {
-        this.setVelocityY(-P.JUMP);
+        this.setVelocityY(-P.JUMP * (this.fat ? CFG.FAT.JUMP : 1));
         Sfx.jump();
       }
     }
@@ -204,6 +278,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     this.clearTint();
     this.setWeapon('pistol');
     this.resetThrowables();
+    this.resetBelly();
     this.invulnUntil = this.scene.time.now + CFG.PLAYER.INVULN_MS;
   }
 
