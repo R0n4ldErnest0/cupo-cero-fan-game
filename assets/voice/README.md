@@ -1,7 +1,8 @@
 # Announcer voice clips
 
-The game shouts the item name when you grab a crate ("HEAVY MACHINE GUN!", "¡ANTICUCHERA!") and
-"¡Misión cumplida!" at the end of a mission. Until real clips exist, `src/systems/Voice.js` uses the
+The game shouts the item name when you grab a crate ("HEAVY MACHINE GUN!", "¡ANTICUCHERA!"), and the
+arcade lines in English like Metal Slug: "Mission 1... start!" at the start of a mission and "Mission complete!"
+at the end. Until real clips exist, `src/systems/Voice.js` uses the
 browser's speech synthesis (robotic, placeholder).
 
 To use real recordings, put audio files here (`.ogg` or `.mp3`; `.wav` works too) and list them in a
@@ -21,7 +22,12 @@ To use real recordings, put audio files here (`.ogg` or `.mp3`; `.wav` works too
   "bombs": "bombas.ogg",
   "molotov": "molotov.ogg",
   "super": "super_granada.ogg",
-  "mission_complete": "mision_cumplida.ogg"
+  "start_1": "mission_1_start.ogg",
+  "start_2": "mission_2_start.ogg",
+  "start_3": "mission_3_start.ogg",
+  "start_4": "mission_4_start.ogg",
+  "start_final": "mission_final_start.ogg",
+  "mission_complete": "mission_complete.ogg"
 }
 ```
 
@@ -39,7 +45,9 @@ To use real recordings, put audio files here (`.ogg` or `.mp3`; `.wav` works too
 | bombs | "¡Bombas!" |
 | molotov | "¡Molotov!" |
 | super | "¡Súper granada!" |
-| mission_complete | "¡Misión cumplida!" |
+| start_1 … start_4 | "Mission 1… start!" (English, like the arcade) |
+| start_final | "Mission final… start!" |
+| mission_complete | "Mission complete!" |
 
 Recording tips: one short take per line (under ~1.5 s), deep and over the top, like an arcade
 announcer. Trim the silence at the start so it plays the instant you grab the crate. Normalize

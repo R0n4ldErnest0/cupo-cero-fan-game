@@ -5,11 +5,11 @@
 // Map key: see src/systems/Terrain.js. Rows 0-29, street top at row 27 (y = 432); the hill climbs to row 11.
 MISSIONS.push({
   id: 'ruta',
-  title: 'MISIÓN 3',
+  title: 'MISSION 3',
   subtitle: 'LA RUTA',
   name: 'LOS CERROS',
   draft: true,
-  outro: { title: '¡MISIÓN CUMPLIDA!', sub: 'En la estación espera... ¿un helicóptero de la policía?' },
+  outro: { sub: 'En la estación espera... ¿un helicóptero de la policía?' },
   sections: [
     // A — Cerros: up the hill to the Metropolitano stop. Leaves by the right edge.
     {

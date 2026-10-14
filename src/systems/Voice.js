@@ -1,4 +1,4 @@
-// Announcer voice ("HEAVY MACHINE GUN!", "¡ANTICUCHERA!", "¡MISIÓN CUMPLIDA!").
+// Announcer voice ("HEAVY MACHINE GUN!", "¡ANTICUCHERA!", "MISSION 1 START!", "MISSION COMPLETE!").
 // Recorded clips listed in assets/voice/voices.json ({ "mg": "mg.ogg", ... }, see assets/voice/README.md) play
 // through WebAudio. Lines without a clip (or when opened from file://) use the browser's speech synthesis as a
 // placeholder: robotic, but it needs no files.

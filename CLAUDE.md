@@ -21,7 +21,8 @@ See `ROADMAP.md` for the plan, level list and open decisions.
 - Goofy Metal Slug energy (exaggerated deaths, silly bosses, speech bubbles) on top of a serious theme.
 - **Fictional names only.** No real politicians, officers, gangs or real victims. Caricatures are fine.
 - In-game text is in **Peruvian Spanish** (limeño slang welcome: "causa", "chamba", "al fondo hay sitio").
-  Exception: the arcade classics "Heavy Machine Gun" (H) and "Rocket Launcher" (R) keep their English name and announcer line.
+  Exceptions, in English like the arcade: "Heavy Machine Gun" (H), "Rocket Launcher" (R) and the banners
+  "MISSION 1 START!" / "MISSION FINAL START!" / "MISSION COMPLETE!" (with the announcer).
   Code, comments and docs are in English.
 
 ## Tech

@@ -2,7 +2,9 @@
 // (script order in index.html). LevelScene builds everything from this data.
 //
 // Mission schema (x/y are world units, 1 tile = 16; y grows downward):
-//   id, title, subtitle        banner shown at the start ("MISIÓN 1", "¡PAGA O YA SABES!")
+//   id, title, subtitle        banner shown at the start: "<title> START!" + subtitle ("MISSION 1", "¡PAGA O YA SABES!");
+//                              the arcade banners and their announcer are in English, like Metal Slug
+//   final: true                the last mission: title 'MISSION FINAL' (its announcer line is start_final)
 //   name                       short name for the tally / stage select
 //   draft                      true while the mission is a greybox (shown as BORRADOR)
 //   terrain                    text map (see src/systems/Terrain.js). Without one the level is a flat street
@@ -34,7 +36,7 @@
 //   arena                      { alert: [title, sub], boss: 'cobrador' | 'truck' | 'contador' | 'heli' } (BOSSES) or
 //                              { alert, waves: [[{ dx, t, ... }], ...] } (dx relative to arenaX; < 0 enters from the left,
 //                              past the view width = runs in from the right edge)
-//   outro { title, sub }       mission-complete banner
+//   outro { title, sub }       mission-complete banner (title defaults to "MISSION COMPLETE!")
 //   story [{ type, ... }]      story pages shown after the outro, before the tally (see src/scenes/StoryScene.js)
 //
 // Sections: a mission can instead list `sections: [{ ... }]`, areas joined by a quick fade (like Metal Slug's

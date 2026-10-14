@@ -7,7 +7,7 @@
 // Rows 0-23, street top at row 22 (y = 352). Column c is at x = c * 16.
 MISSIONS.push({
   id: 'gamarra',
-  title: 'MISIÓN 2',
+  title: 'MISSION 2',
   subtitle: 'GAMARRA NO SE CIERRA',
   name: 'EL MERCADO',
   draft: true,
@@ -15,7 +15,7 @@ MISSIONS.push({
   legend: {
     h: { t: 'grunt', hp: 3, skin: 'thug2' },
   },
-  outro: { title: '¡MISIÓN CUMPLIDA!', sub: '¡Encontraste el libro de cupos!' },
+  outro: { sub: '¡Encontraste el libro de cupos!' },
   // After the boss: a page of the ledger (fictional names; the censored ones point at Missions 3-5).
   story: [
     {

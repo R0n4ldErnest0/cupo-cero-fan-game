@@ -94,8 +94,12 @@ class LevelScene extends Phaser.Scene {
     });
     if (data.carry) this.cameras.main.fadeIn(400, 0, 0, 0);
     else {
+      // Arcade banner + announcer, in English like Metal Slug: "MISSION 1 START!" / "MISSION FINAL START!".
       const sub = M.subtitle + (M.draft ? '\n(BORRADOR)' : '');
-      this.time.delayedCall(300, () => this.message(M.title, sub, 2600));
+      this.time.delayedCall(300, () => {
+        this.message(`${M.title} START!`, sub, 2600);
+        Voice.say(M.final ? 'start_final' : `start_${this.missionIndex + 1}`, `${M.title.toLowerCase()}... start!`, 'en');
+      });
     }
   }
 
@@ -986,9 +990,9 @@ class LevelScene extends Phaser.Scene {
     this.updateFreeze();
     Sfx.stopMusic();
     Sfx.fanfare();
-    Voice.say('mission_complete', 'Misión cumplida');
-    const O = this.mission.outro || { title: '¡MISIÓN CUMPLIDA!', sub: '' };
-    this.message(O.title, O.sub, 4500);
+    Voice.say('mission_complete', 'Mission complete!', 'en');
+    const O = this.mission.outro || {};
+    this.message(O.title || 'MISSION COMPLETE!', O.sub || '', 4500);
     // Prisoner bonus, like the arcade's tally: every rescue since your last death counts.
     this.players.forEach((p) => {
       p.rescueBonus = p.state === 'play' ? p.rescued * CFG.PRISONER.BONUS : 0;

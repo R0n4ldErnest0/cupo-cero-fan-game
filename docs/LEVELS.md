@@ -123,8 +123,10 @@ inside the ride.)
 - D **Escape:** steal the **rochabus** (water-cannon truck). Boss: the corrupt Comisario (filing-cabinet mech, or in the rochabus).
 - After the mission: story pages (the journalist airs the proof on TV; the union calls a strike and a march).
 
-**Missing:** indoor tiles (walls, ceilings, doors); police types (patrol, riot shield, motorcycle cop);
-rochabus vehicle; mid-boss and boss.
+**Missing:** indoor tiles (walls, ceilings, doors); rochabus vehicle; mid-boss and boss. (Police enemies: built.)
+
+**Decided:** you **drive the rochabus** (a vehicle: its water cannon pushes enemies back) on the escape; the boss is
+the Comisario in a **filing-cabinet mech** ("ARCHIVADO" stamps, flying complaint folders).
 
 ## Mission 5 — "Obra paralizada" 📝
 

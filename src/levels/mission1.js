@@ -2,10 +2,10 @@
 // armored mototaxi waits.
 MISSIONS.push({
   id: 'paradero',
-  title: 'MISIÓN 1',
+  title: 'MISSION 1',
   subtitle: '¡PAGA O YA SABES!',
   name: 'EL PARADERO',
-  outro: { title: '¡MISIÓN CUMPLIDA!', sub: '...¿contactos en la comisaría?' },
+  outro: { sub: '...¿contactos en la comisaría?' },
   sections: [
     // A — Paradero: the street. Leaves by the right edge (on foot or in the Combi Slug).
     {
