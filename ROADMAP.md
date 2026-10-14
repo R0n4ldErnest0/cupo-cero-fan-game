@@ -105,7 +105,7 @@ Full design, weapons list and build order: `docs/LEVELS.md`.
 ### M3 — Missions 2–3
 - [x] Mission 2 rooftops (greybox) + Mototaxi Slug (machine gun, grenades, bocinazo); gang shield thug and sniper
 - [x] Mission 2 almacén (greybox) + Camión Recaudador mid-boss
-- [ ] Mission 2 accountant boss ("El Contador") + the ledger beat
+- [x] Mission 2 accountant boss ("El Contador") + the ledger story page (StoryScene)
 - [ ] Art direction test on Mission 2 (decide the style before drawing everything)
 - [ ] Mission 3: cerros, Metropolitano, station + helicopter boss (all greybox ✅); real art
 

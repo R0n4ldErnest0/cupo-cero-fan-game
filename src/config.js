@@ -160,6 +160,8 @@ const CFG = {
   BOSS1: { HP: 70, RAGE_AT: 35, CHARGE_SPEED: 250, BULLET_SPEED: 100, RAGE_BULLET_SPEED: 125 },
   // Mission 2 mid-boss (src/entities/BossTruck.js): the armored collection truck.
   TRUCK: { HP: 80, TURRET_HP: 14, RAM_SPEED: 230, BULLET_SPEED: 120 },
+  // Mission 2 boss (src/entities/BossContador.js): the accountant's mech.
+  CONTADOR: { HP: 110, ARM_HP: 16, WALK: 22, STOMP_HEIGHT: 90, BILL_SPEED: 120, BOLETA_SPEED: 60 },
   // Mission 3 boss (src/entities/BossHeli.js): hovers HOVER px above the floor, comes down to DROP_HOVER to lower cops.
   HELI: { HP: 90, PART_HP: 15, HOVER: 100, DROP_HOVER: 64, DRIFT: 70, BULLET_SPEED: 130, MISSILE_SPEED: 120, MAX_ENEMIES: 3 },
 

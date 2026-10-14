@@ -1,7 +1,7 @@
 // Mission 2 — "Gamarra no se cierra" (greybox). A) market street with the first multi-floor gallery, the municipal
 // trench (pit) and a rubble mound (slopes), ending at the door of the second gallery; B) the second gallery and the
 // almacén yard, where the cuperos ambush you; C) the rooftops, with the Mototaxi Slug; D) the almacén, with the
-// collection-truck mid-boss. Still missing (docs/LEVELS.md): the accountant boss and the ledger; market art.
+// collection-truck mid-boss; E) the accountant's office (boss), then the ledger. Still missing: market art.
 //
 // Map key: see src/systems/Terrain.js. Floors are 3 tiles apart (the player jumps ~3.7 tiles).
 // Rows 0-23, street top at row 22 (y = 352). Column c is at x = c * 16.
@@ -15,7 +15,25 @@ MISSIONS.push({
   legend: {
     h: { t: 'grunt', hp: 3, skin: 'thug2' },
   },
-  outro: { title: '¡MISIÓN CUMPLIDA!', sub: 'EL LIBRO DE CUPOS: "Comisaría Sectorial — S/ 5,000"' },
+  outro: { title: '¡MISIÓN CUMPLIDA!', sub: '¡Encontraste el libro de cupos!' },
+  // After the boss: a page of the ledger (fictional names; the censored ones point at Missions 3-5).
+  story: [
+    {
+      type: 'ledger',
+      title: 'EL LIBRO DE CUPOS',
+      entries: [
+        { text: 'Combis "La Veloz" (ruta 13-B)', amount: 'S/ 2,000/día' },
+        { text: 'Gamarra: cada puesto', amount: 'S/ 20/día' },
+        { text: 'Colegio "Los Pinitos"', amount: 'S/ 500/mes' },
+        { text: 'Comisaría Sectorial (protección)', amount: 'S/ 5,000', mark: true },
+        { text: 'Regidor ██████ (permisos)', amount: 'S/ 10,000' },
+        { text: 'Para "EL JEFE" ████████████', amount: 'S/ 50,000', mark: true },
+      ],
+      footer: '— El Contador',
+    },
+    { type: 'talk', who: 'DON CHATO', text: 'La comisaría cobra su parte... ¿y quién es "el Jefe"?' },
+    { type: 'talk', who: 'EL MERCENARIO', text: 'El Cobrador escapó hacia los cerros. Si alguien sabe, es él.' },
+  ],
   sections: [
     // A — Market street. Leaves through the door of the second gallery (on foot: the combi stays outside).
     {
@@ -216,6 +234,34 @@ MISSIONS.push({
         { type: 'sign', x: 1700, y: 100, text: 'ZONA DE CARGA', bg: '#c06a1e' },
       ],
       arena: { alert: ['¡ALERTA!', 'CAMIÓN RECAUDADOR'], boss: 'truck' },
+    },
+    // E — The accountant's office: a small room and the boss, El Contador in his safe mech.
+    {
+      area: 'OFICINA',
+      bg: { sky: 0x505058, hills: 0x404048, city: 0x48484f },
+      terrain: String.raw`
+        |%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        |%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        |::::::::::::::::::::::::::::::::::
+        |::::::::::::::::::::::::::::::::::
+        |::::::::::::::::::::::::::::::::::
+        |::::::::::::::::::::::::::::::::::
+        |::::::::::::::::::::::::::::::::::
+        |::::::::::::::::::::::::::::::::::
+        |::::::::::::::::::::::::::::::::::
+        |::::::::::::::::::::::::::::::::::
+        |::::::::::::::::::::::::::::::::::
+        |:::::-----::::::::::::::-----:::::
+        |::::::::::::::::::::::::::::::::::
+        |:::@::::::::::::::::::::::::::::::
+        |##################################
+        |##################################`,
+      props: [{ x: 120, type: 'lootbag', drop: 'H' }],
+      decor: [
+        { type: 'sign', x: 150, y: 120, text: 'CONTABILIDAD\n"TODO CUADRA"', bg: '#1e5fb4' },
+        { type: 'sign', x: 420, y: 100, text: 'CAJA FUERTE', bg: '#1b1b22' },
+      ],
+      arena: { alert: ['¡ALERTA!', 'EL CONTADOR'], boss: 'contador' },
     },
   ],
 });

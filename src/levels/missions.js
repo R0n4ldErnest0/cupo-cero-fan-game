@@ -31,10 +31,11 @@
 //   events [{ x, say | message | run }]
 //                              fire once when a player passes x. say: { who, text, ms },
 //                              message: [title, sub, ms], run: (scene) => {}
-//   arena                      { alert: [title, sub], boss: 'cobrador' | 'truck' | 'heli' } (BOSSES in LevelScene) or
+//   arena                      { alert: [title, sub], boss: 'cobrador' | 'truck' | 'contador' | 'heli' } (BOSSES) or
 //                              { alert, waves: [[{ dx, t, ... }], ...] } (dx relative to arenaX; < 0 enters from the left,
 //                              past the view width = runs in from the right edge)
 //   outro { title, sub }       mission-complete banner
+//   story [{ type, ... }]      story pages shown after the outro, before the tally (see src/scenes/StoryScene.js)
 //
 // Sections: a mission can instead list `sections: [{ ... }]`, areas joined by a quick fade (like Metal Slug's
 // doors, holes and vehicles). Each section takes the per-area fields above (terrain, width, spawns, props,

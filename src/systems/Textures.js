@@ -215,6 +215,7 @@ const Textures = {
     this.heli(scene);
     this.mototaxi(scene);
     this.truck(scene);
+    this.contador(scene);
     this.combi(scene);
     this.boss(scene);
     this.biker(scene);
@@ -337,6 +338,34 @@ const Textures = {
     t.register(scene, 'truck');
     new Painter(16, 10).rect(2, 3, 12, 7, '#4a4f56').rect(0, 5, 6, 2, PAL.k).rect(5, 1, 6, 3, '#5a6068').outline().register(scene, 'truck_turret');
     new Painter(6, 6).disc(3, 3, 2, '#f2c94c').set(3, 3, '#c8a165').outline().register(scene, 'coin');
+  },
+
+  // Mission 2 boss: El Contador's mech (facing left, 80x74): a walking safe with the accountant in a glass cockpit
+  // on top; the bill-counting machines (breakable arms); bills, boletas and the ledger.
+  contador(scene) {
+    const m = new Painter(80, 74);
+    m.rect(22, 0, 36, 22, '#8fd0ee').rect(22, 0, 36, 2, '#d8eef8'); // glass cockpit
+    m.disc(40, 12, 5, PAL.s).rect(35, 6, 10, 3, '#2b1d14'); // the accountant's head + combed hair
+    m.rect(36, 12, 3, 2, PAL.k).rect(41, 12, 3, 2, PAL.k).rect(39, 12, 2, 1, PAL.k); // glasses
+    m.rect(37, 17, 6, 5, '#f4f4f4').rect(39, 17, 2, 5, '#c0282e'); // shirt + tie
+    m.rect(12, 22, 56, 36, '#5a6068').rect(12, 22, 56, 3, '#7d838b'); // the safe
+    m.disc(40, 40, 9, '#3a3d45').disc(40, 40, 6, '#9aa0a8').rect(39, 31, 2, 4, PAL.k); // dial
+    m.rect(58, 32, 4, 16, '#3a3d45'); // hinge
+    m.text('$', 22, 28, '#f2c94c').text('$', 54, 50, '#f2c94c');
+    m.rect(16, 58, 14, 12, '#3a3d45').rect(50, 58, 14, 12, '#3a3d45'); // legs
+    m.rect(12, 70, 22, 4, PAL.k).rect(46, 70, 22, 4, PAL.k); // feet
+    m.outline();
+    m.register(scene, 'contador_mech');
+    const c = new Painter(22, 16);
+    c.rect(2, 3, 18, 12, '#d8d8d8').rect(2, 3, 18, 2, '#f4f4f4').rect(0, 7, 4, 3, PAL.k); // the slot faces left
+    c.rect(6, 7, 10, 4, '#2e7d32').rect(7, 8, 8, 2, '#5fae5f').rect(14, 0, 2, 3, PAL.G);
+    c.outline();
+    c.register(scene, 'counter');
+    new Painter(10, 5).rect(0, 0, 10, 5, '#5fae5f').rect(1, 1, 8, 3, '#2e7d32').set(5, 2, '#a8e0a8').register(scene, 'bill');
+    new Painter(7, 9).rect(0, 0, 7, 9, '#f4f4f4').rect(1, 2, 5, 1, '#9aa0a8').rect(1, 4, 5, 1, '#9aa0a8').rect(1, 6, 3, 1, '#9aa0a8').register(scene, 'boleta');
+    const b = new Painter(14, 10);
+    b.rect(1, 1, 12, 8, '#7a2e2e').rect(2, 2, 10, 6, '#a84040').text('$', 5, 3, '#f2c94c').outline();
+    b.register(scene, 'ledger_book');
   },
 
   // Prisoner extras: tied up sitting on the floor, and saluting.

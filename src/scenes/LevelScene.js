@@ -2,7 +2,7 @@
 // Start with this.scene.start('Level', { mission: index, section: index }). A mission can be split into
 // `sections` (areas joined by a fade); each one is a fresh scene start with { carry: true }, so players keep
 // their lives, weapons, bombs, fat/drunk state and the Combi Slug they're driving.
-const BOSSES = { cobrador: BossCobrador, heli: BossHeli, truck: BossTruck };
+const BOSSES = { cobrador: BossCobrador, heli: BossHeli, truck: BossTruck, contador: BossContador };
 
 class LevelScene extends Phaser.Scene {
   constructor() {
@@ -676,9 +676,11 @@ class LevelScene extends Phaser.Scene {
     c.setVelocity(vx, vy).setAngularVelocity(300);
   }
 
-  enemyShoot(x, y, angle, speed = CFG.ENEMY.BULLET_SPEED) {
-    const b = this.eBullets.create(x, y, 'ebullet').setDepth(12);
+  enemyShoot(x, y, angle, speed = CFG.ENEMY.BULLET_SPEED, tex = 'ebullet') {
+    const b = this.eBullets.create(x, y, tex).setDepth(12);
+    if (tex !== 'ebullet') b.setRotation(angle);
     this.physics.velocityFromRotation(angle, speed, b.body.velocity);
+    return b;
   }
 
   // Thrown in an arc to land at (tx, ty) after T seconds. Coins hurt in flight but just clink when they land.
@@ -995,7 +997,9 @@ class LevelScene extends Phaser.Scene {
     this.savePlayers();
     this.time.delayedCall(5200, () => {
       this.scene.stop('HUD');
-      this.scene.start('MissionEnd', { mission: this.missionIndex, scores: this.scores() });
+      const end = { mission: this.missionIndex, scores: this.scores() };
+      if (this.mission.story) this.scene.start('Story', { pages: this.mission.story, next: 'MissionEnd', data: end });
+      else this.scene.start('MissionEnd', end);
     });
   }
 }

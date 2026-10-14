@@ -15,7 +15,7 @@ const game = new Phaser.Game({
     arcade: { gravity: { y: CFG.GRAVITY }, debug: CFG.DEBUG },
   },
   scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH },
-  scene: [BootScene, TitleScene, CharSelectScene, LevelScene, HUDScene, MissionEndScene, EndingScene, GameOverScene],
+  scene: [BootScene, TitleScene, CharSelectScene, LevelScene, HUDScene, StoryScene, MissionEndScene, EndingScene, GameOverScene],
 });
 
 // Arcade-style global keys, active in every scene: 5 = insert coin, F2 = toggle FREE PLAY,
