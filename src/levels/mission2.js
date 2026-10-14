@@ -36,7 +36,7 @@ MISSIONS.push({
     |                               ::::::::::::::g::::::::::::::t::::::::::::::                               t           :::::::g::::::::::::::s::::::::::::::::::::
     |                               ============================================                           /******\        ===========================================                       --------    ------
     |                               ::::::::::::::::::::::::::::::::::::::::::::                          /********\       :::::::::::::::::::::::::::::::::::::::::::
-    |        @               g      :::::::::g:::::::::::::::s::::::::::::::::::   g                b    /**********\g     :::::::::::::::::g:::::::::::::::::::::::::    g  V   b t
+    |        @               g      :::::::::g:::::::::::::::s::::::::::::::::::   k                b    /**********\g     :::::::::::::::::g:::::::::::::::::::::::::    k  V   b t
     |######################################################################################   #####################################################################################################################
     |######################################################################################   #####################################################################################################################`,
   crates: [{ x: 300, stack: 1 }, { x: 322, stack: 2 }],
@@ -46,8 +46,8 @@ MISSIONS.push({
     { x: 1640, kind: 'F' }, { x: 2400, kind: 'D' }, { x: 2560, kind: 'L' }, { x: 2650, kind: 'P' }, { x: 2720, kind: 'S' },
   ],
   decor: [
-    { type: 'text', x: 240, y: 186, text: 'Los cuperos cobran a cada puesto del mercado.\nEl gremio dice que tienen un libro de cuentas...', style: { fontSize: '10px', color: '#ffe066' } },
-    { type: 'controls', x: 240, y: 216 },
+    { type: 'text', x: 192, y: 216, text: 'Los cuperos cobran a cada puesto del mercado.\nEl gremio dice que tienen un libro de cuentas...', style: { fontSize: '10px', color: '#ffe066' } },
+    { type: 'controls', x: 192, y: 246 },
     { type: 'graffiti', x: 400, text: 'TODO A\nS/ 5', color: '#a81f25' },
     { type: 'sign', x: 848, y: 196, text: 'GALERÍA EL PROGRESO', bg: '#a81f25' },
     { type: 'graffiti', x: 1000, text: 'PUESTO CERRADO\nPOR AMENAZAS', color: '#1b1b22' },
@@ -62,13 +62,13 @@ MISSIONS.push({
   events: [
     { x: 1180, say: { who: 'fiscal', text: '¡Decomiso! Esas chompas no tienen permiso. ...¿Los de la pistola? No los vi.', ms: 3200 } },
   ],
-  // No boss yet: the arena is a locked-screen ambush in waves (y: 304 = on the planks).
+  // No boss yet: the arena is a locked-screen ambush in waves (y: 304 = on the planks; dx past the view = right edge).
   arena: {
     alert: ['¡EMBOSCADA!', 'LOS CUPEROS DEL ALMACÉN'],
     waves: [
-      [{ dx: 500, t: 'grunt' }, { dx: 520, t: 'grunt', skin: 'thug2' }, { dx: -20, t: 'grunt', variant: 'thrower' }],
-      [{ dx: 500, t: 'biker' }, { dx: 500, t: 'grunt', hp: 3 }, { dx: 360, y: 304, t: 'grunt' }, { dx: -40, t: 'grunt', skin: 'thug2' }],
-      [{ dx: 500, t: 'grunt', variant: 'thrower' }, { dx: 190, y: 304, t: 'grunt', variant: 'thrower' }, { dx: -20, t: 'grunt', hp: 3, skin: 'thug2' }, { dx: 500, t: 'biker' }],
+      [{ dx: 500, t: 'grunt' }, { dx: 520, t: 'grunt', skin: 'thug2' }, { dx: -20, t: 'grunt', variant: 'thrower' }, { dx: 500, t: 'grunt', variant: 'knife' }],
+      [{ dx: 500, t: 'biker' }, { dx: 500, t: 'grunt', hp: 3 }, { dx: 264, y: 304, t: 'grunt' }, { dx: -40, t: 'grunt', skin: 'thug2' }],
+      [{ dx: 500, t: 'grunt', variant: 'thrower' }, { dx: 94, y: 304, t: 'grunt', variant: 'thrower' }, { dx: -20, t: 'grunt', hp: 3, skin: 'thug2' }, { dx: 500, t: 'biker' }],
     ],
   },
   outro: { title: '¡MISIÓN CUMPLIDA!', sub: 'EL LIBRO DE CUPOS: "Comisaría Sectorial — S/ 5,000"' },

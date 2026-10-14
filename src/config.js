@@ -1,17 +1,17 @@
-// Global tuning. World units are "pixels" of the 480x270 view (camera zoom 2 on a 960x540 canvas).
+// Global tuning. World units are "pixels" of the 384x216 view (camera zoom 2.5 on a 960x540 canvas).
 const FONT = '"Courier New", Courier, monospace';
 
 const CFG = {
   WIDTH: 960,
   HEIGHT: 540,
-  ZOOM: 2,
-  VIEW_W: 480,
-  VIEW_H: 270,
+  ZOOM: 2.5,
+  VIEW_W: 384, // = WIDTH / ZOOM
+  VIEW_H: 216, // = HEIGHT / ZOOM
   GROUND_Y: 240,
   GRAVITY: 900,
   DEBUG: /[?&]debug/.test(location.search),
 
-  PLAYER: { SPEED: 95, JUMP: 330, INVULN_MS: 2500, START_BOMBS: 10, CAM_LEAD: 200 },
+  PLAYER: { SPEED: 95, JUMP: 330, INVULN_MS: 2500, START_BOMBS: 10, CAM_LEAD: 160 },
 
   // Arcade-style credits. Key 5 inserts a coin, F2 toggles FREE PLAY (infinite credits).
   CREDITS: { START: 3, LIVES_PER_CREDIT: 5, CONTINUE_SECONDS: 10, MAX: 99 },
@@ -52,16 +52,24 @@ const CFG = {
     ball: { name: 'PELOTA DE FULBITO', letter: 'F', voice: 'Fulbito', delay: 200, hold: 280, ammo: 30, speed: 150, hop: 230, life: 2600, damage: 3 },
     drone: { name: 'DRON DE DELIVERY', letter: 'D', voice: 'Dron', delay: 180, hold: 260, ammo: 30, speed: 150, maxSpeed: 230, turn: 7, damage: 2 },
     laser: { name: 'PUNTERO LÁSER', letter: 'L', voice: 'Láser', delay: 80, hold: 80, ammo: 150, damage: 1, range: 480 },
-    stones: { name: 'PIEDRAS', letter: 'P', delay: 90, hold: 200, ammo: 100, speed: 300, lift: 0.25, damage: 1 },
   },
 
-  // Throwables (crate letter -> item). B adds 10 of the current type; M turns them all into molotovs (+10);
-  // S is one super grenade, thrown before the others.
+  // Throwable pickups (crate letter / map marker -> item). B adds a refill of the current type; M and P turn all
+  // your throwables into molotovs / stones and add a refill; S is one super grenade, thrown before the others.
+  // P (Piedras) is not a lettered crate: it's a drawn pile of stones with a floating sign (icon: true).
   THROWABLES: {
     B: { id: 'bombs', name: 'BOMBAS', voice: 'Bombas' },
     M: { id: 'molotov', name: 'MOLOTOV', voice: 'Molotov' },
+    P: { id: 'stones', name: 'PIEDRAS', voice: 'Piedras', icon: true },
     S: { id: 'super', name: 'SÚPER GRANADA', voice: 'Súper granada' },
   },
+  // Throwable types: HUD name and how many a pickup gives.
+  THROW_TYPES: {
+    grenade: { name: 'GRANADAS', refill: 10 },
+    molotov: { name: 'MOLOTOV', refill: 10 },
+    stones: { name: 'PIEDRAS', refill: 30 },
+  },
+  STONE: { damage: 2, vx: 250, vy: -130 },
   GRENADE: { damage: 5, radius: 34, vx: 140, vy: -210 },
   MOLOTOV: { damage: 3, radius: 18, fireMs: 1600, fireDamage: 1, fireTick: 250, fireWidth: 36 },
   SUPER_GRENADE: { damage: 30, radius: 130 },
@@ -69,7 +77,13 @@ const CFG = {
   // Melee: when an enemy is this close in front, fire hits it instead of shooting.
   MELEE: { RANGE: 22, DAMAGE: 5, DELAY: 200 },
 
-  ENEMY: { BULLET_SPEED: 150, GRUNT_SPEED: 35, BIKER_SPEED: 150, BOMB_RADIUS: 20 },
+  // Enemy bullets are slow enough to see and jump over, like the arcade. Gunners stop and aim (AIM_MS) before
+  // each shot. Any grunt stabs a player who gets within KNIFE_RANGE, after KNIFE_WINDUP ms of warning.
+  ENEMY: {
+    BULLET_SPEED: 95, GRUNT_SPEED: 35, BIKER_SPEED: 150, BOMB_RADIUS: 20,
+    FIRST_SHOT: [1200, 2200], SHOT_GAP: [2200, 3800], AIM_MS: 400,
+    KNIFE_RANGE: 20, KNIFE_REACH: 24, KNIFE_WINDUP: 350, KNIFE_COOLDOWN: 900, KNIFER_SPEED: 70,
+  },
 
   COMBI: {
     SPEED: 115, JUMP: 300, HP: 5,
@@ -80,7 +94,7 @@ const CFG = {
 
   ABUELITA: { DURATION: 22000, THROW_DELAY: 1000, RANGE: 230, DAMAGE: 2, SPLASH: 16 },
 
-  BOSS1: { HP: 70, RAGE_AT: 35, CHARGE_SPEED: 250 },
+  BOSS1: { HP: 70, RAGE_AT: 35, CHARGE_SPEED: 250, BULLET_SPEED: 100, RAGE_BULLET_SPEED: 125 },
 
   // Level layouts live in src/levels/missionN.js.
 };

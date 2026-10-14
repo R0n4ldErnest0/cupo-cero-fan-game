@@ -88,7 +88,7 @@ class HUDScene extends Phaser.Scene {
       set(
         `${i + 1}P ${p.info.name}`,
         `VIDAS x${p.lives}   ${String(p.score).padStart(7, '0')}`,
-        `${CFG.WEAPONS[p.weapon].name} ${p.ammo === Infinity ? '∞' : p.ammo}   ${p.bombType === 'molotov' ? 'MOLOTOV' : 'GRANADAS'} ${p.bombs}${p.superBombs ? ` +${p.superBombs} SÚPER` : ''}`,
+        `${CFG.WEAPONS[p.weapon].name} ${p.ammo === Infinity ? '∞' : p.ammo}   ${CFG.THROW_TYPES[p.bombType].name} ${p.bombs}${p.superBombs ? ` +${p.superBombs} SÚPER` : ''}`,
         v ? `COMBI ${'■'.repeat(Math.max(0, v.hp))}  CAÑÓN ${v.cannon}` : '',
       );
     } else if (p.state === 'continue') {

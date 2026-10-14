@@ -9,7 +9,7 @@
 //                              with its top at CFG.GROUND_Y = 240
 //   legend { ch: def }         extra map markers, e.g. h: { t: 'grunt', hp: 3 }
 //   width                      level length (default: map width)
-//   arenaX                     the camera locks here; the arena spans arenaX .. width (default: width - 480)
+//   arenaX                     the camera locks here; the arena spans arenaX .. width (default: width - CFG.VIEW_W)
 //   start { x }                player start (or an '@' marker)
 //   bg                         optional tints { sky, hills, city }
 // Objects can be listed here or placed as letter markers in the map. Without a y they stand at street level.
@@ -18,13 +18,14 @@
 //   crates [{ x, stack }]      one-way platforms
 //   pickups [{ x, kind }]      a crate letter (guns H R A E G F D L P, throwables B M S; see CFG) or 'food'
 //   spawns [{ x, t, ... }]     enemies, spawned when x reaches the right screen edge.
-//                              t: 'grunt' (skin, variant, y, hp) or 'biker' (enters from the right edge)
+//                              t: 'grunt' (skin, variant 'gunner' | 'thrower' | 'knife', y, hp) or 'biker'
 //   decor [{ type, ... }]      'text' | 'controls' | 'image' | 'graffiti' | 'sign' | 'copcar'; an `id`
 //                              makes it addressable by events. text and sign need a y
 //   events [{ x, say | message | run }]
 //                              fire once when a player passes x. say: { who, text, ms },
 //                              message: [title, sub, ms], run: (scene) => {}
 //   arena                      { alert: [title, sub], boss: 'cobrador' } or
-//                              { alert, waves: [[{ dx, t, ... }], ...] } (dx relative to arenaX; < 0 enters from the left)
+//                              { alert, waves: [[{ dx, t, ... }], ...] } (dx relative to arenaX; < 0 enters from the left,
+//                              past the view width = runs in from the right edge)
 //   outro { title, sub }       mission-complete banner
 const MISSIONS = [];

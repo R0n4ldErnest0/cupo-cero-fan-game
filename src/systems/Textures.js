@@ -146,6 +146,7 @@ const SKINS = {
   cobradora: { head: 'cobradora', pal: { C: '#2aa198', P: '#2c4f86', F: '#f4f4f4' } },
   thug: { head: 'thug', pal: { Q: '#2a2a30', X: '#c0282e', C: '#3a3d45', P: '#3a5fa0', F: '#e8e8e8' } },
   thug2: { head: 'thug', pal: { Q: '#3c6e3a', X: '#1b1b22', C: '#7a2e2e', P: '#2b2b33', F: '#e8e8e8' } },
+  thug3: { head: 'thug', pal: { Q: '#c0282e', X: '#1b1b22', C: '#e8e8e8', P: '#2b2b33', F: '#c0282e' } }, // knife runner
   cobrador: { head: 'driver', pal: { H: '#f4f4f4', M: '#1b1b22', C: '#e3b23c', P: '#1b1b22', F: '#f4f4f4' } },
 };
 
@@ -383,6 +384,10 @@ const Textures = {
       p.register(scene, `fire${f}`);
     }
 
+    // Enemy knife (chaveta), handle on the left.
+    new Painter(11, 4).rect(0, 1, 3, 2, '#5b3a20').rect(3, 0, 1, 4, '#5a6068').rect(4, 1, 6, 2, '#d8dde3').set(10, 1, '#d8dde3').outline()
+      .register(scene, 'knife');
+
     // Melee tools, handle on the left.
     new Painter(14, 7).rect(0, 3, 12, 1, '#9aa0a8').rect(11, 0, 1, 7, '#9aa0a8').rect(10, 0, 3, 1, '#5a6068').rect(10, 6, 3, 1, '#5a6068').outline()
       .register(scene, 'melee_tireiron');
@@ -440,7 +445,19 @@ const Textures = {
     };
     Object.values(CFG.WEAPONS).forEach((w) => w.letter && box(w.letter, PAL.y));
     const TH = { bombs: '#9fd36a', molotov: '#ff9d2e', super: '#d8343a' };
-    Object.entries(CFG.THROWABLES).forEach(([letter, t]) => box(letter, TH[t.id], t.id === 'super' ? PAL.y : PAL.r));
+    Object.entries(CFG.THROWABLES).forEach(([letter, t]) => !t.icon && box(letter, TH[t.id], t.id === 'super' ? PAL.y : PAL.r));
+
+    // Piedras: a pile of stones (no letter) + a little hand-painted sign that floats above it.
+    const st = new Painter(22, 14);
+    [[5, 9, 4], [12, 9, 4], [17, 10, 3], [8, 5, 3], [14, 5, 3], [11, 2, 2]].forEach(([x, y, r], i) => {
+      st.disc(x, y, r, i % 2 ? '#8a8a8a' : '#a3a3a3').set(x - 1, y - 1, '#c8c8c8');
+    });
+    st.rect(2, 12, 18, 1, '#6e6a62').outline();
+    st.register(scene, 'pick_P');
+    const sg = new Painter(Painter.textWidth('PIEDRAS') + 6, 11);
+    sg.rect(0, 0, sg.w, 8, '#c8955a').rect(0, 7, sg.w, 1, '#6e4a26').text('PIEDRAS', 3, 2, '#1b1b22');
+    sg.rect(Math.floor(sg.w / 2), 8, 1, 3, '#6e4a26').outline();
+    sg.register(scene, 'sign_P');
     const f = new Painter(16, 12);
     f.rect(1, 1, 14, 3, '#e2b26a').rect(1, 4, 14, 2, '#7a3b1e').rect(1, 6, 14, 1, '#d23b6a').rect(1, 7, 14, 1, '#f2e2c0').rect(1, 8, 14, 2, '#e2b26a');
     f.set(4, 2, '#f2d29a').set(9, 2, '#f2d29a').outline();

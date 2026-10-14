@@ -1,5 +1,6 @@
 // Item drops. kind = a crate letter (guns: CFG.WEAPONS[].letter, throwables: CFG.THROWABLES) or 'food'
 // (pan con chicharrón, score). Crates announce their name like the arcade ("HEAVY MACHINE GUN!").
+// Icon items (Piedras) are a drawing instead of a lettered crate, with a little sign bobbing above them.
 class Pickup extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y, kind) {
     super(scene, x, y, `pick_${kind}`);
@@ -7,6 +8,18 @@ class Pickup extends Phaser.Physics.Arcade.Sprite {
     scene.physics.add.existing(this);
     this.kind = kind;
     this.setOrigin(0.5, 1).setDepth(5);
+    const thr = CFG.THROWABLES[kind];
+    if (thr && thr.icon) this.sign = scene.add.image(x, y, `sign_${kind}`).setOrigin(0.5, 1).setDepth(5);
+  }
+
+  preUpdate(time, delta) {
+    super.preUpdate(time, delta);
+    if (this.sign) this.sign.setPosition(Math.round(this.x), Math.round(this.y - this.height - 3 + Math.sin(time / 220) * 2));
+  }
+
+  destroy(fromScene) {
+    if (this.sign) this.sign.destroy();
+    super.destroy(fromScene);
   }
 
   collect(p) {
@@ -23,7 +36,8 @@ class Pickup extends Phaser.Physics.Arcade.Sprite {
       id = gun;
     } else if (thr) {
       p.giveThrowable(thr.id);
-      name = thr.id === 'bombs' && p.bombType === 'molotov' ? 'MOLOTOV +10' : thr.id === 'bombs' ? 'GRANADAS +10' : thr.name;
+      const T = CFG.THROW_TYPES[p.bombType];
+      name = thr.id === 'bombs' ? `${T.name} +${T.refill}` : thr.name;
       voice = thr.voice;
       id = thr.id;
     } else {

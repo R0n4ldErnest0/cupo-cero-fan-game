@@ -67,12 +67,12 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     this.superBombs = 0;
   }
 
-  // B: +10 of the current type. M: all of them become molotovs, +10. S: one super grenade.
+  // B: a refill of the current type. M / P: all of them become molotovs / stones, plus a refill. S: one super grenade.
   giveThrowable(id) {
     if (id === 'super') this.superBombs++;
     else {
-      if (id === 'molotov') this.bombType = 'molotov';
-      this.bombs += 10;
+      if (id === 'molotov' || id === 'stones') this.bombType = id;
+      this.bombs += CFG.THROW_TYPES[this.bombType].refill;
     }
   }
 

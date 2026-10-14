@@ -1,7 +1,7 @@
 // Gun behaviors, melee and player projectiles. Tuning lives in CFG.WEAPONS / CFG.MOLOTOV / CFG.MELEE.
 //
 // Projectiles that fly straight are in scene.pBullets (stopped by walls, hit on overlap). Projectiles that
-// touch the ground (grenades, rockets, roosters, balls, stones) are in scene.pBombs and are handled by kind in
+// touch the ground (grenades, stones, rockets, roosters, balls) are in scene.pBombs and are handled by kind in
 // PROJECTILES below: ground(scene, b) runs on landing (default: burst), burst(scene, b) is the impact.
 // Anything with a step(time, dt) method is updated every frame by LevelScene.
 
@@ -162,17 +162,6 @@ const Weapons = {
       p.beamUntil = time + w.delay + 30;
       Sfx.laser();
     },
-
-    // Thrown stones: fast, arcing, weak, lots of them.
-    stones(s, p, w, m) {
-      const lift = p.aim === 'fwd' ? -w.lift * p.facing : 0;
-      const st = s.pBombs.create(m.x, m.y, 'stone').setDepth(12);
-      st.kind = 'stone';
-      st.owner = p;
-      s.physics.velocityFromRotation(m.angle + lift, w.speed, st.body.velocity);
-      st.setAngularVelocity(720);
-      Sfx.stone();
-    },
   },
 
   // Everything a weapon can hurt right now: live enemies and the boss.
@@ -302,7 +291,7 @@ const Weapons = {
     stone: {
       burst: (s, b) => {
         Fx.spark(s, b.x, b.y);
-        s.damageEnemiesInRadius(b.x, b.y, 4, CFG.WEAPONS.stones.damage, false, b.owner);
+        s.damageEnemiesInRadius(b.x, b.y, 4, CFG.STONE.damage, false, b.owner);
       },
     },
   },

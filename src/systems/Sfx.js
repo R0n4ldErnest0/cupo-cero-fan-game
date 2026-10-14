@@ -115,6 +115,8 @@ const Sfx = {
   drone() { this.tone('sawtooth', 900, 1100, 0.12, 0.04, { vibrato: 40 }); },
   laser() { this.tone('square', 1800, 1500, 0.07, 0.03); },
   stone() { this.noise(0.08, 0.1, { type: 'bandpass', f0: 2500, f1: 1200 }); },
+  knifeDraw() { this.tone('triangle', 1400, 2600, 0.1, 0.05); },
+  slash() { this.noise(0.12, 0.25, { type: 'highpass', f0: 2500, f1: 6000 }); },
   whack() { this.tone('square', 200, 60, 0.08, 0.14); this.noise(0.06, 0.2, { f0: 1500 }); },
   firework() {
     if (!this.ctx) return;

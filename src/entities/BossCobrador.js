@@ -121,7 +121,7 @@ class BossCobrador extends Phaser.Physics.Arcade.Sprite {
     const g = this.gunPos();
     const base = Phaser.Math.Angle.Between(g.x, g.y, t.x, t.y - 12);
     const n = this.rage ? 5 : 3;
-    for (let i = 0; i < n; i++) this.scene.enemyShoot(g.x, g.y, base + (i - (n - 1) / 2) * 0.18, this.rage ? 185 : 155);
+    for (let i = 0; i < n; i++) this.scene.enemyShoot(g.x, g.y, base + (i - (n - 1) / 2) * 0.18, this.rage ? CFG.BOSS1.RAGE_BULLET_SPEED : CFG.BOSS1.BULLET_SPEED);
     Sfx.enemyShot();
   }
 

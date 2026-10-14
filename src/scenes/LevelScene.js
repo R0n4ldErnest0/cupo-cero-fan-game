@@ -482,8 +482,15 @@ class LevelScene extends Phaser.Scene {
     return b;
   }
 
-  // kind: 'grenade' (bounces, then a timer), 'molotov' (bursts on landing) or 'super'.
+  // kind: 'grenade' (bounces, then a timer), 'molotov' (bursts on landing), 'stones' (fast low throw) or 'super'.
   throwGrenade(x, y, vx, vy, owner, kind = 'grenade') {
+    if (kind === 'stones') {
+      const st = this.pBombs.create(x, y, 'stone').setDepth(12);
+      st.kind = 'stone';
+      st.owner = owner;
+      st.setVelocity(Math.sign(vx) * CFG.STONE.vx + (vx - Math.sign(vx) * CFG.GRENADE.vx), CFG.STONE.vy).setAngularVelocity(720);
+      return;
+    }
     const g = this.pBombs.create(x, y, kind === 'molotov' ? 'molotov' : 'grenade').setDepth(12);
     g.kind = kind;
     g.owner = owner;
@@ -710,7 +717,8 @@ class LevelScene extends Phaser.Scene {
     W.pending = wave.length;
     wave.forEach((s, i) => this.time.delayedCall(i * 450, () => {
       if (this.finished) return;
-      this.spawnEnemy(s, this.arenaX + s.dx);
+      // dx past the view means "run in from the right edge" (the view size depends on CFG.ZOOM).
+      this.spawnEnemy(s, this.arenaX + Math.min(s.dx, CFG.VIEW_W + 24));
       W.pending--;
     }));
   }

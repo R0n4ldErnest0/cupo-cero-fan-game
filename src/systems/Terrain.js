@@ -25,13 +25,14 @@ const ONE_WAY = { slab: 1, plank: 1 };
 const SLOPE = { up: 1, down: 1 };
 
 // Default object markers. Missions can add their own in `legend` (same format).
-// Lowercase = enemies (spawn definitions { t, skin, variant, hp }). Uppercase = item crates, using the letter
+// Lowercase = enemies (spawn definitions { t, skin, variant, hp }; k = knife runner). Uppercase = item crates, using the letter
 // the crate shows (CFG.WEAPONS / CFG.THROWABLES: H R A E G F D L P guns, B M S throwables).
 // Others: @ player start, W abuelita, V Combi Slug, O food (pan con chicharrón).
 const MAP_LEGEND = {
   g: { t: 'grunt' },
   s: { t: 'grunt', skin: 'thug2' },
   t: { t: 'grunt', variant: 'thrower' },
+  k: { t: 'grunt', variant: 'knife' },
   b: { t: 'biker' },
   O: { pickup: 'food' },
   W: { abuelita: true },

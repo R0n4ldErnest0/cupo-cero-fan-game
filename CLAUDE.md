@@ -28,8 +28,8 @@ See `ROADMAP.md` for the plan, level list and open decisions.
 - **Phaser 3.80.1**, vendored at `lib/phaser.min.js` (no CDN, works offline).
 - Plain classic `<script>` tags, **no build step, no modules**. Files share globals; load order is
   defined in `index.html`. Keep it that way unless we deliberately add a bundler.
-- Arcade physics. Game canvas is 960x540; the level camera uses zoom 2, so the world is authored in
-  480x270 "pixel" units. The HUD runs in its own scene at zoom 1.
+- Arcade physics. Game canvas is 960x540; the level camera uses zoom 2.5 (`CFG.ZOOM`), so the view is
+  384x216 world "pixel" units (`CFG.VIEW_W/H`); never hardcode the view size. The HUD runs in its own scene at zoom 1.
 - **All placeholder art is generated in code** (`src/systems/Textures.js`): small sprites are ASCII
   pixel grids + palettes, larger ones (combi, boss, backgrounds) use Painter primitives (rect, disc, line, 3x5 text).
   Replace with real sprite sheets later by loading images under the same texture keys.

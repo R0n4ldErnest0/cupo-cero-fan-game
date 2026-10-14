@@ -98,6 +98,10 @@ replaces it. Throwables are counted separately. You lose your weapon when you di
 and announcer line: **H** "Heavy Machine Gun!" and **R** "Rocket Launcher!". The crate letter is also the map
 marker. Tuning: `CFG.WEAPONS` / `CFG.THROWABLES` in `src/config.js`; behavior: `src/systems/Weapons.js`.
 
+**Enemies** (arcade feel): bullets are slow enough to see and jump over; gunners stop and aim for 0.4 s before each
+shot, 2.2–3.8 s apart. Any grunt pulls a knife if you get right next to it (0.35 s warning, "¡!"), and knife runners
+(map marker `k`) charge at you. Tuning in `CFG.ENEMY`.
+
 **Fire rate:** every press shoots as soon as the gun allows (a slightly early press is kept, never lost), so tapping
 faster shoots faster, like the arcade pistol. Holding fire repeats at a slower rate (machine gun and laser: full rate).
 
@@ -112,9 +116,9 @@ faster shoots faster, like the arcade pistol. Holding fire repeats at a slower r
 | F | **Pelota de fulbito** | Drop Shot | bouncing balls that hop along the floor | 30 |
 | D | **Dron de delivery** | Enemy Chaser | small drones that chase enemies | 30 |
 | L | **Puntero láser** | Laser | green beam that cuts through every enemy in a line, up to a wall | 150 |
-| P | **Piedras** | — (ours) | thrown stones: fast, arcing, weak, lots of them | 100 |
-| B | **Bombas** | Bomb | +10 of the current throwable (start: 10 grenades) | |
+| B | **Bombas** | Bomb | a refill of the current throwable (+10 grenades / molotovs, +30 stones; start: 10 grenades) | |
 | M | **Molotov** | Fire Bomb (MS3) | all your throwables become molotovs (+10): they burst in flames that stay on the floor | |
+| P | **Piedras** | — (ours) | throwable, not a gun: all your throwables become stones (+30). Fast, low arc, weak, lots of them. The pickup is a drawn pile of stones with a floating sign, no letter | |
 | S | **Súper granada** | Super Grenade | one huge grenade that clears the screen; thrown before the others | |
 | — | **Melee** | Knife | an enemy right in front: fire hits instead of shooting. Don Chato: tire iron. Sargento: police baton. Mercenario: machete. Cobradora: coin bag | |
 | | Vehicle weapons | | Combi Slug ✅, Mototaxi Slug, helicopter, rochabus | |
@@ -123,8 +127,10 @@ All placeholder art and tuning; damage numbers need playtesting. Testing: **F6**
 the Mission 2 greybox has one crate of each.
 
 **Announcer voice:** `src/systems/Voice.js` plays recorded clips from `assets/voice/` (see its README) and falls
-back to the browser's speech synthesis until we have them. ❓ Who records them: a person (best), or an AI voice
-(disclose on itch.io).
+back to the browser's speech synthesis until we have them. Direction: a **fictional** announcer in the style of a
+chicha/cumbia show host (over-the-top tropical energy). Not a real person's voice (no cloning or imitating real
+artists without their consent). ❓ Who records: a friend/actor (best), an AI voice (ElevenLabs paid plan for commercial
+use; disclose on itch.io), or Piper (free, offline, more robotic).
 
 ---
 

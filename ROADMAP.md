@@ -84,6 +84,7 @@ Full design, weapons list and build order: `docs/LEVELS.md`.
 - [ ] Sections: missions made of several parts with transitions
 - [x] Weapons: letter pickups, ammo, HUD; Rocket Launcher, Anticuchera, Escopeta, Gallo de pelea, Pelota, Dron, Láser,
       Piedras; Molotov, Súper granada; per-character melee; tap-to-shoot pistol cadence
+- [x] Enemy feel: slower bullets, aim before shooting, knife attack, knife runners; camera zoom 2.5 (bigger characters)
 - [x] Announcer voice on pickups (browser speech placeholder until clips are recorded in `assets/voice/`)
 - [ ] Rescuable people (POWs) that drop weapons and items
 - [ ] Auto-scroll mode (train roof, air level)
@@ -108,6 +109,8 @@ Full design, weapons list and build order: `docs/LEVELS.md`.
 - [ ] Balance, polish, accessibility options
 - [ ] Spanish / English text
 - [ ] itch.io page (free; disclose AI-generated assets if any)
+- [ ] Final name of the F weapon: keep "Pelota de fulbito" or go back to the arcade's "Drop Shot" (D, English;
+      the Dron would move to C, e.g. "Chasqui") or a Spanish name like "Tiro de rebote" (T)
 
 ## Open questions (need answers)
 
