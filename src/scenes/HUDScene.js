@@ -1,4 +1,4 @@
-// HUD overlay at native 960x540: P1 top-left, P2 top-right, boss bar bottom, credits bottom-left.
+// HUD overlay at native 960x540: P1 top-left, P2 top-right, credits bottom-left (no boss bar, like the arcade).
 class HUDScene extends Phaser.Scene {
   constructor() {
     super('HUD');
@@ -20,8 +20,6 @@ class HUDScene extends Phaser.Scene {
       };
     });
 
-    this.bossBar = this.add.graphics();
-    this.tBoss = this.add.text(480, 474, '', Object.assign({}, small, { fontSize: '14px' })).setOrigin(0.5, 1);
     this.tCredits = this.add.text(16, 528, '', Object.assign({}, small, { fontSize: '14px', color: '#ffe066' })).setOrigin(0, 1);
     this.add.text(944, 528, 'P pausa · M sonido · 5 moneda · F2 free play', Object.assign({}, small, { fontSize: '12px', strokeThickness: 3 }))
       .setOrigin(1, 1).setAlpha(0.7);
@@ -65,16 +63,6 @@ class HUDScene extends Phaser.Scene {
     if (!lv || !lv.players || lv.players.some((p) => !p.scene)) return;
     lv.players.forEach((p, i) => this.drawSlot(this.slots[i], p, i, time));
     this.tCredits.setText(Session.creditText());
-
-    const g = this.bossBar;
-    g.clear();
-    const hp = this.registry.get('bossHp'), max = this.registry.get('bossMax');
-    if (hp > 0) {
-      const w = 360, x = 480 - w / 2, y = 480;
-      g.fillStyle(0x000000, 0.8).fillRect(x - 3, y - 3, w + 6, 18);
-      g.fillStyle(0xc0282e).fillRect(x, y, (w * hp) / max, 12);
-      this.tBoss.setText(this.registry.get('bossName'));
-    } else this.tBoss.setText('');
   }
 
   drawSlot(s, p, i, time) {

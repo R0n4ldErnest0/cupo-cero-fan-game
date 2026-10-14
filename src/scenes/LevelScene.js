@@ -2,7 +2,7 @@
 // Start with this.scene.start('Level', { mission: index, section: index }). A mission can be split into
 // `sections` (areas joined by a fade); each one is a fresh scene start with { carry: true }, so players keep
 // their lives, weapons, bombs, fat/drunk state and the Combi Slug they're driving.
-const BOSSES = { cobrador: BossCobrador };
+const BOSSES = { cobrador: BossCobrador, heli: BossHeli };
 
 class LevelScene extends Phaser.Scene {
   constructor() {
@@ -37,7 +37,6 @@ class LevelScene extends Phaser.Scene {
     this.frozen = false;
     this.boss = null;
     this.fires = [];
-    this.registry.set({ bossHp: 0, bossMax: 1, bossName: '' });
     // Clock and tweens survive a scene restart; make sure a previous freeze doesn't carry over.
     this.time.paused = false;
     this.tweens.resumeAll();
@@ -88,7 +87,10 @@ class LevelScene extends Phaser.Scene {
     this.scene.stop('HUD');
     this.scene.launch('HUD');
     Sfx.startMusic();
-    this.events.once('shutdown', () => { if (!this.keepMusic) Sfx.stopMusic(); });
+    this.events.once('shutdown', () => {
+      Sfx.rotorStop();
+      if (!this.keepMusic) Sfx.stopMusic();
+    });
     if (data.carry) this.cameras.main.fadeIn(400, 0, 0, 0);
     else {
       const sub = M.subtitle + (M.draft ? '\n(BORRADOR)' : '');
@@ -706,6 +708,7 @@ class LevelScene extends Phaser.Scene {
     });
     const b = this.boss;
     if (b && b.alive && Phaser.Geom.Intersects.CircleToRectangle(new Phaser.Geom.Circle(x, y, r), b.getBounds())) b.hit(dmg, owner);
+    if (b) b.parts.forEach((p) => p.alive && Phaser.Geom.Intersects.CircleToRectangle(new Phaser.Geom.Circle(x, y, r), p.getBounds()) && p.hit(dmg, explosive, owner, how));
   }
 
   hitTarget(t, dmg, explosive, owner, how) {
@@ -904,13 +907,18 @@ class LevelScene extends Phaser.Scene {
     const P = this.physics.add;
     P.overlap(b, this.pBullets, (bb, bullet) => b.state !== 'enter' && this.bulletHits(bullet, b));
     P.overlap(b, this.pBombs, (bb, bomb) => b.alive && this.detonate(bomb));
-    this.players.forEach((pl) => P.overlap(b, pl, () => b.alive && pl.canBeHit() && pl.die()));
+    if (b.contactKills !== false) this.players.forEach((pl) => P.overlap(b, pl, () => b.alive && pl.canBeHit() && pl.die()));
+    // Breakable parts (gun pods...) are hit like enemies.
+    b.parts.forEach((part) => {
+      P.overlap(part, this.pBullets, (pp, bullet) => part.alive && b.state !== 'enter' && this.bulletHits(bullet, part));
+      P.overlap(part, this.pBombs, (pp, bomb) => part.alive && this.detonate(bomb));
+    });
     if (this.combi) {
       this.combiColliders.push(
         P.overlap(b, this.combi, () => {
           const c = this.combi;
           if (!c || c.state !== 'driven' || !b.alive) return;
-          if (b.state === 'charge' && !b.hitCombi) {
+          if (b.charging && !b.hitCombi) {
             b.hitCombi = true;
             c.damage(2);
             c.setVelocity(b.facing * 200, -180);
@@ -921,7 +929,6 @@ class LevelScene extends Phaser.Scene {
   }
 
   onBossDefeated() {
-    this.registry.set('bossHp', 0);
     this.time.delayedCall(this.boss ? 2600 : 1200, () => this.missionComplete());
   }
 

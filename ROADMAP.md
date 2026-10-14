@@ -99,12 +99,13 @@ Full design, weapons list and build order: `docs/LEVELS.md`.
 - [ ] Moving-camera auto-scroll over a normal map (chases, escapes)
 - [x] Police enemies: patrullero (bursts), antimotines (riot shield), motorizado, francotirador (laser sight);
       Mission 3 section A "Cerros" greybox with the first police
-- [ ] Boss framework (mid-bosses, phases)
+- [x] Boss framework: phases by health, attack picker, breakable parts, death sequence, mid-bosses; no health bar
+      (the boss smokes as it gets hurt). El Cobrador rebuilt on it; police helicopter boss (Mission 3 station)
 
 ### M3 — Missions 2–3
 - [ ] Mission 2 complete: rooftops, Mototaxi Slug, collection-truck mid-boss, accountant boss, ledger beat
 - [ ] Art direction test on Mission 2 (decide the style before drawing everything)
-- [ ] Mission 3: cerros (greybox ✅), Metropolitano (greybox ✅), police helicopter reveal and boss
+- [ ] Mission 3: cerros, Metropolitano, station + helicopter boss (all greybox ✅); real art
 
 ### M4 — Missions 4–5 + ending
 - [ ] Mission 4: indoor tiles, comisaría, rochabus, comisario boss

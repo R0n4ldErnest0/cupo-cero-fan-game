@@ -74,7 +74,7 @@ class Grunt extends Phaser.Physics.Arcade.Sprite {
       // Comic panic when the driver gets too close
       if (this.variant !== 'knife' && dist < 70 && Math.random() < 0.004) {
         this.fleeUntil = time + 1100;
-        Fx.say(s, this, '¡Mamita, el chofer está loco!', 1100);
+        Fx.say(s, this, this.cop ? '¡Central, pida refuerzos!' : '¡Mamita, el chofer está loco!', 1100);
       }
     }
     // Never wait off-screen (a locked arena would wait for us forever): walk in until well inside the view.

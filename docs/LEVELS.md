@@ -12,7 +12,7 @@ Status: ✅ built · 🚧 greybox (playable, placeholder) · 📝 designed only 
 |---|---|---|---|
 | 1 | ¡Paga o ya sabes! | A Paradero → B Terminal (boss) | ✅ prototype (both sections) |
 | 2 | Gamarra no se cierra | A Market street → B Galleries (climb) → C Rooftops → D Almacén (boss) | 🚧 A+B greybox (sections built) |
-| 3 | La ruta | A Cerros (climb) → B Roof of the Metropolitano → C Station (boss) | 🚧 A+B greybox |
+| 3 | La ruta | A Cerros (climb) → B Roof of the Metropolitano → C Station (boss) | 🚧 greybox (all sections) |
 | 4 | Su denuncia es importante para nosotros | A Front desk → B Offices and cells → C Evidence room → D Escape (boss) | 📝 |
 | 5 | Obra paralizada | A Air level ❓ → B Plaza: the town joins you → C Municipalidad → D Mayor (final boss) | 📝 |
 
@@ -53,11 +53,15 @@ metal shutter); rooftop sniper; Mototaxi Slug; collection truck; accountant boss
   busway; cuperos jump on from motorbikes alongside or are already on the roof; **pedestrian bridges** pass at head
   height: crouch or lose a life (a "¡AGÁCHATE!" warning comes first); falling off the bus = run over. At the end the
   bus brakes into the station. Timeline in `src/levels/mission3.js` (`ride.events`). ✅ greybox
-- C **Station:** a police helicopter lands and rescues El Cobrador from Mission 1 (the reveal). Boss: the helicopter.
+- C **Station:** a police helicopter comes for El Cobrador from Mission 1 (the reveal: he leans out of its door,
+  "¡Te dije que tenía contactos, chofer!"). Boss: the helicopter. It hovers and drifts side to side; attacks: a
+  sweeping burst from the nose gun, tear-gas canisters, lowering cops on a rope, and (angry phase, under 50%) a
+  missile barrage. The nose gun and the missile pod are breakable parts. When it crashes, El Cobrador runs off
+  "a la comisaría" (leads into Mission 4). ✅ greybox
 - Optional helper: a Cobrador whose "¡AL FONDO HAY SITIO!" shout pushes enemies back.
 
-**Missing:** section C; bus/busway/station art; more ride events (cars alongside, throwers on the bridges);
-police enemy types; helicopter boss.
+**Missing:** bus/busway/station art; more ride events (cars alongside, throwers on the bridges);
+real helicopter art.
 
 **Decided:** the Metropolitano (bus roof at street level, traffic alongside) instead of the Línea 1 elevated train.
 
@@ -131,6 +135,17 @@ faster shoots faster, like the arcade pistol. Holding fire repeats at a slower r
 All placeholder art and tuning; damage numbers need playtesting. Testing: **F6** drops the next crate in front of 1P;
 the Mission 2 greybox has one crate of each.
 
+## Bosses — framework built
+
+`src/entities/Boss.js`: a boss gives its data (hp, intro line, **phases** by health with their attacks, pause and
+speed) and its attacks as methods; the base runs entrance → intro → pause → attack, switches phase (with a line and
+a shake), never repeats the same attack twice in a row, and plays the death sequence. **Breakable parts**
+(`addPart`) have their own hp; destroying one removes its attacks and damages the boss. **No health bar** (like the
+arcade): the boss smokes more and more as it gets hurt. A boss in a middle section is a **mid-boss**: beating it
+leads to the next section. A simple boss is just one phase and one or two attacks.
+
+Built on it: El Cobrador's mototaxi (Mission 1) and the police helicopter (Mission 3).
+
 ## Corrupt police — built
 
 Same green uniform as the honest cops you rescue, plus **sunglasses and a mustache**. Map markers / spawn types:
@@ -188,7 +203,7 @@ Systems first (each one unlocks several missions), then the missions, then art/s
 4. **Rescuable people (POWs):** free them, they drop weapons and items (core Metal Slug loop)
 5. ✅ **Ride mode** (Metropolitano roof; reused by the air level). A moving-camera auto-scroll over a normal map
    (chases, the Mission 4 escape) is still to do.
-6. **Police enemies** (patrol, riot shield, motorcycle cop, sniper) and the boss framework (mid-bosses, phases)
+6. ✅ **Police enemies** (patrol, riot shield, motorcycle cop, sniper) and ✅ the boss framework (mid-bosses, phases)
 7. **Mission 2 complete** (rooftops, Mototaxi Slug, truck mid-boss, accountant boss) → **art direction test** on it
 8. **Mission 3** (cerros, Metropolitano ✅ greybox, helicopter boss)
 9. **Mission 4** (indoor tiles, comisaría, rochabus, comisario)

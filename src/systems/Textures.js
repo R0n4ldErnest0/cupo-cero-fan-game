@@ -212,6 +212,7 @@ const Textures = {
     this.abuelita(scene);
     this.prisoner(scene);
     this.police(scene);
+    this.heli(scene);
     this.combi(scene);
     this.boss(scene);
     this.biker(scene);
@@ -265,6 +266,27 @@ const Textures = {
     sn.grid([...HUMAN.HEADS.shades, ...HUMAN.TORSO.fwd.slice(0, 4), ...HUMAN.CROUCH_LEGS], 0, 7, pal);
     sn.rect(10, 14, 17, 2, PAL.k).rect(12, 13, 4, 1, PAL.G).rect(10, 16, 3, 2, '#5b3a20'); // long rifle
     sn.register(scene, 'sniper');
+  },
+
+  // Mission 3 boss: police helicopter (facing left, 100x40), its rotor, the breakable nose gun and missile pod,
+  // tear-gas canisters and missiles.
+  heli(scene) {
+    const h = new Painter(100, 40);
+    h.rect(48, 0, 4, 6, PAL.G); // rotor mast
+    h.disc(30, 21, 15, '#f4f4f4').rect(30, 6, 34, 30, '#f4f4f4'); // cabin
+    h.disc(22, 19, 10, '#8fd0ee').rect(22, 10, 10, 10, '#8fd0ee').set(18, 14, '#ffffff'); // windshield
+    h.rect(40, 12, 14, 14, '#3b4a5a'); // side door (El Cobrador leans out here)
+    h.rect(62, 14, 34, 7, '#f4f4f4').rect(90, 6, 6, 12, '#2e7d32'); // tail boom + fin
+    h.disc(94, 18, 4, '#9aa0a8'); // tail rotor
+    h.rect(16, 27, 48, 4, '#2e7d32').text('POLICIA', 26, 30, '#f4f4f4');
+    h.rect(14, 37, 52, 2, PAL.G).rect(22, 33, 2, 4, PAL.G).rect(54, 33, 2, 4, PAL.G); // skids
+    h.outline();
+    h.register(scene, 'heli');
+    new Painter(96, 3).rect(0, 1, 96, 1, '#2b2b33').rect(44, 0, 8, 3, PAL.G).register(scene, 'heli_rotor');
+    new Painter(14, 6).rect(0, 2, 10, 2, PAL.k).rect(8, 0, 6, 6, PAL.G).outline().register(scene, 'heli_gun');
+    new Painter(18, 8).rect(0, 1, 18, 6, '#5a6068').disc(2, 4, 2, '#c0282e').disc(7, 4, 2, '#c0282e').outline().register(scene, 'heli_pod');
+    new Painter(6, 9).rect(1, 1, 4, 8, '#9aa0a8').rect(1, 0, 4, 1, '#5a6068').rect(1, 4, 4, 1, '#f2c94c').outline().register(scene, 'teargas');
+    new Painter(12, 4).rect(0, 1, 8, 2, '#d8d8d8').rect(8, 0, 3, 4, '#c0282e').rect(0, 0, 2, 4, '#9aa0a8').register(scene, 'emissile');
   },
 
   // Prisoner extras: tied up sitting on the floor, and saluting.

@@ -127,6 +127,15 @@ const Sfx = {
   crunch() { this.noise(0.18, 0.3, { type: 'bandpass', f0: 1500, f1: 500 }); },
   ting() { this.tone('square', 2200, 1800, 0.06, 0.06); this.tone('sine', 3300, 3000, 0.12, 0.04); },
   lock() { this.tone('square', 1500, 1500, 0.05, 0.05); },
+  // Helicopter blades: a chopping loop until rotorStop().
+  rotor() {
+    this.rotorStop();
+    this.rotorTimer = setInterval(() => this.noise(0.05, 0.06, { f0: 500, f1: 200 }), 95);
+  },
+  rotorStop() {
+    if (this.rotorTimer) clearInterval(this.rotorTimer);
+    this.rotorTimer = null;
+  },
   whack() { this.tone('square', 200, 60, 0.08, 0.14); this.noise(0.06, 0.2, { f0: 1500 }); },
   firework() {
     if (!this.ctx) return;
@@ -180,6 +189,7 @@ const Sfx = {
   },
 
   stopMusic() {
+    this.rotorStop();
     if (!this.music) return;
     clearInterval(this.music.timer);
     this.music = null;

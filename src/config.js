@@ -150,6 +150,8 @@ const CFG = {
   SNIPER: { AIM_MS: 1100, LOCK_MS: 380, BULLET_SPEED: 260, RELOAD: [1800, 2800] },
 
   BOSS1: { HP: 70, RAGE_AT: 35, CHARGE_SPEED: 250, BULLET_SPEED: 100, RAGE_BULLET_SPEED: 125 },
+  // Mission 3 boss (src/entities/BossHeli.js): hovers HOVER px above the floor, comes down to DROP_HOVER to lower cops.
+  HELI: { HP: 90, PART_HP: 15, HOVER: 100, DROP_HOVER: 64, DRIFT: 70, BULLET_SPEED: 130, MISSILE_SPEED: 120, MAX_ENEMIES: 3 },
 
   // Level layouts live in src/levels/missionN.js.
 };

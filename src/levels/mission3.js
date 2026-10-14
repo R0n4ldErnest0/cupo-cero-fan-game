@@ -1,6 +1,6 @@
 // Mission 3 — "La ruta" (greybox). A) the cerros: climbing a hillside of unfinished houses where the corrupt police
 // show up for the first time (patrol cops, riot shields, a motorbike cop, snipers on the rooftops); B) the roof of a
-// Metropolitano bus. Still missing (docs/LEVELS.md): the station with the police helicopter boss.
+// Metropolitano bus; C) the station, where a police helicopter comes for El Cobrador (boss).
 //
 // Map key: see src/systems/Terrain.js. Rows 0-29, street top at row 27 (y = 432); the hill climbs to row 11.
 MISSIONS.push({
@@ -109,6 +109,28 @@ MISSIONS.push({
       decor: [
         { type: 'text', x: 192, y: 60, text: 'Los cuperos van a la estación.\n¡Súbete al Metropolitano!', style: { fontSize: '10px', color: '#ffe066' } },
       ],
+    },
+    // C — The station: a short platform, then the police helicopter that came for El Cobrador.
+    {
+      area: 'ESTACIÓN',
+      width: 820,
+      bg: { sky: 0xb8c0c8 },
+      vehicles: false,
+      props: [
+        { x: 230, type: 'lootbag', drop: 'R' },
+        { x: 330, type: 'box', drop: 'B' },
+      ],
+      prisoners: [{ x: 160, drop: 'H' }],
+      spawns: [
+        { x: 300, t: 'cop' },
+        { x: 380, t: 'cop' },
+        { x: 420, t: 'riot' },
+      ],
+      decor: [
+        { type: 'sign', x: 140, y: 150, text: 'ESTACIÓN CENTRAL', bg: '#1e5fb4' },
+        { type: 'graffiti', x: 520, text: 'EL HELIPUERTO\nES PARA EL PUEBLO', color: '#1e5fb4' },
+      ],
+      arena: { alert: ['¡ALERTA!', 'HELICÓPTERO POLICIAL'], boss: 'heli' },
     },
   ],
 });

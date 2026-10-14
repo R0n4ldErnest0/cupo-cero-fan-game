@@ -184,7 +184,7 @@ const Weapons = {
   // Everything a weapon can hurt right now: live enemies, breakable props and the boss.
   targets(s) {
     const list = s.enemies.getChildren().filter((e) => e.alive).concat(s.props.getChildren().filter((o) => o.alive));
-    if (s.boss && s.boss.alive && s.boss.state !== 'enter') list.push(s.boss);
+    if (s.boss && s.boss.alive && s.boss.state !== 'enter') list.push(s.boss, ...s.boss.parts.filter((p) => p.alive));
     return list;
   },
 
