@@ -92,7 +92,10 @@ Full design, weapons list and build order: `docs/LEVELS.md`.
 - [x] Announcer voice on pickups (browser speech placeholder until clips are recorded in `assets/voice/`)
 - [x] Rescuable prisoners (POWs), prototype: honest cops tied up by the gang; freed by a shot or a touch, they
       hand over an item; rescue count + bonus on the tally, reset to 0 on death (arcade rule)
-- [ ] More prisoner types per mission (drivers, vendors, denunciantes, journalist...) and helpers that fight
+- [ ] Expediente: each freed honest cop gives a clue; a case-file story page after each mission
+- [ ] More prisoner types (the journalist in Mission 4, denunciantes, municipal workers)
+- [ ] Mission 2 restructure to 4 sections (Mototaxi Slug in the Mercado, Azoteas on foot)
+- [ ] Mission 3 Metropolitano expansion: stop at a station, on foot, bus-to-bus jumps
 - [x] Ride mode: the section happens on a moving vehicle (Metropolitano bus roof): scrolling road and backgrounds,
       a timeline of enemies jumping on and pedestrian bridges to duck under (lose a life), braking into the station.
       Mission 3 greybox = the bus ride
@@ -129,6 +132,11 @@ Full design, weapons list and build order: `docs/LEVELS.md`.
 ## Open questions (need answers)
 
 Answered: the Mission 3 ride is on the roof of a Metropolitano bus (not the Línea 1 train).
+Answered: the air level uses an old police helicopter a retired cop knows about; 2P flies a small plane.
+Answered: the story arc (ledger + expediente of clues from freed honest cops → a journalist prisoner airs it on TV
+→ strike and march → the town helps in Mission 5); see `docs/LEVELS.md`.
+Answered: max 4 sections per mission (Mission 2 to be restructured: Mercado with the Mototaxi Slug → Azoteas →
+Almacén → Oficina).
 Answered: ripped Metal Slug assets → **private testing only** (`assets/_private/`, gitignored).
 Answered: weapons → see the decided list in `docs/LEVELS.md` (homing Cohetón, all optional weapons, Piedras,
 Molotov as second throwable, per-character melee, Metal Slug ammo rules).
@@ -152,8 +160,7 @@ Missions are designed in `docs/LEVELS.md`.
 12. **Language.** Spanish only, or Spanish + English?
 13. **How graphic?** Metal Slug-level cartoon violence only, or anything darker in cutscenes?
 14. **Credits defaults.** Currently 3 starting credits and 5 lives per credit. Keep score on continue (current) or reset it?
-16. **Air level.** Helicopter bought with a pollada, or a crop-duster plane lent from the provinces? Who gives it?
-17. **Allies in Mission 5.** Who joins (honest police, vendors, mototaxistas, cobradores, students, rescued people)?
-    Can they die? Do they only fight in the plaza or until the end?
+17. **How the town helps in Mission 5.** Decided that they help (not a civilian brawl); the exact mechanic is to
+    refine (supplies, opening the way, distractions...).
 18. **Bus Slug.** Keep the "Chosicano" bus somewhere (e.g. the Metropolitano) or drop it?
 19. **Ladders.** Not planned (Metal Slug barely uses them). Do we want them anyway, e.g. in the comisaría?

@@ -6,6 +6,24 @@ All names are fictional placeholders.
 
 Status: ✅ built · 🚧 greybox (playable, placeholder) · 📝 designed only · ❓ needs a decision
 
+## Story arc (decided; details to refine)
+
+A chain across the missions, so the ending feels earned:
+
+1. **The proof (Missions 2–4):** the **ledger** (Mission 2: the comisaría gets its share, and "EL JEFE ████" the
+   most); the **clues** the honest cops give you when you free them (the "expediente", see Prisoners); in Mission 4
+   the seized cupo money in the comisaría's evidence room.
+2. **The trigger (end of Mission 4):** escaping the comisaría, you hand everything to a **journalist** (a prisoner
+   you free in the comisaría). That night it airs: "ÚLTIMO MINUTO: El libro de los cupos"; "El Jefe" is the mayor.
+3. **The reaction:** the drivers' union calls a **strike and a march to the Municipalidad**; the mayor sends the
+   serenazgo and the police to break it up; the plaza is surrounded. A **retired cop** knows where an **old police
+   helicopter** is (out of service, still flies): that's how you get there (Mission 5 air level).
+4. **The town helps:** you crash-land in the middle of the march ("¡Es el chofer de la tele!") and the people
+   **help you** (how exactly is to refine: they shouldn't turn it into a brawl of civilians; e.g. they pass you
+   supplies, open the way, distract the serenazgo, block the vans). The honest cops you freed come in person.
+   **How much they help depends on the expediente** (more clues = stronger proof on TV = a bigger march).
+5. Shown with story pages between Missions 4 and 5 (a TV news page, the union meeting) and in-game lines.
+
 ## Overview
 
 | # | Mission | Sections | Status |
@@ -30,6 +48,11 @@ and the boss).
 **Missing:** real art and music; balance after human playtests.
 
 ## Mission 2 — "Gamarra no se cierra" 🚧
+
+**Decided restructure (max 4 sections per mission):** A **Mercado** (market street + first gallery; you get the
+**Mototaxi Slug** here, on the street; ends with the ambush) → B **Azoteas** (climb the second gallery on foot,
+its floors are the way up, then the rooftops; no vehicle on the roofs) → C **Almacén** (Camión Recaudador) →
+D **Oficina** (El Contador + the ledger). The separate Galerías section goes away. 📝 to do
 
 **Defined:**
 - A **Market street:** stalls, the municipal trench ("OBRA: INICIADA EN 2019") as a pit, a rubble mound.
@@ -83,13 +106,22 @@ real helicopter art.
 
 **Decided:** the Metropolitano (bus roof at street level, traffic alongside) instead of the Línea 1 elevated train.
 
+**Decided expansion (to do):** B1 bus ride → the bus brakes into a **station** → B2 the station on foot (platform,
+turnstiles) and board another bus → B3 ride with **bus-to-bus jumps**: your bus is taken "FUERA DE SERVICIO" (or
+blocked by the police) and falls behind while another bus comes up close ahead; a "¡SALTA!" sign, and you jump from
+the front of yours onto the back of the other while both move (two or three times) → C station + helicopter.
+(Keep it within 4 sections: e.g. Cerros → Metropolitano (ride + station + ride) → Estación, with the stop handled
+inside the ride.)
+
 ## Mission 4 — "Su denuncia es importante para nosotros" 📝
 
 **Defined:**
 - A **Front desk:** an infinite queue of complaints; cops shoot **"ARCHIVADO"** stamps.
+- Prisoners here: **a journalist** (the key to the story arc) and denunciantes locked up for filing complaints.
 - B **Offices and cells:** indoor, several floors; gang members released from the cells to help the police.
 - C **Evidence room:** full of cupo money labeled "INCAUTADO". Mid-boss: riot-shield wall.
 - D **Escape:** steal the **rochabus** (water-cannon truck). Boss: the corrupt Comisario (filing-cabinet mech, or in the rochabus).
+- After the mission: story pages (the journalist airs the proof on TV; the union calls a strike and a march).
 
 **Missing:** indoor tiles (walls, ceilings, doors); police types (patrol, riot shield, motorcycle cop);
 rochabus vehicle; mid-boss and boss.
@@ -97,17 +129,20 @@ rochabus vehicle; mid-boss and boss.
 ## Mission 5 — "Obra paralizada" 📝
 
 **Defined (new structure):**
-- A **Air level** (like the flying sections of Metal Slug 3): the drivers and the neighborhood **bought a used
-  helicopter with a pollada** (or someone from the provinces lends a crop-duster plane ❓). Auto-scrolling
-  shooter over Lima: police helicopters, serenazgo drones, a TV news helicopter that only films you ("EN VIVO").
-  You crash-land at the plaza.
-- B **Plaza: the town joins you** (like the rebel soldiers joining in Metal Slug 3's last mission): the honest
-  police who are left, vendors, mototaxistas, cobradores, students, and everyone you rescued earlier (the abuelita
-  comes back) fight alongside you against serenazgo, private security and the gang elite.
+- A **Air level** (like the final mission of Metal Slug 3): a **retired cop** knows where an **old police
+  helicopter** is hidden (out of service, still flies). 1P flies the helicopter; **2P flies a small plane**. You
+  move freely around the screen while it scrolls on its own (ride mode); fire forward, bombs down (the plane:
+  faster, small missiles). Police helicopters, serenazgo drones, cuperos on the rooftops, and a TV news helicopter
+  that can't be shot down and only films you ("EN VIVO"). You crash-land at the plaza.
+- B **Plaza: the town helps you**: the march to the Municipalidad is surrounded; the people help (supplies,
+  opening the way, distracting the serenazgo; to refine: keep it from becoming a civilian brawl), the honest cops
+  you freed fight with you, the abuelita comes back with her emoliente. How much help depends on the expediente.
 - C **Municipalidad:** offices, a press-conference room.
-- D **Final boss:** the corrupt mayor in a mech built from unfinished public works: ribbon-cutting giant
-  scissors; a podium that fires **"PROMESAS"** (empty speech bubbles that explode); a **"Mesa de diálogo"**
-  shield that only drops after it finishes talking.
+- D **Final boss:** the corrupt mayor in a mech built from an **obra paralizada** (unfinished public works): a
+  concrete-mixer body, scaffolding legs, a crane with a wrecking ball and giant ribbon-cutting scissors, a podium
+  cockpit with a microphone, traffic cones on the shoulders, an "OBRA EN EJECUCIÓN" sign. Attacks: fresh concrete
+  that slows you, the wrecking ball, the scissors, **"PROMESAS"** (speech bubbles that explode), a **"Mesa de
+  diálogo"** shield that only drops when he stops talking. To be tuned by trial and error.
 - **Ending:** the driver is a folk hero and a fugitive ("goes rogue"). Tone ❓.
 
 **Missing:** flying vehicle and air-shooter mode; ally AI; new enemies; boss; ending cutscene.
@@ -178,15 +213,21 @@ Same green uniform as the honest cops you rescue, plus **sunglasses and a mustac
 
 Tuning: `CFG.RIOT`, `CFG.SNIPER`; behavior in `src/entities/RiotCop.js`, `Sniper.js`, `Grunt.js` (cop preset), `Biker.js`.
 
-## Prisoners — prototype built
+## Prisoners — prototype built (expediente decided)
 
 Our Metal Slug POWs. For now one kind: **honest cops** who refused to collect cupos, so their corrupt colleagues
 handed them to the gang (foreshadows the police reveal; ties in with El Sargento). Tied up on the floor (map marker
 `T`, mission `prisoners`, or hidden in a breakable prop with `drop: 'prisoner'`). A shot or a touch frees them:
 they salute, walk to you, hand over their item (set in the data, or random) and run off. The **tally** shows
 "POLICÍAS HONESTOS RESCATADOS x N" (+1000 each); the count carries over sections and missions and **goes back to 0
-when you die** (arcade rule). Later: other prisoners per mission (drivers, vendors, denunciantes, a journalist,
-municipal workers) and some that help you fight for a moment.
+when you die** (arcade rule).
+
+**Decided — the expediente (case file):** each honest cop you free gives a **clue** in his line ("El comisario
+recibe un sobre cada viernes..."), saved in an **EXPEDIENTE** shown as a story page after each mission (missed clues
+show as "???"). The clues build the arc step by step: M1 the gang has protection, M2 who collects at the comisaría,
+M3 the comisario's name, M4 the regidor and the public works, M5 the proof against the mayor. In Mission 5 the cops
+you freed come to help, and the expediente sets how much the town helps. Other prisoners later: the journalist
+(Mission 4), denunciantes, municipal workers.
 
 ## Food, fat and drunk — built
 
@@ -217,14 +258,15 @@ use; disclose on itch.io), or Piper (free, offline, more robotic).
 Systems first (each one unlocks several missions), then the missions, then art/sound, then story and polish.
 
 1. ✅ Level engine, mission flow, terrain (text maps, floors, slopes, pits, vertical camera)
-2. **Sections:** a mission made of several parts with transitions, each with its own map or mode
-3. **Weapons system:** letter pickups, ammo, HUD; the 9 new weapons, Molotov and Super granada; per-character melee
-4. **Rescuable people (POWs):** free them, they drop weapons and items (core Metal Slug loop)
+2. ✅ **Sections:** a mission made of several parts with transitions (max 4 per mission)
+3. ✅ **Weapons system:** letter pickups, ammo, HUD; the new weapons, Molotov and Súper granada; per-character melee
+4. ✅ **Rescuable people (POWs):** honest cops (prototype); next: the expediente of clues
 5. ✅ **Ride mode** (Metropolitano roof; reused by the air level). A moving-camera auto-scroll over a normal map
    (chases, the Mission 4 escape) is still to do.
 6. ✅ **Police enemies** (patrol, riot shield, motorcycle cop, sniper) and ✅ the boss framework (mid-bosses, phases)
-7. **Mission 2 complete** (rooftops, Mototaxi Slug, truck mid-boss, accountant boss) → **art direction test** on it
-8. **Mission 3** (cerros, Metropolitano ✅ greybox, helicopter boss)
+7. ✅ **Mission 2** greybox (rooftops, Mototaxi Slug, truck mid-boss, accountant boss, ledger); next: restructure to
+   4 sections → **art direction test** on it
+8. ✅ **Mission 3** greybox (cerros, Metropolitano, helicopter boss); next: the Metropolitano expansion
 9. **Mission 4** (indoor tiles, comisaría, rochabus, comisario)
 10. **Air-shooter mode + ally AI**, then **Mission 5** and the ending
 11. Real art and music for everything, voice lines
