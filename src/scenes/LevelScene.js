@@ -545,10 +545,19 @@ class LevelScene extends Phaser.Scene {
   }
 
   // Enemies without a y stand at street level. Bikers always ride in from the right edge.
+  // t: 'grunt' | 'biker' | 'cop' (patrullero) | 'motocop' | 'riot' (antimotines) | 'sniper'.
+  // Riders always come in from the right edge.
   spawnEnemy(s, x) {
-    if (s.t === 'biker') x = this.viewLeft + CFG.VIEW_W + 30;
+    if (s.t === 'biker' || s.t === 'motocop') x = this.viewLeft + CFG.VIEW_W + 30;
     const y = this.floorY({ x, y: s.y });
-    const e = s.t === 'biker' ? new Biker(this, x, y) : new Grunt(this, x, y, s);
+    const make = {
+      biker: () => new Biker(this, x, y),
+      motocop: () => new Biker(this, x, y, { tex: 'motocop', hp: 3, shots: 3, score: 300, shout: '¡PAPELETA!' }),
+      cop: () => new Grunt(this, x, y, Object.assign({ skin: 'tombo', hp: 2, burst: 2, cop: true }, s)),
+      riot: () => new RiotCop(this, x, y),
+      sniper: () => new Sniper(this, x, y),
+    };
+    const e = (make[s.t] || (() => new Grunt(this, x, y, s)))();
     this.enemies.add(e);
     return e;
   }

@@ -48,6 +48,28 @@ const HUMAN = {
       '...kkkssssrk....',
       '.....kkssSk.....',
     ],
+    shades: [
+      '................',
+      '......kkkkk.....',
+      '.....kHHyHHk....',
+      '....kHHHHHHHk...',
+      '....kkkkkkkkkkk.',
+      '.....kYssssk....',
+      '.....kYkkkkkk...',
+      '.....ksMMMMSk...',
+      '......kksssk....',
+    ],
+    helmet: [
+      '................',
+      '.....kkkkkk.....',
+      '....kHHHHHHk....',
+      '...kHHHHHHHHk...',
+      '...kHkVVVVVVk...',
+      '...kHkVssVVVk...',
+      '...kHkVVVVVVk...',
+      '....kkssssSk....',
+      '......kksssk....',
+    ],
     thug: [
       '................',
       '......kkkkk.....',
@@ -147,6 +169,8 @@ const SKINS = {
   thug: { head: 'thug', pal: { Q: '#2a2a30', X: '#c0282e', C: '#3a3d45', P: '#3a5fa0', F: '#e8e8e8' } },
   thug2: { head: 'thug', pal: { Q: '#3c6e3a', X: '#1b1b22', C: '#7a2e2e', P: '#2b2b33', F: '#e8e8e8' } },
   thug3: { head: 'thug', pal: { Q: '#c0282e', X: '#1b1b22', C: '#e8e8e8', P: '#2b2b33', F: '#c0282e' } }, // knife runner
+  tombo: { head: 'shades', pal: { H: '#2f5a34', M: '#2b1d14', Y: '#d8d8d8', C: '#5f7d45', P: '#34502f', F: '#1b1b22' } }, // corrupt cop
+  riot: { head: 'helmet', pal: { H: '#26332a', V: '#8fb8d8', C: '#34502f', P: '#26332a', F: '#1b1b22' } }, // antimotines
   poli: { head: 'cop', pal: { H: '#2f5a34', M: '#2b1d14', Y: '#d8d8d8', C: '#6b8a4f', P: '#34502f', F: '#1b1b22' } }, // honest cop (prisoner)
   vendor: { head: 'cobradora', pal: { h: '#2b1d14', C: '#f4f4f4', P: '#3a5fa0', F: '#5b3a20' } }, // street vendor
   cobrador: { head: 'driver', pal: { H: '#f4f4f4', M: '#1b1b22', C: '#e3b23c', P: '#1b1b22', F: '#f4f4f4' } },
@@ -187,6 +211,7 @@ const Textures = {
     this.humans(scene);
     this.abuelita(scene);
     this.prisoner(scene);
+    this.police(scene);
     this.combi(scene);
     this.boss(scene);
     this.biker(scene);
@@ -218,6 +243,28 @@ const Textures = {
       c.grid([...head, ...HUMAN.TORSO.fwd.slice(0, 4), ...HUMAN.CROUCH_LEGS], 0, 7, pal);
       c.register(scene, `${name}_crouch`);
     }
+  },
+
+  // Police extras: the riot shield, the motorbike cop and the crouching sniper with his rifle.
+  police(scene) {
+    const sh = new Painter(9, 24);
+    sh.rect(0, 0, 9, 24, '#1b2430').rect(1, 1, 7, 22, '#9fc4e0').rect(2, 2, 2, 18, '#d8ecf8').rect(1, 10, 7, 3, '#f4f4f4');
+    sh.register(scene, 'riot_shield');
+
+    // Motorbike cop, facing left: white-and-green police bike, rider with sunglasses.
+    const pal = Object.assign({}, PAL, SKINS.tombo.pal);
+    const m = new Painter(32, 24);
+    m.grid([...HUMAN.HEADS.shades, ...HUMAN.TORSO.fwd], 6, 0, pal, true);
+    m.rect(6, 13, 20, 5, '#f4f4f4').rect(6, 15, 20, 2, '#2e7d32').rect(14, 12, 9, 2, PAL.k).rect(24, 14, 4, 2, PAL.G);
+    m.line(6, 19, 8, 9, PAL.G).rect(4, 8, 5, 1, PAL.k).rect(20, 10, 3, 2, '#2c6fd1');
+    m.disc(6, 19, 4, PAL.k).disc(25, 19, 4, PAL.k).set(6, 19, PAL.g).set(25, 19, PAL.g);
+    m.outline();
+    m.register(scene, 'motocop');
+
+    const sn = new Painter(28, 24);
+    sn.grid([...HUMAN.HEADS.shades, ...HUMAN.TORSO.fwd.slice(0, 4), ...HUMAN.CROUCH_LEGS], 0, 7, pal);
+    sn.rect(10, 14, 17, 2, PAL.k).rect(12, 13, 4, 1, PAL.G).rect(10, 16, 3, 2, '#5b3a20'); // long rifle
+    sn.register(scene, 'sniper');
   },
 
   // Prisoner extras: tied up sitting on the floor, and saluting.

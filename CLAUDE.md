@@ -62,7 +62,8 @@ src/config.js         constants (sizes, speeds, tuning)
 src/systems/          Textures (procedural art), Sfx (synth audio), Voice (announcer), Session (credits), Controls (input),
                       Fx, Terrain (text-map tiles, one-way floors, slopes), Weapons (guns, melee, player projectiles),
                       Ride (sections on a moving vehicle: the Metropolitano roof)
-src/entities/         Player, enemies, Abuelita (helper), CombiSlug (vehicle), bosses, Pickup, Breakable (gang props),
+src/entities/         Player, enemies (Grunt + cop preset, Biker + motocop, RiotCop, Sniper), Abuelita (helper),
+                      CombiSlug (vehicle), bosses, Pickup, Breakable (gang props),
                       Vendor (food carts), Prisoner (honest cops to rescue)
 src/levels/           missions.js (registry + data schema), missionN.js (one data file per mission)
 src/scenes/           MenuScenes (Boot, Title, CharSelect, MissionEnd, Ending, GameOver), HUDScene, LevelScene

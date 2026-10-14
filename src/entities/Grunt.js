@@ -9,6 +9,9 @@ const GRUNT_DEATH = [
 ];
 
 const KNIFER_LINES = ['¡Ven acá, chofercito!', '¡Te voy a cobrar en persona!', '¡Cupo o chaveta!'];
+// Corrupt cops (the 'cop' preset: patrullero).
+const COP_LINES = ['¡Colabora pe, chofer!', '¿Cuánto para el cafecito?', '¡Circulen, aquí no pasa nada!', '¡Documentos!', '¡Esto no es cupo, es papeleta!'];
+const COP_DEATH = ['¡Llama a mi comisario!', '¡Yo solo cumplía órdenes!', '¡Mi pensión!', '¡Esto va a tu récord!'];
 
 // Variants: 'gunner' stops, aims and shoots; 'thrower' also lobs molotovs; 'knife' runs at you to stab.
 // Every grunt pulls a knife when a player gets right next to it (with a short warning, like the arcade).
@@ -24,9 +27,11 @@ class Grunt extends Phaser.Physics.Arcade.Sprite {
     this.setOrigin(0.5, 1).setDepth(6);
     this.body.setSize(8, 20).setOffset(4, 4);
     this.hp = opts.hp || 1;
+    this.burst = opts.burst || 1; // shots per attack
+    this.cop = !!opts.cop;
     this.alive = true;
     this.facing = -1;
-    this.score = 100;
+    this.score = this.cop ? 150 : 100;
     this.contactKills = false;
     this.bubbleOffset = 28;
     const now = scene.time.now, E = CFG.ENEMY;
@@ -84,7 +89,7 @@ class Grunt extends Phaser.Physics.Arcade.Sprite {
 
     if (onScreen && !fleeing && this.variant !== 'knife' && time > this.nextAction) this.act(time, t);
     if (onScreen && time > this.nextTalk) {
-      Fx.say(s, this, Phaser.Utils.Array.GetRandom(this.variant === 'knife' ? KNIFER_LINES : GRUNT_LINES), 1500);
+      Fx.say(s, this, Phaser.Utils.Array.GetRandom(this.cop ? COP_LINES : this.variant === 'knife' ? KNIFER_LINES : GRUNT_LINES), 1500);
       this.nextTalk = time + Phaser.Math.Between(5000, 9000);
     }
     this.pose(time, dt, vx);
@@ -129,6 +134,13 @@ class Grunt extends Phaser.Physics.Arcade.Sprite {
       angle = this.facing > 0 ? Phaser.Math.Clamp(a, -0.8, 0.8) : Math.PI - Phaser.Math.Clamp(a, -0.8, 0.8);
     }
     s.enemyShoot(sx, sy, angle);
+    for (let i = 1; i < this.burst; i++) {
+      s.time.delayedCall(i * 160, () => {
+        if (!this.alive) return;
+        s.enemyShoot(this.x + this.facing * 9, sy, angle);
+        Sfx.enemyShot();
+      });
+    }
     Sfx.enemyShot();
     this.nextAction = time + Phaser.Math.Between(...CFG.ENEMY.SHOT_GAP);
   }
@@ -199,7 +211,7 @@ class Grunt extends Phaser.Physics.Arcade.Sprite {
     s.addScore(this.score, this.x, this.y - 26, owner);
     Sfx.scream();
     if (how === 'fire') return this.burn();
-    if (Math.random() < 0.4) Fx.say(s, this, Phaser.Utils.Array.GetRandom(GRUNT_DEATH), 1200);
+    if (Math.random() < 0.4) Fx.say(s, this, Phaser.Utils.Array.GetRandom(this.cop ? COP_DEATH : GRUNT_DEATH), 1200);
     this.setTexture(`${this.skin}_fwd_jump`);
     this.setVelocity(-this.facing * (explosive ? 110 : 40), explosive ? -260 : -120);
     s.tweens.add({ targets: this, angle: -this.facing * (explosive ? 720 : 90), duration: explosive ? 700 : 300 });

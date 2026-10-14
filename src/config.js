@@ -145,6 +145,10 @@ const CFG = {
 
   ABUELITA: { DURATION: 22000, THROW_DELAY: 1000, RANGE: 230, DAMAGE: 2, SPLASH: 16 },
 
+  // Corrupt police (Mission 3 on). Patrullero = Grunt preset 'cop' (2 hp, 2-shot bursts); motocop = Biker preset.
+  RIOT: { HP: 3, SHIELD: 10, SPEED: 18, SWING_RANGE: 22, SWING_WINDUP: 400, PEEK_EVERY: [2800, 4200], PEEK_MS: 900 },
+  SNIPER: { AIM_MS: 1100, LOCK_MS: 380, BULLET_SPEED: 260, RELOAD: [1800, 2800] },
+
   BOSS1: { HP: 70, RAGE_AT: 35, CHARGE_SPEED: 250, BULLET_SPEED: 100, RAGE_BULLET_SPEED: 125 },
 
   // Level layouts live in src/levels/missionN.js.

@@ -1,30 +1,34 @@
-// Extortionist on a motorcycle: rushes in from the right, fires once, runs you over.
+// Rider on a motorcycle: rushes in from the right, fires, runs you over. Two presets (see LevelScene.spawnEnemy):
+// the extortionist ('biker': one shot) and the motorbike cop ('motocop': three shots, tougher, "¡Papeleta!").
 class Biker extends Phaser.Physics.Arcade.Sprite {
-  constructor(scene, x, y) {
-    super(scene, x, y, 'biker');
+  constructor(scene, x, y, opts = {}) {
+    super(scene, x, y, opts.tex || 'biker');
     scene.add.existing(this);
     scene.physics.add.existing(this);
     this.setOrigin(0.5, 1).setDepth(6);
     this.body.setSize(26, 14).setOffset(3, 10);
-    this.hp = 2;
+    this.hp = opts.hp || 2;
+    this.shotsLeft = opts.shots || 1;
+    this.shout = opts.shout || '¡CUPO!';
     this.alive = true;
     this.facing = -1;
-    this.score = 200;
+    this.score = opts.score || 200;
     this.contactKills = true;
-    this.shot = false;
+    this.nextShot = 0;
     this.bubbleOffset = 26;
   }
 
-  update() {
+  update(time) {
     if (!this.alive) return;
     const s = this.scene, t = s.target(this.x);
     this.setVelocityX(-CFG.ENEMY.BIKER_SPEED);
     const onScreen = s.inView(this.x, this.y - 8, -4);
-    if (!this.shot && onScreen && this.x > t.x && this.x - t.x < 220) {
-      this.shot = true;
+    if (this.shotsLeft > 0 && time > this.nextShot && onScreen && this.x > t.x && this.x - t.x < 220) {
+      if (this.nextShot === 0) Fx.say(s, this, this.shout, 700);
+      this.shotsLeft--;
+      this.nextShot = time + 220;
       s.enemyShoot(this.x - 12, this.y - 16, Math.PI);
       Sfx.enemyShot();
-      Fx.say(s, this, '¡CUPO!', 700);
     }
   }
 

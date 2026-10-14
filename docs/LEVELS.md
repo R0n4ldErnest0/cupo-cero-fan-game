@@ -12,7 +12,7 @@ Status: ✅ built · 🚧 greybox (playable, placeholder) · 📝 designed only 
 |---|---|---|---|
 | 1 | ¡Paga o ya sabes! | A Paradero → B Terminal (boss) | ✅ prototype (both sections) |
 | 2 | Gamarra no se cierra | A Market street → B Galleries (climb) → C Rooftops → D Almacén (boss) | 🚧 A+B greybox (sections built) |
-| 3 | La ruta | A Cerros (climb) → B Roof of the Metropolitano → C Station (boss) | 🚧 B greybox |
+| 3 | La ruta | A Cerros (climb) → B Roof of the Metropolitano → C Station (boss) | 🚧 A+B greybox |
 | 4 | Su denuncia es importante para nosotros | A Front desk → B Offices and cells → C Evidence room → D Escape (boss) | 📝 |
 | 5 | Obra paralizada | A Air level ❓ → B Plaza: the town joins you → C Municipalidad → D Mayor (final boss) | 📝 |
 
@@ -45,8 +45,10 @@ metal shutter); rooftop sniper; Mototaxi Slug; collection truck; accountant boss
 ## Mission 3 — "La ruta" 📝
 
 **Defined:**
-- A **Cerros:** stairs up the hill (slopes), unfinished houses, rebar, water tanks; climbs upward (vertical camera ✅).
-  The **first police** appear: at first they ignore the gangs, later they shoot at you.
+- A **Cerros:** up the hill (slopes), unfinished brick houses with floors, a ravine to jump; the vertical camera
+  follows. The **first police** appear: the first cop "doesn't see" the cuperos ("¿Cuperos? Yo no veo ningún
+  cuperos...") until he sees you. Patrol cops, riot shields, a motorbike cop and snipers on the rooftops; the
+  "módulo policial" is closed "por operativo". ✅ greybox
 - B **On the roof of a Metropolitano bus** (ride mode, built as a greybox): the articulated bus rushes along the
   busway; cuperos jump on from motorbikes alongside or are already on the roof; **pedestrian bridges** pass at head
   height: crouch or lose a life (a "¡AGÁCHATE!" warning comes first); falling off the bus = run over. At the end the
@@ -54,7 +56,7 @@ metal shutter); rooftop sniper; Mototaxi Slug; collection truck; accountant boss
 - C **Station:** a police helicopter lands and rescues El Cobrador from Mission 1 (the reveal). Boss: the helicopter.
 - Optional helper: a Cobrador whose "¡AL FONDO HAY SITIO!" shout pushes enemies back.
 
-**Missing:** sections A and C; bus/busway/station art; more ride events (cars alongside, throwers on the bridges);
+**Missing:** section C; bus/busway/station art; more ride events (cars alongside, throwers on the bridges);
 police enemy types; helicopter boss.
 
 **Decided:** the Metropolitano (bus roof at street level, traffic alongside) instead of the Línea 1 elevated train.
@@ -128,6 +130,19 @@ faster shoots faster, like the arcade pistol. Holding fire repeats at a slower r
 
 All placeholder art and tuning; damage numbers need playtesting. Testing: **F6** drops the next crate in front of 1P;
 the Mission 2 greybox has one crate of each.
+
+## Corrupt police — built
+
+Same green uniform as the honest cops you rescue, plus **sunglasses and a mustache**. Map markers / spawn types:
+
+| Marker | Type | Behavior |
+|---|---|---|
+| `p` | **Patrullero** (`cop`) | Like the gunner (aims first) but 2 hp and **2-shot bursts**; stabs up close. "¡Colabora pe, chofer!", "¿Cuánto para el cafecito?" |
+| `r` | **Antimotines** (`riot`) | Advances behind a **riot shield** that stops everything from the front (bullets, flames, laser, melee: spark + "ting"). Grenades/explosions, shots from behind or from well above get through. The shield breaks after 10 hits (heavy weapons count double). Lowers it to shoot now and then (the moment to hit him); baton swing up close with a wind-up. |
+| `m` | **Motorizado** (`motocop`) | Police motorbike from the right edge: 3 shots ("¡PAPELETA!"), 3 hp, runs you over. Also jumps onto the Metropolitano (`jumper` with `cop: true`). |
+| `f` | **Francotirador** (`sniper`) | Crouched on rooftops. A **red laser** follows you for 1.1 s, **locks** (blinks) for 0.4 s, then a fast shot along that line: move after the lock. 1 hp. |
+
+Tuning: `CFG.RIOT`, `CFG.SNIPER`; behavior in `src/entities/RiotCop.js`, `Sniper.js`, `Grunt.js` (cop preset), `Biker.js`.
 
 ## Prisoners — prototype built
 

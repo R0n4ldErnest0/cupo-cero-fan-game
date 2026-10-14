@@ -4,7 +4,7 @@
 //
 // Section data: ride: { speed, seconds, events: [{ at, type, ... }] }
 //   type 'grunt'   { x, variant }          a cupero already standing on the roof (drops in from above)
-//   type 'jumper'  { from: 'left'|'right', variant }  a biker rides alongside and jumps onto the roof
+//   type 'jumper'  { from: 'left'|'right', variant, cop }  a biker (or a motorbike cop) rides alongside and jumps on
 //   type 'bridge'                          a pedestrian bridge: crouch under it or lose a life (warned first)
 // Falling off the bus means being run over (a pit). Bullets fly over the roof as usual.
 class Ride {
@@ -80,15 +80,15 @@ class Ride {
     const s = this.scene, R = CFG.RIDE, fromLeft = e.from === 'left';
     const startX = fromLeft ? -30 : CFG.VIEW_W + 30;
     const jumpX = fromLeft ? Phaser.Math.Between(80, 150) : Phaser.Math.Between(240, 320);
-    const moto = s.add.image(startX, R.ROAD_Y + 4, 'biker').setOrigin(0.5, 1).setDepth(-1).setFlipX(fromLeft);
+    const moto = s.add.image(startX, R.ROAD_Y + 4, e.cop ? 'motocop' : 'biker').setOrigin(0.5, 1).setDepth(-1).setFlipX(fromLeft);
     s.tweens.add({
       targets: moto, x: jumpX, duration: 1100, ease: 'Sine.Out',
       onComplete: () => {
         if (!moto.active) return;
-        const g = s.spawnEnemy({ t: 'grunt', variant: e.variant }, jumpX);
+        const g = s.spawnEnemy({ t: e.cop ? 'cop' : 'grunt', variant: e.variant }, jumpX);
         g.y = R.ROAD_Y - 12;
         g.setVelocity(fromLeft ? 30 : -30, -340);
-        Fx.say(s, g, '¡Arriba, causa!', 900);
+        Fx.say(s, g, e.cop ? '¡Alto, papeleta!' : '¡Arriba, causa!', 900);
         moto.setTexture('prop_moto');
         s.tweens.add({ targets: moto, x: fromLeft ? -60 : CFG.VIEW_W + 60, duration: 900, onComplete: () => moto.destroy() });
       },

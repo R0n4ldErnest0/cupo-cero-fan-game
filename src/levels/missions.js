@@ -23,7 +23,8 @@
 //   vendors [{ x, food }]      street vendor with a cart, tosses that CFG.FOOD to a player walking by
 //   pickups [{ x, kind }]      a crate letter (guns H R A E G F D L, throwables B M P S) or a food id (CFG.FOOD)
 //   spawns [{ x, t, ... }]     enemies, spawned when x reaches the right screen edge.
-//                              t: 'grunt' (skin, variant 'gunner' | 'thrower' | 'knife', y, hp) or 'biker'
+//                              t: 'grunt' (skin, variant 'gunner' | 'thrower' | 'knife', y, hp), 'biker', and the
+//                              police: 'cop' (patrullero), 'riot' (antimotines), 'motocop', 'sniper'
 //   decor [{ type, ... }]      'text' | 'controls' | 'image' | 'graffiti' | 'sign' | 'copcar'; an `id`
 //                              makes it addressable by events. text and sign need a y
 //   events [{ x, say | message | run }]

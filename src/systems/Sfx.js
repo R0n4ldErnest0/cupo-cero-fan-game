@@ -125,6 +125,8 @@ const Sfx = {
   burp() { this.tone('sawtooth', 110, 70, 0.45, 0.18, { vibrato: 18 }); this.noise(0.3, 0.08, { f0: 400 }); },
   hic() { this.tone('square', 500, 900, 0.07, 0.07); },
   crunch() { this.noise(0.18, 0.3, { type: 'bandpass', f0: 1500, f1: 500 }); },
+  ting() { this.tone('square', 2200, 1800, 0.06, 0.06); this.tone('sine', 3300, 3000, 0.12, 0.04); },
+  lock() { this.tone('square', 1500, 1500, 0.05, 0.05); },
   whack() { this.tone('square', 200, 60, 0.08, 0.14); this.noise(0.06, 0.2, { f0: 1500 }); },
   firework() {
     if (!this.ctx) return;
