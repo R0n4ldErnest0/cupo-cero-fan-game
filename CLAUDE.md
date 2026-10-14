@@ -62,7 +62,7 @@ src/config.js         constants (sizes, speeds, tuning)
 src/systems/          Textures (procedural art), Sfx (synth audio), Voice (announcer), Session (credits), Controls (input),
                       Fx, Terrain (text-map tiles, one-way floors, slopes), Weapons (guns, melee, player projectiles)
 src/entities/         Player, enemies, Abuelita (helper), CombiSlug (vehicle), bosses, Pickup, Breakable (gang props),
-                      Vendor (food carts)
+                      Vendor (food carts), Prisoner (honest cops to rescue)
 src/levels/           missions.js (registry + data schema), missionN.js (one data file per mission)
 src/scenes/           MenuScenes (Boot, Title, CharSelect, MissionEnd, Ending, GameOver), HUDScene, LevelScene
 docs/LEVELS.md        mission designs + what's missing for Missions 2–5

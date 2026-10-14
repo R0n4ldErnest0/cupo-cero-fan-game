@@ -68,6 +68,8 @@ class LevelScene extends Phaser.Scene {
     this.props = this.physics.add.group({ allowGravity: false, immovable: true });
     (M.props || []).forEach((d) => this.props.add(new Breakable(this, d.x, this.floorY(d), d)));
     this.vendors = (M.vendors || []).map((d) => new Vendor(this, d.x, this.floorY(d), d));
+    this.prisoners = this.physics.add.group();
+    (M.prisoners || []).concat(marks.filter((o) => o.prisoner)).forEach((d) => this.addPrisoner(d.x, this.floorY(d), d));
     (M.pickups || []).forEach((p) => this.spawnPickup(p.x, this.floorY(p) - 40, p.kind));
     marks.filter((o) => o.pickup).forEach((p) => this.spawnPickup(p.x, p.y - 8, p.pickup));
     this.spawns = (M.spawns || []).concat(marks.filter((o) => o.t)).map((s) => Object.assign({}, s)).sort((a, b) => a.x - b.x);
@@ -105,6 +107,7 @@ class LevelScene extends Phaser.Scene {
         p.score = s.score;
         p.lives = s.lives;
         p.state = s.state;
+        p.rescued = s.rescued || 0;
         if (carry && s.kit) this.applyKit(p, s.kit);
       } else if (i >= n) p.state = 'inactive';
       if (p.state !== 'play') p.deactivate();
@@ -123,6 +126,7 @@ class LevelScene extends Phaser.Scene {
       score: p.score,
       lives: p.state === 'play' ? p.lives : CFG.CREDITS.LIVES_PER_CREDIT,
       state: p.state === 'play' ? 'play' : 'inactive',
+      rescued: p.state === 'play' ? p.rescued : 0,
       kit: kit && p.state === 'play' ? {
         weapon: p.weapon, ammo: p.ammo, bombs: p.bombs, bombType: p.bombType, superBombs: p.superBombs,
         fat: p.fat, fullness: p.fullness, ateAgo: now - p.lastAte, drunkLeft: Math.max(0, p.drunkUntil - now),
@@ -375,6 +379,12 @@ class LevelScene extends Phaser.Scene {
     P.overlap(this.pBullets, this.enemies, (b, e) => this.bulletHits(b, e));
     P.overlap(this.pBombs, this.enemies, (b, e) => e.alive && this.detonate(b));
     P.overlap(this.pBullets, this.props, (b, o) => this.bulletHits(b, o));
+    P.collider(this.prisoners, solids, null, notDropping);
+    P.overlap(this.pBullets, this.prisoners, (b, pr) => {
+      if (pr.state !== 'tied' || !b.active) return;
+      b.destroy();
+      pr.free(b.owner);
+    });
     P.overlap(this.pBombs, this.props, (b, o) => o.alive && this.detonate(b));
     this.abuelitas.forEach((ab) => {
       P.collider(ab, solids, null, notDropping);
@@ -397,6 +407,11 @@ class LevelScene extends Phaser.Scene {
       P.overlap(pl, this.enemies, (p, e) => e.alive && e.contactKills && pl.canBeHit() && pl.die());
       P.overlap(pl, this.pickups, (p, k) => k.collect(pl));
       this.abuelitas.forEach((ab) => P.overlap(pl, ab, () => ab.free(pl)));
+      P.overlap(pl, this.prisoners, (p, pr) => {
+        if (!pl.alive || pl.state !== 'play') return;
+        if (pr.state === 'tied') pr.free(pl);
+        else pr.give();
+      });
     });
 
     this.combiColliders = [];
@@ -445,6 +460,7 @@ class LevelScene extends Phaser.Scene {
     });
     this.abuelitas.forEach((a) => a.active && a.update(time, delta));
     this.vendors.forEach((v) => v.update(time));
+    this.prisoners.getChildren().slice().forEach((pr) => pr.active && pr.update(time, delta));
     this.cameras.main.setRotation(this.players.some((p) => p.state === 'play' && p.alive && p.drunk) ? Math.sin(time / 500) * CFG.DRUNK.SWAY : 0);
     if (this.boss && this.boss.active) this.boss.update(time, delta);
     // Homing rockets, drones, roosters, flames...
@@ -476,6 +492,7 @@ class LevelScene extends Phaser.Scene {
     this.enemies.getChildren().forEach((e) => T.snap(e));
     this.pickups.getChildren().forEach((k) => T.snap(k));
     this.pBombs.getChildren().forEach((b) => b.kind === 'rooster' && T.snap(b));
+    this.prisoners.getChildren().forEach((pr) => T.snap(pr));
   }
 
   // What enemies aim at: the nearest player (or their combi) to x (and y, when given).
@@ -722,6 +739,12 @@ class LevelScene extends Phaser.Scene {
     return best;
   }
 
+  addPrisoner(x, y, def) {
+    const pr = new Prisoner(this, x, y, def);
+    this.prisoners.add(pr);
+    return pr;
+  }
+
   spawnPickup(x, y, kind) {
     const p = new Pickup(this, x, y, kind);
     this.pickups.add(p);
@@ -744,7 +767,8 @@ class LevelScene extends Phaser.Scene {
   }
 
   scores() {
-    return this.players.filter((p) => p.state !== 'inactive' || p.score > 0).map((p) => ({ index: p.index, name: p.info.name, score: p.score }));
+    return this.players.filter((p) => p.state !== 'inactive' || p.score > 0)
+      .map((p) => ({ index: p.index, name: p.info.name, score: p.score, rescued: p.rescued, bonus: p.rescueBonus || 0 }));
   }
 
   // ---------- flow ----------
@@ -883,6 +907,11 @@ class LevelScene extends Phaser.Scene {
     Voice.say('mission_complete', 'Misión cumplida');
     const O = this.mission.outro || { title: '¡MISIÓN CUMPLIDA!', sub: '' };
     this.message(O.title, O.sub, 4500);
+    // Prisoner bonus, like the arcade's tally: every rescue since your last death counts.
+    this.players.forEach((p) => {
+      p.rescueBonus = p.state === 'play' ? p.rescued * CFG.PRISONER.BONUS : 0;
+      p.score += p.rescueBonus;
+    });
     this.savePlayers();
     this.time.delayedCall(5200, () => {
       this.scene.stop('HUD');

@@ -18,6 +18,8 @@
 //   crates [{ x, stack }]      one-way platforms
 //   props [{ x, type, drop }]  breakable gang property (CFG.PROPS: box, lootbag, trash, barrel, moto); drop: an item
 //                              kind, 'random', 'enemy' (a cupero jumps out) or 'none'
+//   prisoners [{ x, drop }]    tied-up honest cops (or a 'T' marker): freed by a shot or a touch, they hand over
+//                              `drop` (an item kind or 'random')
 //   vendors [{ x, food }]      street vendor with a cart, tosses that CFG.FOOD to a player walking by
 //   pickups [{ x, kind }]      a crate letter (guns H R A E G F D L, throwables B M P S) or a food id (CFG.FOOD)
 //   spawns [{ x, t, ... }]     enemies, spawned when x reaches the right screen edge.

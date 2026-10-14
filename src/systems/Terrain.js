@@ -29,7 +29,8 @@ const SLOPE = { up: 1, down: 1 };
 // the crate shows (CFG.WEAPONS / CFG.THROWABLES: H R A E G F D L guns, B M P S throwables).
 // Food uses CFG.FOOD[].marker: O pan con chicharrón, U mote, N makis, Z chicha morada, Y lomo saltado,
 // Q caldo de gallina, J chicha de jora, X pisco, K emoliente.
-// Others: @ player start, W abuelita, V Combi Slug, > door to the next section.
+// Others: @ player start, W abuelita, V Combi Slug, > door to the next section, T tied-up honest cop (prisoner;
+// gives a random item unless the mission's legend says { prisoner: true, drop }).
 const MAP_LEGEND = {
   g: { t: 'grunt' },
   s: { t: 'grunt', skin: 'thug2' },
@@ -37,6 +38,7 @@ const MAP_LEGEND = {
   k: { t: 'grunt', variant: 'knife' },
   b: { t: 'biker' },
   W: { abuelita: true },
+  T: { prisoner: true },
   V: { combi: true },
   '@': { start: true },
   '>': { door: true },

@@ -147,6 +147,7 @@ const SKINS = {
   thug: { head: 'thug', pal: { Q: '#2a2a30', X: '#c0282e', C: '#3a3d45', P: '#3a5fa0', F: '#e8e8e8' } },
   thug2: { head: 'thug', pal: { Q: '#3c6e3a', X: '#1b1b22', C: '#7a2e2e', P: '#2b2b33', F: '#e8e8e8' } },
   thug3: { head: 'thug', pal: { Q: '#c0282e', X: '#1b1b22', C: '#e8e8e8', P: '#2b2b33', F: '#c0282e' } }, // knife runner
+  poli: { head: 'cop', pal: { H: '#2f5a34', M: '#2b1d14', Y: '#d8d8d8', C: '#6b8a4f', P: '#34502f', F: '#1b1b22' } }, // honest cop (prisoner)
   vendor: { head: 'cobradora', pal: { h: '#2b1d14', C: '#f4f4f4', P: '#3a5fa0', F: '#5b3a20' } }, // street vendor
   cobrador: { head: 'driver', pal: { H: '#f4f4f4', M: '#1b1b22', C: '#e3b23c', P: '#1b1b22', F: '#f4f4f4' } },
 };
@@ -185,6 +186,7 @@ const Textures = {
   build(scene) {
     this.humans(scene);
     this.abuelita(scene);
+    this.prisoner(scene);
     this.combi(scene);
     this.boss(scene);
     this.biker(scene);
@@ -215,6 +217,20 @@ const Textures = {
       c.grid([...head, ...HUMAN.TORSO.fwd.slice(0, 4), ...HUMAN.CROUCH_LEGS], 0, 7, pal);
       c.register(scene, `${name}_crouch`);
     }
+  },
+
+  // Prisoner extras: tied up sitting on the floor, and saluting.
+  prisoner(scene) {
+    const pal = Object.assign({}, PAL, SKINS.poli.pal);
+    const head = HUMAN.HEADS.cop;
+    const t = new Painter(16, 24);
+    t.grid([...head, ...HUMAN.TORSO.up.slice(0, 4), ...HUMAN.CROUCH_LEGS], 0, 7, pal);
+    t.rect(3, 19, 10, 1, PAL.n).rect(3, 22, 10, 1, PAL.n).rect(4, 27, 9, 1, PAL.n); // rope
+    t.register(scene, 'poli_tied');
+    const s = new Painter(16, 24);
+    s.grid([...head, ...HUMAN.TORSO.up, ...HUMAN.LEGS.stand], 0, 0, pal);
+    s.rect(11, 3, 2, 2, PAL.s).rect(11, 5, 2, 4, pal.C).set(10, 3, PAL.s); // hand at the cap
+    s.register(scene, 'poli_salute');
   },
 
   abuelita(scene) {

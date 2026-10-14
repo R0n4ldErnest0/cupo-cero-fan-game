@@ -90,7 +90,9 @@ Full design, weapons list and build order: `docs/LEVELS.md`.
 - [x] Food (Peruvian), getting fat (Metal Slug rules, emoliente = diet, cucharón melee), getting drunk (caldo cures);
       breakable gang props that drop items; vendors who toss food
 - [x] Announcer voice on pickups (browser speech placeholder until clips are recorded in `assets/voice/`)
-- [ ] Rescuable people (POWs) that drop weapons and items
+- [x] Rescuable prisoners (POWs), prototype: honest cops tied up by the gang; freed by a shot or a touch, they
+      hand over an item; rescue count + bonus on the tally, reset to 0 on death (arcade rule)
+- [ ] More prisoner types per mission (drivers, vendors, denunciantes, journalist...) and helpers that fight
 - [ ] Auto-scroll mode (train roof, air level)
 - [ ] Police enemy types; boss framework (mid-bosses, phases)
 

@@ -129,6 +129,16 @@ faster shoots faster, like the arcade pistol. Holding fire repeats at a slower r
 All placeholder art and tuning; damage numbers need playtesting. Testing: **F6** drops the next crate in front of 1P;
 the Mission 2 greybox has one crate of each.
 
+## Prisoners — prototype built
+
+Our Metal Slug POWs. For now one kind: **honest cops** who refused to collect cupos, so their corrupt colleagues
+handed them to the gang (foreshadows the police reveal; ties in with El Sargento). Tied up on the floor (map marker
+`T`, mission `prisoners`, or hidden in a breakable prop with `drop: 'prisoner'`). A shot or a touch frees them:
+they salute, walk to you, hand over their item (set in the data, or random) and run off. The **tally** shows
+"POLICÍAS HONESTOS RESCATADOS x N" (+1000 each); the count carries over sections and missions and **goes back to 0
+when you die** (arcade rule). Later: other prisoners per mission (drivers, vendors, denunciantes, a journalist,
+municipal workers) and some that help you fight for a moment.
+
 ## Food, fat and drunk — built
 
 Metal Slug 2/X/3 rules, with Peruvian food (`CFG.FOOD`, `CFG.FAT`, `CFG.DRUNK`):

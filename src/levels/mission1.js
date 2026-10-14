@@ -20,6 +20,8 @@ MISSIONS.push({
         { x: 2412, stack: 1 },
       ],
       vendors: [{ x: 300, food: 'pan' }, { x: 1560, food: 'morada' }, { x: 2560, food: 'caldo' }],
+      // Honest cops the gang tied up (prisoners): one more is hidden in a CUPO box.
+      prisoners: [{ x: 820, drop: 'H' }, { x: 1950, drop: 'B' }, { x: 2650, drop: 'random' }],
       props: [
         { x: 620, type: 'box', drop: 'mote' },
         { x: 860, type: 'lootbag', drop: 'random' },
@@ -27,7 +29,7 @@ MISSIONS.push({
         { x: 1480, type: 'trash', drop: 'jora' },
         { x: 2030, type: 'box', drop: 'enemy' },
         { x: 2200, type: 'moto', drop: 'pisco' },
-        { x: 2480, type: 'box', drop: 'jora' },
+        { x: 2480, type: 'box', drop: 'prisoner' },
         { x: 2840, type: 'lootbag', drop: 'lomo' },
       ],
       pickups: [
@@ -84,6 +86,7 @@ MISSIONS.push({
       width: 1250,
       bg: { sky: 0xd8c8b0 },
       crates: [{ x: 300, stack: 1 }],
+      prisoners: [{ x: 560, drop: 'S' }],
       props: [
         { x: 450, type: 'barrel', drop: 'none' },
         { x: 710, type: 'box', drop: 'emoliente' },

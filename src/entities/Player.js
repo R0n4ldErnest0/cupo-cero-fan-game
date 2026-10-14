@@ -31,6 +31,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     this.invulnUntil = 0;
     this.vehicle = null;
     this.bubbleOffset = 28;
+    this.rescued = 0; // prisoners freed since the last death
     this.resetBelly();
   }
 
@@ -47,7 +48,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   get drunk() {
-    return this.scene.time.now < this.drunkUntil;
+    return !!this.scene && this.scene.time.now < this.drunkUntil;
   }
 
   eat(id) {
@@ -244,6 +245,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
   die() {
     if (!this.canBeHit()) return;
     this.alive = false;
+    this.rescued = 0;
     Weapons.clearBeam(this);
     Sfx.playerDie();
     this.body.setSize(8, 20).setOffset(4, 4);
@@ -259,6 +261,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
   fallDeath() {
     if (this.state !== 'play' || !this.alive) return;
     this.alive = false;
+    this.rescued = 0;
     Weapons.clearBeam(this);
     Sfx.playerDie();
     this.setVisible(false);

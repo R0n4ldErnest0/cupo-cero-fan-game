@@ -47,8 +47,10 @@ MISSIONS.push({
         |######################################################################################   ############################`,
       crates: [{ x: 300, stack: 1 }, { x: 322, stack: 2 }],
       vendors: [{ x: 560, food: 'makis' }],
+      // Honest cops tied up on the gallery floors (y = the floor's top) and one in a box.
+      prisoners: [{ x: 1000, y: 208, drop: 'H' }, { x: 1650, drop: 'random' }],
       props: [
-        { x: 700, type: 'box', drop: 'random' }, { x: 735, type: 'box', drop: 'enemy' },
+        { x: 700, type: 'box', drop: 'prisoner' }, { x: 735, type: 'box', drop: 'enemy' },
         { x: 1250, type: 'lootbag', drop: 'random' }, { x: 1760, type: 'barrel', drop: 'none' },
       ],
       // Greybox: one of every new weapon crate to try them out (the rest are in section B).
@@ -102,6 +104,7 @@ MISSIONS.push({
         |##############################################################################################
         |##############################################################################################`,
       vendors: [{ x: 100, food: 'jora' }, { x: 160, food: 'caldo' }, { x: 678, food: 'lomo' }],
+      prisoners: [{ x: 400, y: 160, drop: 'R' }, { x: 560, y: 256, drop: 'B' }],
       props: [
         { x: 230, type: 'trash', drop: 'pisco' }, { x: 280, type: 'moto', drop: 'jora' },
         { x: 908, type: 'lootbag', drop: 'emoliente' },

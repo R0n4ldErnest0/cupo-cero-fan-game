@@ -173,8 +173,9 @@ class MissionEndScene extends Phaser.Scene {
     this.add.tileSprite(0, 540 - 340, 480, 170, 'bg_city').setOrigin(0).setScale(2).setAlpha(0.25);
     this.add.text(480, 90, `${done.title} CUMPLIDA`, menuStyle({ fontSize: '52px', color: '#ffe066', strokeThickness: 9 })).setOrigin(0.5);
     this.add.text(480, 140, done.name, menuStyle({ fontSize: '22px', color: '#ffffff', strokeThickness: 5 })).setOrigin(0.5);
-    const scores = (data.scores || []).map((p) => `${p.index + 1}P ${p.name}   ${String(p.score).padStart(7, '0')}`).join('\n');
-    this.add.text(480, 230, scores, menuStyle({ fontSize: '24px', color: '#ffffff', strokeThickness: 5 })).setOrigin(0.5);
+    const scores = (data.scores || []).map((p) => `${p.index + 1}P ${p.name}   ${String(p.score).padStart(7, '0')}\n` +
+      `POLICÍAS HONESTOS RESCATADOS x${p.rescued || 0}  +${p.bonus || 0}`).join('\n');
+    this.add.text(480, 236, scores, menuStyle({ fontSize: '22px', color: '#ffffff', strokeThickness: 5, lineSpacing: 6 })).setOrigin(0.5);
     if (next) {
       this.add.text(480, 330, 'SIGUIENTE', menuStyle({ fontSize: '18px', color: '#9fd3f0', strokeThickness: 4 })).setOrigin(0.5);
       this.add.text(480, 364, `${next.title}: ${next.subtitle}${next.draft ? ' (BORRADOR)' : ''}`,

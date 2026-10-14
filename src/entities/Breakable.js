@@ -1,6 +1,7 @@
 // Gang property you can shoot apart (boxes of "cupo", loot bags, trash bins, barrels, parked motorbikes), like
 // Metal Slug's crates and barrels: it may drop food or an item, hide a cupero, or blow up.
-// Mission data: props: [{ x, y?, type, drop }] (types in CFG.PROPS; drop: item kind | 'random' | 'enemy' | 'none').
+// Mission data: props: [{ x, y?, type, drop }] (types in CFG.PROPS; drop: item kind | 'random' | 'enemy' |
+// 'prisoner' (a tied-up honest cop is inside) | 'none').
 class Breakable extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y, def) {
     super(scene, x, y, `prop_${def.type}`);
@@ -43,6 +44,8 @@ class Breakable extends Phaser.Physics.Arcade.Sprite {
       const e = s.spawnEnemy({ t: 'grunt', variant: Math.random() < 0.5 ? 'knife' : 'gunner' }, x);
       e.setVelocityY(-160);
       Fx.say(s, e, '¡Sorpresa, causa!', 1200);
+    } else if (drop === 'prisoner') {
+      s.addPrisoner(x, y, { drop: 'random' });
     } else if (drop !== 'none') {
       const k = s.spawnPickup(x, y - h, drop);
       k.setVelocityY(-150);

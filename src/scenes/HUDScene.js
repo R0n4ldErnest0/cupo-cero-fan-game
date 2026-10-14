@@ -61,7 +61,8 @@ class HUDScene extends Phaser.Scene {
 
   update(time) {
     const lv = this.level;
-    if (!lv || !lv.players) return;
+    // During a restart (new section) the old players are already destroyed for a frame.
+    if (!lv || !lv.players || lv.players.some((p) => !p.scene)) return;
     lv.players.forEach((p, i) => this.drawSlot(this.slots[i], p, i, time));
     this.tCredits.setText(Session.creditText());
 

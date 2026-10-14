@@ -112,6 +112,11 @@ const CFG = {
   },
   RANDOM_DROPS: ['pan', 'mote', 'makis', 'morada', 'lomo', 'caldo', 'jora', 'pisco', 'emoliente', 'B', 'pan', 'mote', 'jora'],
 
+  // Prisoners (Metal Slug's POWs): honest cops the gang tied up. Freed by a shot or a touch, they walk to you,
+  // hand over an item (mission data; 'random' = RANDOM_DROPS) and run off. The rescue count gives BONUS points
+  // each at the end of a mission, and goes back to 0 when you die (arcade rule).
+  PRISONER: { BONUS: 1000, WALK: 45, GIVE_AFTER: 2500, RUN: 130 },
+
   // Melee: when an enemy is this close in front, fire hits it instead of shooting.
   MELEE: { RANGE: 22, DAMAGE: 5, DELAY: 200 },
 
