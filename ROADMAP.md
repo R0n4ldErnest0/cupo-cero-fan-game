@@ -96,7 +96,7 @@ Full design, weapons list and build order: `docs/LEVELS.md`.
 - [ ] More prisoner types (the journalist in Mission 4, denunciantes, municipal workers)
 - [x] Mission 2 restructure to 4 sections (Mototaxi Slug in the Mercado, Azoteas on foot)
 - [x] Intro crawl after character select (new game from Mission 1); characters renamed
-- [ ] Mission 3 Metropolitano expansion: stop at a station, on foot, bus-to-bus jumps
+- [x] Mission 3 Metropolitano expansion: stop at a station, on foot, bus-to-bus jumps, helicopter at the terminal
 - [x] Ride mode: the section happens on a moving vehicle (Metropolitano bus roof): scrolling road and backgrounds,
       a timeline of enemies jumping on and pedestrian bridges to duck under (lose a life), braking into the station.
       Mission 3 greybox = the bus ride

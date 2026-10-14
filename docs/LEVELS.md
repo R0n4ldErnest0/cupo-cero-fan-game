@@ -30,7 +30,7 @@ A chain across the missions, so the ending feels earned:
 |---|---|---|---|
 | 1 | ¡Paga o ya sabes! | A Paradero → B Terminal (boss) | ✅ prototype (both sections) |
 | 2 | Gamarra no se cierra | A Mercado (Mototaxi Slug) → B Azoteas → C Almacén (mid-boss) → D Oficina (boss) | 🚧 greybox (all sections) |
-| 3 | La ruta | A Cerros (climb) → B Roof of the Metropolitano → C Station (boss) | 🚧 greybox (all sections) |
+| 3 | La ruta | A Cerros → B Metropolitano → C Estación (on foot) → D Metropolitano 2 + terminal (boss) | 🚧 greybox (all sections) |
 | 4 | Su denuncia es importante para nosotros | A Front desk → B Offices and cells → C Evidence room → D Escape (boss) | 📝 |
 | 5 | Obra paralizada | A Air level ❓ → B Plaza: the town joins you → C Municipalidad → D Mayor (final boss) | 📝 |
 
@@ -106,12 +106,12 @@ real helicopter art.
 
 **Decided:** the Metropolitano (bus roof at street level, traffic alongside) instead of the Línea 1 elevated train.
 
-**Decided expansion (to do):** B1 bus ride → the bus brakes into a **station** → B2 the station on foot (platform,
-turnstiles) and board another bus → B3 ride with **bus-to-bus jumps**: your bus is taken "FUERA DE SERVICIO" (or
-blocked by the police) and falls behind while another bus comes up close ahead; a "¡SALTA!" sign, and you jump from
-the front of yours onto the back of the other while both move (two or three times) → C station + helicopter.
-(Keep it within 4 sections: e.g. Cerros → Metropolitano (ride + station + ride) → Estación, with the stop handled
-inside the ride.)
+**Expansion ✅ built:** B the first ride brakes into a station → C **Estación** on foot (turnstiles, cops guarding
+it) and you board the next bus through its door → D **Metropolitano 2** with **bus-to-bus transfers** (ride event
+`transfer`): your bus goes "¡FUERA DE SERVICIO!" (grayed out) and the next one catches up right in front of it;
+for ~4 s both drift together with a small gap ("¡SALTA! →"), then the broken one falls behind and leaves the
+screen (stay on it and you lose a life); whoever stands on a bus moves with it. At the terminal the bus stops, a
+platform appears around it, and the **police helicopter** attacks there (a ride section can end in an `arena`).
 
 ## Mission 4 — "Su denuncia es importante para nosotros" 📝
 
@@ -263,12 +263,12 @@ Systems first (each one unlocks several missions), then the missions, then art/s
 2. ✅ **Sections:** a mission made of several parts with transitions (max 4 per mission)
 3. ✅ **Weapons system:** letter pickups, ammo, HUD; the new weapons, Molotov and Súper granada; per-character melee
 4. ✅ **Rescuable people (POWs):** honest cops (prototype); next: the expediente of clues
-5. ✅ **Ride mode** (Metropolitano roof; reused by the air level). A moving-camera auto-scroll over a normal map
+5. ✅ **Ride mode** (Metropolitano roof, bus-to-bus transfers, a boss at the terminal; reused by the air level). A moving-camera auto-scroll over a normal map
    (chases, the Mission 4 escape) is still to do.
 6. ✅ **Police enemies** (patrol, riot shield, motorcycle cop, sniper) and ✅ the boss framework (mid-bosses, phases)
 7. ✅ **Mission 2** greybox (rooftops, Mototaxi Slug, truck mid-boss, accountant boss, ledger); next: restructure to
    4 sections → **art direction test** on it
-8. ✅ **Mission 3** greybox (cerros, Metropolitano, helicopter boss); next: the Metropolitano expansion
+8. ✅ **Mission 3** greybox (cerros, Metropolitano + station + second ride with transfers, helicopter boss)
 9. **Mission 4** (indoor tiles, comisaría, rochabus, comisario)
 10. **Air-shooter mode + ally AI**, then **Mission 5** and the ending
 11. Real art and music for everything, voice lines

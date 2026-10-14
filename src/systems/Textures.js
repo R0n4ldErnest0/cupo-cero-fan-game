@@ -774,6 +774,12 @@ const Textures = {
     d.register(scene, 'bridge_deck');
     new Painter(14, 72).rect(1, 0, 12, 72, '#8a877f').rect(1, 0, 3, 72, '#a5a29a').outline().register(scene, 'bridge_pillar');
 
+    // Station turnstile (molinete) and the bus door you board through.
+    const tt = new Painter(18, 22);
+    tt.rect(2, 4, 4, 18, '#9aa0a8').rect(12, 4, 4, 18, '#9aa0a8').rect(6, 10, 6, 2, '#5a6068').rect(2, 2, 14, 3, '#3a3d45').set(8, 3, '#3cff6a');
+    tt.outline();
+    tt.register(scene, 'turnstile');
+
     const lp = new Painter(14, 84);
     lp.rect(6, 6, 2, 78, '#5a6068').rect(6, 4, 7, 2, '#5a6068').rect(10, 6, 4, 2, '#f2e2a0');
     lp.register(scene, 'lamppost');

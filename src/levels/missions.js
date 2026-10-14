@@ -47,6 +47,8 @@
 //                              (walk into a '>' marker; default when the map has one). A middle section with an
 //                              `arena` continues when it's cleared instead.
 //   vehicles: false            the Combi Slug can't come in (indoors); a door always leaves it behind
-//   ride { speed, seconds, events }  the section happens on a moving vehicle (see src/systems/Ride.js); no map needed
+//   ride { speed, seconds, events }  the section happens on a moving vehicle (see src/systems/Ride.js); no map needed.
+//                              With an `arena`, the bus stops at the terminal and the arena (boss) starts there
+//   doors [{ x }]              doors to the next section on a map without a terrain text map
 // Players keep lives, score, weapon, ammo, bombs and fat/drunk state between sections; the driven combi too.
 const MISSIONS = [];

@@ -128,6 +128,9 @@ const CFG = {
   RIDE: {
     ROAD_Y: 200, ROOF_Y: 152, BUS_X: 32, ROOFS: [[2, 150, 0], [150, 166, 4], [166, 318, 0]],
     DUCK_CLEARANCE: 15, WARN_MS: 1600, BRAKE_MS: 2500, POST_EVERY: 260,
+    // Bus-to-bus transfer: the next bus catches up at TRANSFER_APPROACH px/s, then both drift left for
+    // TRANSFER_TOGETHER ms with a TRANSFER_GAP px gap (jump!), then it settles into place.
+    TRANSFER_GAP: 34, TRANSFER_APPROACH: 90, TRANSFER_SPEED: 22, TRANSFER_TOGETHER: 3800, TRANSFER_SETTLE: 70,
   },
 
   // Melee: when an enemy is this close in front, fire hits it instead of shooting.

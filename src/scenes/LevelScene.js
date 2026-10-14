@@ -955,7 +955,9 @@ class LevelScene extends Phaser.Scene {
 
   startBoss(type) {
     Sfx.rev();
-    const b = (this.boss = new BOSSES[type](this, this.levelW + 70, this.floorY({ x: this.levelW - 40 })));
+    // In a ride the "floor" is the bus roof (the bus has stopped at the terminal).
+    const floor = this.ride ? CFG.RIDE.ROOF_Y : this.floorY({ x: this.levelW - 40 });
+    const b = (this.boss = new BOSSES[type](this, this.levelW + 70, floor));
     const P = this.physics.add;
     P.overlap(b, this.pBullets, (bb, bullet) => b.state !== 'enter' && this.bulletHits(bullet, b));
     P.overlap(b, this.pBombs, (bb, bomb) => b.alive && this.detonate(bomb));
