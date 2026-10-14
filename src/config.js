@@ -14,16 +14,20 @@ const CFG = {
 
   PLAYER: { SPEED: 95, JUMP: 330, INVULN_MS: 2500, START_BOMBS: 10, CAM_LEAD: 160 },
 
+  // Story intro crawl after character select (src/scenes/IntroScene.js): scroll speed.
+  INTRO: { MS_PER_PX: 28 },
+
   // Arcade-style credits. Key 5 inserts a coin, F2 toggles FREE PLAY (infinite credits).
   CREDITS: { START: 3, LIVES_PER_CREDIT: 5, CONTINUE_SECONDS: 10, MAX: 99 },
 
   // Placeholder names/roles — see ROADMAP open questions.
   CHARACTERS: [
-    // melee = texture of the close-range weapon (tire iron, police baton, machete, coin bag)
-    { id: 'chato', name: 'DON CHATO', role: 'Chofer de combi', melee: 'melee_tireiron' },
-    { id: 'sargento', name: 'EL SARGENTO', role: 'Policía retirado (de los honestos)', melee: 'melee_baton' },
-    { id: 'merc', name: 'EL MERCENARIO', role: 'Contratado por el gremio', melee: 'melee_machete' },
-    { id: 'cobradora', name: 'LA COBRADORA', role: 'Cobradora de combi', melee: 'melee_coinbag' },
+    // melee = texture of the close-range weapon (tire iron, police baton, machete, handbag).
+    // ids are internal (sprite keys); names are what the game shows. The 4th name is a placeholder.
+    { id: 'chato', name: 'PANCHO', role: 'Chofer de combi', melee: 'melee_tireiron' },
+    { id: 'sargento', name: 'DON TITO', role: 'Policía retirado (de los honestos)', melee: 'melee_baton' },
+    { id: 'merc', name: 'AMARU', role: 'Mercenario contratado por el gremio', melee: 'melee_machete' },
+    { id: 'cobradora', name: 'LA BOTICARIA', role: 'Dueña de una botica extorsionada', melee: 'melee_handbag' },
   ],
 
   // Keyboard maps. Solo accepts every layout; 2P splits the keyboard (gamepads also work: A jump, X fire, B grenade).

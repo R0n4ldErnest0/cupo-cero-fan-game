@@ -29,7 +29,7 @@ A chain across the missions, so the ending feels earned:
 | # | Mission | Sections | Status |
 |---|---|---|---|
 | 1 | ¡Paga o ya sabes! | A Paradero → B Terminal (boss) | ✅ prototype (both sections) |
-| 2 | Gamarra no se cierra | A Market street → B Galleries → C Rooftops → D Almacén (mid-boss) → E Office (boss) | 🚧 greybox (all sections) |
+| 2 | Gamarra no se cierra | A Mercado (Mototaxi Slug) → B Azoteas → C Almacén (mid-boss) → D Oficina (boss) | 🚧 greybox (all sections) |
 | 3 | La ruta | A Cerros (climb) → B Roof of the Metropolitano → C Station (boss) | 🚧 greybox (all sections) |
 | 4 | Su denuncia es importante para nosotros | A Front desk → B Offices and cells → C Evidence room → D Escape (boss) | 📝 |
 | 5 | Obra paralizada | A Air level ❓ → B Plaza: the town joins you → C Municipalidad → D Mayor (final boss) | 📝 |
@@ -52,7 +52,7 @@ and the boss).
 **Decided restructure (max 4 sections per mission):** A **Mercado** (market street + first gallery; you get the
 **Mototaxi Slug** here, on the street; ends with the ambush) → B **Azoteas** (climb the second gallery on foot,
 its floors are the way up, then the rooftops; no vehicle on the roofs) → C **Almacén** (Camión Recaudador) →
-D **Oficina** (El Contador + the ledger). The separate Galerías section goes away. 📝 to do
+D **Oficina** (El Contador + the ledger). The separate Galerías section goes away. ✅ done
 
 **Defined:**
 - A **Market street:** stalls, the municipal trench ("OBRA: INICIADA EN 2019") as a pit, a rubble mound.

@@ -165,7 +165,7 @@ const SKINS = {
   chato: { head: 'driver', pal: { H: '#d8343a', M: '#2b1d14', C: '#7fb8e6', P: '#2c4f86', F: '#5b3a20' } },
   sargento: { head: 'cop', pal: { H: '#2f4f3a', M: '#d8d8d8', Y: '#c8c8c8', C: '#c2ad74', P: '#3f4a35', F: '#1b1b22' } },
   merc: { head: 'merc', pal: { B: '#4a6b2f', C: '#6e7b4a', P: '#5e5236', F: '#2b2b2b' } },
-  cobradora: { head: 'cobradora', pal: { C: '#2aa198', P: '#2c4f86', F: '#f4f4f4' } },
+  cobradora: { head: 'cobradora', pal: { C: '#f4f4f4', P: '#3a3d45', F: '#c0282e' } }, // the drugstore owner (white coat)
   thug: { head: 'thug', pal: { Q: '#2a2a30', X: '#c0282e', C: '#3a3d45', P: '#3a5fa0', F: '#e8e8e8' } },
   thug2: { head: 'thug', pal: { Q: '#3c6e3a', X: '#1b1b22', C: '#7a2e2e', P: '#2b2b33', F: '#e8e8e8' } },
   thug3: { head: 'thug', pal: { Q: '#c0282e', X: '#1b1b22', C: '#e8e8e8', P: '#2b2b33', F: '#c0282e' } }, // knife runner
@@ -566,6 +566,11 @@ const Textures = {
     // Fat melee: a big soup ladle.
     new Painter(16, 8).rect(0, 3, 9, 1, '#c9ced6').disc(12, 4, 3, '#c9ced6').disc(12, 3, 2, '#8a8f96').outline()
       .register(scene, 'melee_cucharon');
+
+    // The drugstore owner's handbag (handle on the left).
+    const hb = new Painter(16, 12);
+    hb.line(0, 5, 6, 2, '#5b3a20').line(6, 2, 8, 5, '#5b3a20').rect(6, 5, 9, 6, '#a84040').rect(6, 5, 9, 1, '#c86060').rect(10, 7, 2, 2, '#f2c94c').outline();
+    hb.register(scene, 'melee_handbag');
 
     const cb = new Painter(16, 12);
     cb.line(0, 6, 5, 6, '#8a5a33').disc(10, 6, 4, '#c9a86a').rect(5, 5, 2, 3, '#8a5a33').text('$', 9, 4, '#2e7d32').outline();

@@ -1,7 +1,7 @@
-// Mission 2 — "Gamarra no se cierra" (greybox). A) market street with the first multi-floor gallery, the municipal
-// trench (pit) and a rubble mound (slopes), ending at the door of the second gallery; B) the second gallery and the
-// almacén yard, where the cuperos ambush you; C) the rooftops, with the Mototaxi Slug; D) the almacén, with the
-// collection-truck mid-boss; E) the accountant's office (boss), then the ledger. Still missing: market art.
+// Mission 2 — "Gamarra no se cierra" (greybox). A) the market street (first gallery, the municipal trench, a rubble
+// mound) with the Mototaxi Slug, ending in an ambush; B) up the second gallery on foot and across the rooftops;
+// C) the almacén, with the collection-truck mid-boss; D) the accountant's office (boss), then the ledger.
+// Still missing: market and warehouse art.
 //
 // Map key: see src/systems/Terrain.js. Floors are 3 tiles apart (the player jumps ~3.7 tiles).
 // Rows 0-23, street top at row 22 (y = 352). Column c is at x = c * 16.
@@ -31,11 +31,12 @@ MISSIONS.push({
       ],
       footer: '— El Contador',
     },
-    { type: 'talk', who: 'DON CHATO', text: 'La comisaría cobra su parte... ¿y quién es "el Jefe"?' },
-    { type: 'talk', who: 'EL MERCENARIO', text: 'El Cobrador escapó hacia los cerros. Si alguien sabe, es él.' },
+    { type: 'talk', who: 'PANCHO', text: 'La comisaría cobra su parte... ¿y quién es "el Jefe"?' },
+    { type: 'talk', who: 'AMARU', text: 'El Cobrador escapó hacia los cerros. Si alguien sabe, es él.' },
   ],
   sections: [
-    // A — Market street. Leaves through the door of the second gallery (on foot: the combi stays outside).
+    // A — Market street with the first gallery, the trench and the rubble mound. The Mototaxi Slug is parked on the
+    // street. Ends with an ambush in front of the second gallery (the way up to the rooftops).
     {
       area: 'MERCADO',
       terrain: String.raw`
@@ -60,20 +61,22 @@ MISSIONS.push({
         |                               ::::::::::::::g::::::::::::::t::::::::::::::                               t        %%
         |                               ============================================                           /******\     %%
         |                               ::::::::::::::::::::::::::::::::::::::::::::                          /********\    %%
-        |        @               g      :::::::::g:::::::::::::::s::::::::::::::::::   k                b    /**********\ > %%
+        |        @               g      :::::::::g:::::::::::::::s::::::::::::::::::   k                b    /**********\   %%
         |######################################################################################   ############################
         |######################################################################################   ############################`,
+      mototaxi: { x: 190 },
       crates: [{ x: 300, stack: 1 }, { x: 322, stack: 2 }],
-      vendors: [{ x: 560, food: 'makis' }],
+      // A chichería stand next to a caldo cart (3 jora + pisco = drunk; the caldo cures it).
+      vendors: [{ x: 560, food: 'makis' }, { x: 1250, food: 'jora' }, { x: 1310, food: 'caldo' }],
       // Honest cops tied up on the gallery floors (y = the floor's top) and one in a box.
       prisoners: [{ x: 1000, y: 208, drop: 'H' }, { x: 1650, drop: 'random' }],
       props: [
         { x: 700, type: 'box', drop: 'prisoner' }, { x: 735, type: 'box', drop: 'enemy' },
         { x: 1250, type: 'lootbag', drop: 'random' }, { x: 1760, type: 'barrel', drop: 'none' },
       ],
-      // Greybox: one of every new weapon crate to try them out (the rest are in section B).
+      // Greybox: weapon crates to try them out.
       pickups: [
-        { x: 230, kind: 'R' }, { x: 420, kind: 'A' }, { x: 960, kind: 'E' }, { x: 1150, kind: 'M' }, { x: 1560, kind: 'G' },
+        { x: 420, kind: 'A' }, { x: 640, kind: 'D' }, { x: 960, kind: 'E' }, { x: 1150, kind: 'M' }, { x: 1560, kind: 'G' },
         { x: 1640, kind: 'F' },
       ],
       decor: [
@@ -86,69 +89,28 @@ MISSIONS.push({
         { type: 'sign', x: 1400, y: 324, text: 'OBRA: ZANJA\nINICIADA EN 2019', bg: '#c06a1e' },
         { type: 'graffiti', x: 1520, text: 'CUPO DIARIO:\nS/ 20', color: '#c0282e' },
         { type: 'sign', x: 1700, y: 282, text: 'PROHIBIDO ARROJAR\nDESMONTE', bg: '#1b1b22' },
+        { type: 'sign', x: 260, y: 300, text: 'MOTOTAXI SLUG:\n↓+C ¡BOCINAZO!', bg: '#d8343a' },
         { type: 'sign', x: 1820, y: 290, text: 'GALERÍA\nNUEVA ESPERANZA', bg: '#1e5fb4' },
       ],
       events: [
         { x: 1180, say: { who: 'fiscal', text: '¡Decomiso! Esas chompas no tienen permiso. ...¿Los de la pistola? No los vi.', ms: 3200 } },
       ],
-    },
-    // B — Second gallery and the almacén yard: a chichería stand (3 jora + pisco = drunk; the caldo cures it)
-    // and the locked-screen ambush on the planks (y: 304; dx past the view = runs in from the right edge).
-    {
-      area: 'GALERÍAS',
-      terrain: String.raw`
-        |
-        |
-        |
-        |
-        |
-        |
-        |
-        |
-        |
-        |          B                                h
-        |      ===========================================
-        |      :::::::::::::::::::::::::::::::::::::::::::
-        |      ::::::::::g::::::::::::::::O:::::::::::::::
-        |      ===========================================
-        |      :::::::::::::::::::::::::::::::::::::::::::
-        |      ::::::::::::::t:::::::::::::::::g::::::::::
-        |      ===========================================
-        |      :::::::::::::::::::::::::::::::::::::::::::
-        |      :::::::g::::::::::::::s::::::::::::::::::::
-        |      ===========================================                       --------    ------
-        |      :::::::::::::::::::::::::::::::::::::::::::
-        |  @   :::::::::::::::::g:::::::::::::::::::::::::    k  V   b t
-        |##############################################################################################
-        |##############################################################################################`,
-      vendors: [{ x: 100, food: 'jora' }, { x: 160, food: 'caldo' }, { x: 678, food: 'lomo' }],
-      prisoners: [{ x: 400, y: 160, drop: 'R' }, { x: 560, y: 256, drop: 'B' }],
-      props: [
-        { x: 230, type: 'trash', drop: 'pisco' }, { x: 280, type: 'moto', drop: 'jora' },
-        { x: 908, type: 'lootbag', drop: 'emoliente' },
-      ],
-      pickups: [{ x: 608, kind: 'D' }, { x: 768, kind: 'L' }, { x: 858, kind: 'P' }, { x: 928, kind: 'S' }],
-      decor: [
-        { type: 'sign', x: 432, y: 146, text: 'GALERÍA NUEVA ESPERANZA', bg: '#1e5fb4' },
-        { type: 'graffiti', x: 868, text: '¡GAMARRA NO\nSE CIERRA!', color: '#1e5fb4' },
-        { type: 'sign', x: 988, y: 282, text: 'ALMACÉN\n(NO PASAR)', bg: '#1b1b22' },
-      ],
+      // Ambush in front of the gallery (the camera locks at x 1488; the facade wall is at x 1840).
       arena: {
-        alert: ['¡EMBOSCADA!', 'LOS CUPEROS DEL ALMACÉN'],
+        alert: ['¡EMBOSCADA!', 'LOS CUPEROS DE LA GALERÍA'],
         waves: [
-          [{ dx: 500, t: 'grunt' }, { dx: 520, t: 'grunt', skin: 'thug2' }, { dx: -20, t: 'grunt', variant: 'thrower' }, { dx: 500, t: 'grunt', variant: 'knife' }],
-          [{ dx: 500, t: 'biker' }, { dx: 500, t: 'grunt', hp: 3 }, { dx: 264, y: 304, t: 'grunt' }, { dx: -40, t: 'grunt', skin: 'thug2' }],
-          [{ dx: 500, t: 'grunt', variant: 'thrower' }, { dx: 94, y: 304, t: 'grunt', variant: 'thrower' }, { dx: -20, t: 'grunt', hp: 3, skin: 'thug2' }, { dx: 500, t: 'biker' }],
+          [{ dx: 330, t: 'grunt' }, { dx: 310, t: 'grunt', skin: 'thug2' }, { dx: -20, t: 'grunt', variant: 'thrower' }, { dx: 330, t: 'grunt', variant: 'knife' }],
+          [{ dx: 330, t: 'grunt', hp: 3 }, { dx: -40, t: 'grunt', skin: 'thug2' }, { dx: 320, t: 'shieldthug' }],
+          [{ dx: 330, t: 'grunt', variant: 'thrower' }, { dx: -20, t: 'grunt', hp: 3, skin: 'thug2' }, { dx: 190, y: 304, t: 'gangsniper' }, { dx: 330, t: 'grunt', variant: 'knife' }],
         ],
       },
     },
-    // C — Azoteas: across the Gamarra rooftops (gaps between buildings are a long fall). The Mototaxi Slug is
-    // parked up here (the combi stays below). Snipers on the water tanks, cuperos behind metal shutters, and an
-    // ambush at the end. Rows 0-23; roofs between rows 13 and 17.
+    // B — Azoteas: up the second gallery on foot (the mototaxi stays on the street), then across the Gamarra
+    // rooftops (gaps between buildings are a long fall). Snipers on the water tanks, cuperos behind metal shutters,
+    // an ambush at the end. Rows 0-23: the street floor of the gallery is row 22; roofs between rows 13 and 17.
     {
       area: 'AZOTEAS',
       vehicles: false,
-      mototaxi: { x: 200 },
       bg: { sky: 0xffb880, hills: 0xd09070, city: 0xd8a888 },
       terrain: String.raw`
         |
@@ -158,35 +120,35 @@ MISSIONS.push({
         |
         |
         |
-        |
-        |
-        |                                                                                                                                     u
-        |                                                                    t        u                                                      ===
-        |                                         u                      ----------- ===                                                     :::                         ===
-        |                                        ===                                 :::                                                     :::  e                      :::
-        |                                        :::                   k         g   :::                  g     k                        /%%%%%%%%%%%%         g   k     :::
-        |                                        :::   g   e       %%%%%%%%%%%%%%%%%%%%%%%               === ------                     /%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        |   @              g     g       %%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%               :::                   b   g   /%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        |%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%       g   T   :::        e     %%%%%%%%%%%%%%%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        |%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        |%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        |%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        |%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        |%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        |%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        |%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%`,
-      vendors: [{ x: 1500, food: 'pan' }],
+        |::::::::::::::::
+        |::::::::::::::::
+        |::::::::::::::::                                                                                                                                     u
+        |::::::::::::::::                                                                    t        u                                                      ===
+        |::::::::::::::::                                         u                      ----------- ===                                                     :::                         ===
+        |::::::::::::::::                                        ===                                 :::                                                     :::  e                      :::
+        |::::::::::::::::                                        :::                   k         g   :::                  g     k                        /%%%%%%%%%%%%         g   k     :::
+        |::::::::::::::::                                        :::   g   e       %%%%%%%%%%%%%%%%%%%%%%%               === ------                     /%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        |::::::::::::::::                  g     g       %%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%               :::                   b   g   /%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        |================%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%       g   T   :::        e     %%%%%%%%%%%%%%%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        |::::::::::::::::%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        |:::::::::g::::::%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        |================%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        |::::::::::::::::%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        |::@:::::::::k:::%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        |################%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        |################%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%`,
+      vendors: [{ x: 1756, food: 'pan' }],
+      prisoners: [{ x: 200, y: 304, drop: 'B' }],
       props: [
-        { x: 600, type: 'box', drop: 'random' }, { x: 1180, type: 'lootbag', drop: 'B' },
-        { x: 1660, type: 'box', drop: 'prisoner' }, { x: 2380, type: 'barrel', drop: 'none' },
-        { x: 2560, type: 'lootbag', drop: 'emoliente' },
+        { x: 856, type: 'box', drop: 'random' }, { x: 1436, type: 'lootbag', drop: 'B' },
+        { x: 1916, type: 'box', drop: 'prisoner' }, { x: 2636, type: 'barrel', drop: 'none' },
+        { x: 2816, type: 'lootbag', drop: 'emoliente' },
       ],
-      pickups: [{ x: 1020, kind: 'H' }, { x: 2100, kind: 'R' }],
+      pickups: [{ x: 1276, kind: 'H' }, { x: 2356, kind: 'R' }, { x: 900, kind: 'S' }, { x: 1700, kind: 'L' }, { x: 2200, kind: 'P' }],
       decor: [
-        { type: 'text', x: 192, y: 178, text: 'El almacén de los cuperos está al otro lado.\n¡Por las azoteas!', style: { fontSize: '10px', color: '#ffe066' } },
-        { type: 'sign', x: 300, y: 222, text: 'MOTOTAXI SLUG:\n↓+C ¡BOCINAZO!', bg: '#d8343a' },
-        { type: 'sign', x: 1240, y: 120, text: 'SE ALQUILA AZOTEA\n(CUPO NO INCLUIDO)', bg: '#1b1b22' },
-        { type: 'sign', x: 2620, y: 150, text: 'ALMACÉN →', bg: '#1b1b22' },
+        { type: 'text', x: 192, y: 236, text: 'El almacén de los cuperos está al otro lado.\n¡Sube por la galería a las azoteas!', style: { fontSize: '10px', color: '#ffe066' } },
+        { type: 'sign', x: 1496, y: 120, text: 'SE ALQUILA AZOTEA\n(CUPO NO INCLUIDO)', bg: '#1b1b22' },
+        { type: 'sign', x: 2876, y: 150, text: 'ALMACÉN →', bg: '#1b1b22' },
       ],
       arena: {
         alert: ['¡EMBOSCADA!', 'EN LA AZOTEA'],
@@ -196,7 +158,7 @@ MISSIONS.push({
         ],
       },
     },
-    // D — Almacén: the gang's warehouse (indoor: ceiling, back wall, shelves 3 tiles apart). At the end the
+    // C — Almacén: the gang's warehouse (indoor: ceiling, back wall, shelves 3 tiles apart). At the end the
     // Camión Recaudador arrives with the day's cupos (mid-boss). Rows 0-15: ceiling 0-1, floor top row 14 (y = 224).
     {
       area: 'ALMACÉN',
@@ -235,7 +197,7 @@ MISSIONS.push({
       ],
       arena: { alert: ['¡ALERTA!', 'CAMIÓN RECAUDADOR'], boss: 'truck' },
     },
-    // E — The accountant's office: a small room and the boss, El Contador in his safe mech.
+    // D — The accountant's office: a small room and the boss, El Contador in his safe mech.
     {
       area: 'OFICINA',
       bg: { sky: 0x505058, hills: 0x404048, city: 0x48484f },

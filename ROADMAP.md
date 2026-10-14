@@ -10,10 +10,10 @@ The driver ends the game as a folk hero and a fugitive ("going rogue").
 
 | Character | Role |
 |---|---|
-| **Don Chato** (placeholder name) | Playable. Combi driver who lost a coworker to the extortionists. |
-| **El Sargento** (placeholder) | Playable. Retired policeman, one of the honest ones. |
-| **El Mercenario** (placeholder) | Playable. Hired by the drivers' union. |
-| **La Cobradora** (placeholder, 4th slot undecided) | Playable. The combi's fare collector. |
+| **Pancho** | Playable. Combi driver; the extortionists killed his compadre Lucho (ruta 13-B). |
+| **Don Tito** | Playable. Retired policeman, one of the honest ones; knows where the old helicopter is (Mission 5). |
+| **Amaru** | Playable. Mercenary hired by the drivers' union. |
+| **La Boticaria** (name to decide) | Playable. Owner of a small drugstore (a PYME) extorted again and again. |
 | **Emoliente Abuelita** | Rescuable helper (our "Hyakutaro"): follows you and throws boiling emoliente cups. |
 | **El Cobrador de Cupos** | Mission 1 boss, rides an armored mototaxi. |
 | **Corrupt Comisario** | Mission 4 boss. |
@@ -94,7 +94,8 @@ Full design, weapons list and build order: `docs/LEVELS.md`.
       hand over an item; rescue count + bonus on the tally, reset to 0 on death (arcade rule)
 - [ ] Expediente: each freed honest cop gives a clue; a case-file story page after each mission
 - [ ] More prisoner types (the journalist in Mission 4, denunciantes, municipal workers)
-- [ ] Mission 2 restructure to 4 sections (Mototaxi Slug in the Mercado, Azoteas on foot)
+- [x] Mission 2 restructure to 4 sections (Mototaxi Slug in the Mercado, Azoteas on foot)
+- [x] Intro crawl after character select (new game from Mission 1); characters renamed
 - [ ] Mission 3 Metropolitano expansion: stop at a station, on foot, bus-to-bus jumps
 - [x] Ride mode: the section happens on a moving vehicle (Metropolitano bus roof): scrolling road and backgrounds,
       a timeline of enemies jumping on and pedestrian bridges to duck under (lose a life), braking into the station.
@@ -135,6 +136,8 @@ Answered: the Mission 3 ride is on the roof of a Metropolitano bus (not the Lín
 Answered: the air level uses an old police helicopter a retired cop knows about; 2P flies a small plane.
 Answered: the story arc (ledger + expediente of clues from freed honest cops → a journalist prisoner airs it on TV
 → strike and march → the town helps in Mission 5); see `docs/LEVELS.md`.
+Answered: names: Pancho (driver), Don Tito (retired cop), Amaru (mercenary); the 4th is a drugstore owner (name
+to decide).
 Answered: max 4 sections per mission (Mission 2 to be restructured: Mercado with the Mototaxi Slug → Azoteas →
 Almacén → Oficina).
 Answered: ripped Metal Slug assets → **private testing only** (`assets/_private/`, gitignored).

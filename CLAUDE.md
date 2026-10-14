@@ -8,8 +8,9 @@ Guidance for Claude Code when working in this repository.
 extortion crisis ("cobro de cupos") in Lima, Peru: gangs charging quotas to combi/bus drivers,
 businesses and schools, and police/politicians colluding with them.
 
-A combi driver, fed up after a coworker is killed, teams up with a mercenary hired by the drivers'
-union and fights through 5 missions: gangs first, then gangs + police, finally a corrupt mayor.
+Pancho, a combi driver whose compadre was killed for not paying, teams up with Amaru (a mercenary hired by the
+drivers' union), Don Tito (a retired honest cop) and a drugstore owner, and fights through 5 missions: gangs
+first, then gangs + police, finally a corrupt mayor. Character ids in code stay chato/sargento/merc/cobradora.
 
 See `ROADMAP.md` for the plan, level list and open decisions.
 
@@ -69,7 +70,8 @@ src/entities/         Player, enemies (Grunt + cop preset, Biker + motocop, Riot
                       Breakable (gang props),
                       Vendor (food carts), Prisoner (honest cops to rescue)
 src/levels/           missions.js (registry + data schema), missionN.js (one data file per mission)
-src/scenes/           MenuScenes (Boot, Title, CharSelect, MissionEnd, Ending, GameOver), HUDScene, LevelScene,
+src/scenes/           MenuScenes (Boot, Title, CharSelect, MissionEnd, Ending, GameOver), IntroScene (story crawl),
+                      HUDScene, LevelScene,
                       StoryScene (story pages like the ledger, between a mission and its tally)
 docs/LEVELS.md        mission designs + what's missing for Missions 2–5
 tools/serve.py        no-cache dev server
