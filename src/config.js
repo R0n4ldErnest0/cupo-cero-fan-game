@@ -18,10 +18,11 @@ const CFG = {
 
   // Placeholder names/roles — see ROADMAP open questions.
   CHARACTERS: [
-    { id: 'chato', name: 'DON CHATO', role: 'Chofer de combi' },
-    { id: 'sargento', name: 'EL SARGENTO', role: 'Policía retirado (de los honestos)' },
-    { id: 'merc', name: 'EL MERCENARIO', role: 'Contratado por el gremio' },
-    { id: 'cobradora', name: 'LA COBRADORA', role: 'Cobradora de combi' },
+    // melee = texture of the close-range weapon (tire iron, police baton, machete, coin bag)
+    { id: 'chato', name: 'DON CHATO', role: 'Chofer de combi', melee: 'melee_tireiron' },
+    { id: 'sargento', name: 'EL SARGENTO', role: 'Policía retirado (de los honestos)', melee: 'melee_baton' },
+    { id: 'merc', name: 'EL MERCENARIO', role: 'Contratado por el gremio', melee: 'melee_machete' },
+    { id: 'cobradora', name: 'LA COBRADORA', role: 'Cobradora de combi', melee: 'melee_coinbag' },
   ],
 
   // Keyboard maps. Solo accepts every layout; 2P splits the keyboard (gamepads also work: A jump, X fire, B grenade).
@@ -37,12 +38,36 @@ const CFG = {
     },
   },
 
+  // Guns (behavior in src/systems/Weapons.js). letter = what the crate shows and its map marker.
+  // The announcer says `voice` (default: the name) in `lang` (default Spanish). H and R keep the arcade's English.
+  // Firing: every press shoots as soon as `delay` allows (presses are never lost, so tapping faster shoots
+  // faster); holding fire repeats every `hold` ms. Same pickup adds ammo, a different one replaces it.
   WEAPONS: {
-    pistol: { delay: 200, speed: 340, damage: 1, ammo: Infinity, tex: 'pbullet' },
-    mg: { delay: 70, speed: 380, damage: 1, ammo: 150, spread: 0.07, tex: 'mgbullet' },
+    pistol: { name: 'PISTOLA', delay: 55, hold: 240, ammo: Infinity, speed: 340, damage: 1, tex: 'pbullet' },
+    mg: { name: 'HEAVY MACHINE GUN', letter: 'H', lang: 'en', delay: 70, hold: 70, ammo: 150, speed: 380, damage: 1, spread: 0.07, tex: 'mgbullet' },
+    rocket: { name: 'ROCKET LAUNCHER', letter: 'R', lang: 'en', delay: 260, hold: 300, ammo: 30, speed: 110, maxSpeed: 270, turn: 4, damage: 4, radius: 20 },
+    flame: { name: 'ANTICUCHERA', letter: 'A', delay: 280, hold: 320, ammo: 30, speed: 230, life: 420, damage: 3 },
+    shotgun: { name: 'ESCOPETA', letter: 'E', delay: 420, hold: 520, ammo: 15, speed: 260, life: 170, damage: 5 },
+    rooster: { name: 'GALLO DE PELEA', letter: 'G', delay: 300, hold: 380, ammo: 20, speed: 160, life: 2600, damage: 5, radius: 18 },
+    ball: { name: 'PELOTA DE FULBITO', letter: 'F', voice: 'Fulbito', delay: 200, hold: 280, ammo: 30, speed: 150, hop: 230, life: 2600, damage: 3 },
+    drone: { name: 'DRON DE DELIVERY', letter: 'D', voice: 'Dron', delay: 180, hold: 260, ammo: 30, speed: 150, maxSpeed: 230, turn: 7, damage: 2 },
+    laser: { name: 'PUNTERO LÁSER', letter: 'L', voice: 'Láser', delay: 80, hold: 80, ammo: 150, damage: 1, range: 480 },
+    stones: { name: 'PIEDRAS', letter: 'P', delay: 90, hold: 200, ammo: 100, speed: 300, lift: 0.25, damage: 1 },
   },
 
+  // Throwables (crate letter -> item). B adds 10 of the current type; M turns them all into molotovs (+10);
+  // S is one super grenade, thrown before the others.
+  THROWABLES: {
+    B: { id: 'bombs', name: 'BOMBAS', voice: 'Bombas' },
+    M: { id: 'molotov', name: 'MOLOTOV', voice: 'Molotov' },
+    S: { id: 'super', name: 'SÚPER GRANADA', voice: 'Súper granada' },
+  },
   GRENADE: { damage: 5, radius: 34, vx: 140, vy: -210 },
+  MOLOTOV: { damage: 3, radius: 18, fireMs: 1600, fireDamage: 1, fireTick: 250, fireWidth: 36 },
+  SUPER_GRENADE: { damage: 30, radius: 130 },
+
+  // Melee: when an enemy is this close in front, fire hits it instead of shooting.
+  MELEE: { RANGE: 22, DAMAGE: 5, DELAY: 200 },
 
   ENEMY: { BULLET_SPEED: 150, GRUNT_SPEED: 35, BIKER_SPEED: 150, BOMB_RADIUS: 20 },
 

@@ -3,6 +3,7 @@ const GRUNT_LINES = [
   '¡Paga el cupo, chofer!', '¡Tu cuota, causa!', '¡Paga o ya sabes!',
   '¡Aquí mandamos nosotros!', '¡Ni la policía te salva!', '¡Cupo o plomo!',
 ];
+const GRUNT_BURNT = ['¡Me dejaron como anticucho!', '¡Ayayay, mi polo nuevo!', '¡Bien cocido no, causa!'];
 const GRUNT_DEATH = [
   '¡Mamita!', '¡Llama a mi tío el comisario!', '¡Yo solo era el cobrador!', '¡No vale, no vale!', '¡Ayayay!',
 ];
@@ -96,23 +97,37 @@ class Grunt extends Phaser.Physics.Arcade.Sprite {
     this.nextAction = time + Phaser.Math.Between(1400, 2600);
   }
 
-  hit(dmg, explosive, owner) {
+  hit(dmg, explosive, owner, how) {
     if (!this.alive) return;
     this.hp -= dmg;
     Fx.flash(this);
-    if (this.hp <= 0) this.die(explosive, owner);
+    if (this.hp <= 0) this.die(explosive, owner, how);
   }
 
-  die(explosive, owner) {
+  die(explosive, owner, how) {
     this.alive = false;
     const s = this.scene;
     s.addScore(this.score, this.x, this.y - 26, owner);
     Sfx.scream();
+    if (how === 'fire') return this.burn();
     if (Math.random() < 0.4) Fx.say(s, this, Phaser.Utils.Array.GetRandom(GRUNT_DEATH), 1200);
     this.setTexture(`${this.skin}_fwd_jump`);
     this.setVelocity(-this.facing * (explosive ? 110 : 40), explosive ? -260 : -120);
     s.tweens.add({ targets: this, angle: -this.facing * (explosive ? 720 : 90), duration: explosive ? 700 : 300 });
     s.time.delayedCall(1000, () => {
+      if (this.active) s.tweens.add({ targets: this, alpha: 0, duration: 400, onComplete: () => this.destroy() });
+    });
+  }
+
+  // Anticuchera / molotov: charred black, smoking, keels over.
+  burn() {
+    const s = this.scene;
+    this.baseTint = 0x2b2522;
+    this.setTint(this.baseTint).setTexture(`${this.skin}_fwd_stand`).setVelocity(0, -40);
+    if (Math.random() < 0.5) Fx.say(s, this, Phaser.Utils.Array.GetRandom(GRUNT_BURNT), 1200);
+    for (let i = 0; i < 5; i++) s.time.delayedCall(i * 160, () => this.active && Fx.puff(s, this.x, this.y - 22, 0.8, 0x555555));
+    s.tweens.add({ targets: this, angle: -this.facing * 90, delay: 500, duration: 250 });
+    s.time.delayedCall(1300, () => {
       if (this.active) s.tweens.add({ targets: this, alpha: 0, duration: 400, onComplete: () => this.destroy() });
     });
   }

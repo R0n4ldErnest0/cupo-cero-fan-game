@@ -88,31 +88,43 @@ The old idea (highway chase on the "Chosicano" Bus Slug) is replaced by the air 
 
 ---
 
-## Weapons (Metal Slug → ours) — decided
+## Weapons (Metal Slug → ours) — built
 
 Rules (Metal Slug's): weapons come in crates or are dropped by rescued people, shown by a letter. A weapon lasts
 until its ammo runs out, then you're back to the pistol. Picking up the same weapon adds ammo; a different one
 replaces it. Throwables are counted separately. You lose your weapon when you die.
 
-| Metal Slug | Ours | Behavior | Status |
-|---|---|---|---|
-| Handgun | **Pistola** | infinite | ✅ |
-| Heavy Machine Gun (H) | **Metralleta** | fast fire, 150 rounds | ✅ |
-| Rocket Launcher (R) | **Cohetón** | New Year's firework rockets that **home in** on the nearest enemy; sparkly trail, colored burst with splash damage; ~30 | 📝 |
-| Flame Shot (F) | **Anticuchera** | street-grill flamethrower; short range (~1/5 screen), goes through enemies; enemies end blackened and smoking; ~30 | 📝 |
-| Shotgun (S) | **Escopeta** | wide short-range blast, hits several enemies, slow; ~15 | 📝 |
-| Iron Lizard (I) | **Gallo de pelea** | roosters run along the ground (slopes, ledges), leap at an enemy and burst in feathers (splash), then fly off unharmed crowing "¡KIKIRIKÍ!"; useless vs flying enemies; ~20 | 📝 |
-| Drop Shot (D) | **Pelota de fulbito** | bouncing balls that hop along the ground and over obstacles | 📝 |
-| Enemy Chaser (C) | **Dron de delivery** | small drones that chase enemies | 📝 |
-| Laser (L) | **Puntero láser** | a street vendor's laser pointer: a beam that cuts through everything in a line | 📝 |
-| — (ours) | **Piedras** | thrown stones, like in street fights: fast, arcing, weak, lots of them | 📝 |
-| Grenade | **Granada** | throwable, bounces | ✅ |
-| Fire Bomb (MS3) | **Molotov** | second throwable (rare pickup): bursts into flames that stay on the ground for a moment | 📝 |
-| Super Grenade | **Super granada** | rare pickup: one huge grenade that clears the screen | 📝 |
-| Knife (melee) | **Per character** | when an enemy is right next to you, fire hits instead of shooting. Don Chato: tire iron (llave de ruedas). Sargento: police baton. Mercenario: machete. Cobradora: swings the coin bag | 📝 |
-| Vehicle weapons | Combi Slug ✅, Mototaxi Slug, helicopter, rochabus | | |
+**Names, letters and announcer:** Spanish, except the two arcade classics, which keep their English name, letter
+and announcer line: **H** "Heavy Machine Gun!" and **R** "Rocket Launcher!". The crate letter is also the map
+marker. Tuning: `CFG.WEAPONS` / `CFG.THROWABLES` in `src/config.js`; behavior: `src/systems/Weapons.js`.
 
-Crate letters still to assign for Piedras and the throwables (map markers must not clash: P is the player start).
+**Fire rate:** every press shoots as soon as the gun allows (a slightly early press is kept, never lost), so tapping
+faster shoots faster, like the arcade pistol. Holding fire repeats at a slower rate (machine gun and laser: full rate).
+
+| Letter | Ours | Metal Slug | Behavior | Ammo |
+|---|---|---|---|---|
+| — | **Pistola** | Handgun | one shot per press | ∞ |
+| H | **Heavy Machine Gun** | Heavy Machine Gun | fast fire while held | 150 |
+| R | **Rocket Launcher** | Rocket Launcher | New Year's firework rockets that **home in** on the nearest enemy; sparkly trail, colored burst with splash | 30 |
+| A | **Anticuchera** | Flame Shot | street-grill flamethrower; short range, goes through enemies; they end charred and smoking | 30 |
+| E | **Escopeta** | Shotgun | wide short-range cone, hits everything in it, slow | 15 |
+| G | **Gallo de pelea** | Iron Lizard | roosters run along the floor, leap at an enemy, burst in feathers (splash), fly off crowing "¡KIKIRIKÍ!" | 20 |
+| F | **Pelota de fulbito** | Drop Shot | bouncing balls that hop along the floor | 30 |
+| D | **Dron de delivery** | Enemy Chaser | small drones that chase enemies | 30 |
+| L | **Puntero láser** | Laser | green beam that cuts through every enemy in a line, up to a wall | 150 |
+| P | **Piedras** | — (ours) | thrown stones: fast, arcing, weak, lots of them | 100 |
+| B | **Bombas** | Bomb | +10 of the current throwable (start: 10 grenades) | |
+| M | **Molotov** | Fire Bomb (MS3) | all your throwables become molotovs (+10): they burst in flames that stay on the floor | |
+| S | **Súper granada** | Super Grenade | one huge grenade that clears the screen; thrown before the others | |
+| — | **Melee** | Knife | an enemy right in front: fire hits instead of shooting. Don Chato: tire iron. Sargento: police baton. Mercenario: machete. Cobradora: coin bag | |
+| | Vehicle weapons | | Combi Slug ✅, Mototaxi Slug, helicopter, rochabus | |
+
+All placeholder art and tuning; damage numbers need playtesting. Testing: **F6** drops the next crate in front of 1P;
+the Mission 2 greybox has one crate of each.
+
+**Announcer voice:** `src/systems/Voice.js` plays recorded clips from `assets/voice/` (see its README) and falls
+back to the browser's speech synthesis until we have them. ❓ Who records them: a person (best), or an AI voice
+(disclose on itch.io).
 
 ---
 

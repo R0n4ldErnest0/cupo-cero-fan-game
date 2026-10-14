@@ -82,8 +82,9 @@ Full design, weapons list and build order: `docs/LEVELS.md`.
 
 ### M2 — Systems for the remaining missions (build order in `docs/LEVELS.md`)
 - [ ] Sections: missions made of several parts with transitions
-- [ ] Weapons: letter pickups, ammo; Cohetón, Anticuchera, Escopeta, Gallo de pelea, Pelota, Dron, Láser, Piedras;
-      Molotov, Super granada; per-character melee
+- [x] Weapons: letter pickups, ammo, HUD; Rocket Launcher, Anticuchera, Escopeta, Gallo de pelea, Pelota, Dron, Láser,
+      Piedras; Molotov, Súper granada; per-character melee; tap-to-shoot pistol cadence
+- [x] Announcer voice on pickups (browser speech placeholder until clips are recorded in `assets/voice/`)
 - [ ] Rescuable people (POWs) that drop weapons and items
 - [ ] Auto-scroll mode (train roof, air level)
 - [ ] Police enemy types; boss framework (mid-bosses, phases)

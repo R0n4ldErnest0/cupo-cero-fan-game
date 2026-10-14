@@ -327,6 +327,72 @@ const Textures = {
     cup.set(0, 4, PAL.k).set(0, 5, PAL.k).set(0, 6, PAL.k).set(7, 4, PAL.k).set(7, 5, PAL.k).set(7, 6, PAL.k);
     cup.set(1, 8, PAL.k).set(6, 8, PAL.k);
     cup.register(scene, 'cup');
+
+    this.weaponSprites(scene);
+  },
+
+  // Projectiles of the pickup weapons + melee tools (all drawn facing right).
+  weaponSprites(scene) {
+    // Firework rocket: red tube, gold tip, stick.
+    new Painter(12, 5).rect(0, 2, 4, 1, '#c8a165').rect(4, 1, 6, 3, '#d8343a').rect(6, 1, 1, 3, '#f2c94c').rect(10, 2, 2, 1, '#f2c94c').outline()
+      .register(scene, 'rocket');
+
+    const fl = new Painter(14, 11);
+    fl.disc(7, 5, 5, '#e8582a').disc(8, 5, 3, '#ff9d2e').disc(9, 5, 1, '#ffe066');
+    fl.register(scene, 'flame');
+
+    // Shotgun cone (origin at its left edge).
+    const bl = new Painter(44, 30);
+    for (let x = 0; x < 44; x++) {
+      const h = 2 + Math.round(x * 0.32);
+      bl.rect(x, 15 - h, 1, h * 2, x < 14 ? '#fff6a0' : x < 30 ? '#ffd34d' : '#ff9d2ecc');
+    }
+    bl.register(scene, 'blast');
+
+    // Fighting rooster (two running frames).
+    for (let f = 0; f < 2; f++) {
+      const r = new Painter(16, 14);
+      r.rect(1, 3, 2, 5, '#1f4a34').rect(2, 2, 2, 3, '#2b6b4a').rect(3, 1, 2, 2, '#1f4a34'); // tail
+      r.disc(7, 7, 3, '#c0582a').rect(5, 6, 4, 2, '#8e3a1c'); // body + wing
+      r.rect(9, 3, 2, 4, '#e08a3a').disc(11, 3, 2, '#e08a3a'); // neck + head
+      r.set(11, 0, '#d8343a').set(12, 0, '#d8343a').set(10, 1, '#d8343a'); // comb
+      r.rect(13, 3, 2, 1, '#f2c94c').set(11, 5, '#d8343a').set(12, 2, PAL.k);
+      if (f) r.rect(5, 10, 1, 3, '#f2c94c').rect(9, 10, 1, 2, '#f2c94c').set(10, 12, '#f2c94c');
+      else r.rect(6, 10, 1, 3, '#f2c94c').rect(8, 10, 1, 3, '#f2c94c');
+      r.outline();
+      r.register(scene, `rooster${f}`);
+    }
+
+    const ball = new Painter(9, 9);
+    ball.disc(4, 4, 3, '#f4f4f4').set(4, 4, PAL.k).set(2, 2, PAL.k).set(6, 3, PAL.k).set(3, 6, PAL.k).outline();
+    ball.register(scene, 'ball');
+
+    // Delivery drone with a little box.
+    const dr = new Painter(14, 9);
+    dr.rect(1, 1, 4, 1, '#d8d8d8').rect(9, 1, 4, 1, '#d8d8d8').rect(3, 2, 1, 1, PAL.G).rect(10, 2, 1, 1, PAL.G);
+    dr.rect(3, 3, 8, 2, '#3a3d45').rect(5, 5, 4, 3, '#d9a441').set(10, 3, '#ff3a3a');
+    dr.register(scene, 'drone');
+
+    new Painter(4, 4).rect(0, 1, 4, 2, '#8a8a8a').rect(1, 0, 2, 4, '#8a8a8a').set(1, 1, '#b0b0b0').register(scene, 'stone');
+    new Painter(3, 2).rect(0, 0, 3, 1, '#ffffff').set(1, 1, '#ffffff').register(scene, 'feather');
+
+    // Molotov fire on the ground (two flicker frames).
+    for (let f = 0; f < 2; f++) {
+      const p = new Painter(9, 13);
+      p.disc(4, 9, 3, '#e8582a').rect(3 + f, 2, 3, 6, '#e8582a').disc(4, 9, 2, '#ff9d2e').rect(4, 5 - f, 1, 4, '#ffe066');
+      p.register(scene, `fire${f}`);
+    }
+
+    // Melee tools, handle on the left.
+    new Painter(14, 7).rect(0, 3, 12, 1, '#9aa0a8').rect(11, 0, 1, 7, '#9aa0a8').rect(10, 0, 3, 1, '#5a6068').rect(10, 6, 3, 1, '#5a6068').outline()
+      .register(scene, 'melee_tireiron');
+    new Painter(16, 4).rect(0, 1, 4, 2, '#3a3d45').rect(4, 1, 11, 2, '#1b1b22').set(4, 0, '#1b1b22').set(4, 3, '#1b1b22').outline()
+      .register(scene, 'melee_baton');
+    new Painter(17, 6).rect(0, 2, 4, 2, '#5b3a20').rect(4, 1, 11, 3, '#c9ced6').rect(15, 2, 1, 2, '#c9ced6').rect(4, 1, 11, 1, '#f4f4f4').outline()
+      .register(scene, 'melee_machete');
+    const cb = new Painter(16, 12);
+    cb.line(0, 6, 5, 6, '#8a5a33').disc(10, 6, 4, '#c9a86a').rect(5, 5, 2, 3, '#8a5a33').text('$', 9, 4, '#2e7d32').outline();
+    cb.register(scene, 'melee_coinbag');
   },
 
   fx(scene) {
@@ -363,13 +429,18 @@ const Textures = {
   },
 
   pickups(scene) {
-    const box = (key, letter, bg) => {
-      const p = new Painter(14, 14);
-      p.rect(1, 1, 12, 12, bg).rect(1, 1, 12, 1, '#ffffff88').text(letter, 5, 5, PAL.r).outline();
-      p.register(scene, key);
+    // 20x20 crates with a double-size letter: yellow = gun, green = bombs, orange = molotov, red = super grenade.
+    const box = (letter, bg, ink = PAL.r) => {
+      const p = new Painter(22, 22);
+      p.rect(1, 1, 20, 20, bg).rect(1, 1, 20, 2, '#ffffff99').rect(1, 19, 20, 2, '#00000033');
+      p.rect(1, 1, 2, 20, '#ffffff55');
+      p.text(letter, 9, 7, '#00000066', 2).text(letter, 8, 6, ink, 2);
+      p.outline();
+      p.register(scene, `pick_${letter}`);
     };
-    box('pick_H', 'H', PAL.y);
-    box('pick_B', 'B', '#9fd36a');
+    Object.values(CFG.WEAPONS).forEach((w) => w.letter && box(w.letter, PAL.y));
+    const TH = { bombs: '#9fd36a', molotov: '#ff9d2e', super: '#d8343a' };
+    Object.entries(CFG.THROWABLES).forEach(([letter, t]) => box(letter, TH[t.id], t.id === 'super' ? PAL.y : PAL.r));
     const f = new Painter(16, 12);
     f.rect(1, 1, 14, 3, '#e2b26a').rect(1, 4, 14, 2, '#7a3b1e').rect(1, 6, 14, 1, '#d23b6a').rect(1, 7, 14, 1, '#f2e2c0').rect(1, 8, 14, 2, '#e2b26a');
     f.set(4, 2, '#f2d29a').set(9, 2, '#f2d29a').outline();

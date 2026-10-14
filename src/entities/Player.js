@@ -21,8 +21,11 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     this.crouching = false;
     this.weapon = 'pistol';
     this.ammo = Infinity;
-    this.bombs = CFG.PLAYER.START_BOMBS;
-    this.lastShot = 0;
+    this.resetThrowables();
+    // Fire cadence: readyAt = earliest next shot, holdAt = next auto-shot while held, firePressedAt = buffered press.
+    this.readyAt = 0;
+    this.holdAt = 0;
+    this.firePressedAt = -Infinity;
     this.runTime = 0;
     this.alive = true;
     this.invulnUntil = 0;
@@ -50,6 +53,27 @@ class Player extends Phaser.Physics.Arcade.Sprite {
   setWeapon(name) {
     this.weapon = name;
     this.ammo = CFG.WEAPONS[name].ammo;
+  }
+
+  // Same gun adds ammo, a different one replaces it.
+  giveWeapon(name) {
+    if (this.weapon === name) this.ammo += CFG.WEAPONS[name].ammo;
+    else this.setWeapon(name);
+  }
+
+  resetThrowables() {
+    this.bombs = CFG.PLAYER.START_BOMBS;
+    this.bombType = 'grenade';
+    this.superBombs = 0;
+  }
+
+  // B: +10 of the current type. M: all of them become molotovs, +10. S: one super grenade.
+  giveThrowable(id) {
+    if (id === 'super') this.superBombs++;
+    else {
+      if (id === 'molotov') this.bombType = 'molotov';
+      this.bombs += 10;
+    }
   }
 
   update(time, dt) {
@@ -88,9 +112,16 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
     // Holding ↓ in the air shoots straight down, like Metal Slug.
     this.aim = !onGround && c.down ? 'down' : c.up && !this.crouching ? 'up' : 'fwd';
-    const w = CFG.WEAPONS[this.weapon];
-    if (c.fire && time > this.lastShot + w.delay) this.shoot(time, w);
-    if (c.bombP && this.bombs > 0) this.throwGrenade();
+    // Every press fires as soon as the gun allows (a press slightly early is kept, not lost), so tapping
+    // faster shoots faster; holding repeats at the slower `hold` rate.
+    if (c.fireP) this.firePressedAt = time;
+    const pressed = time - this.firePressedAt < 200;
+    if (time >= this.readyAt && (pressed || (c.fire && time >= this.holdAt))) {
+      this.firePressedAt = -Infinity;
+      this.attack(time);
+    }
+    if (c.bombP && (this.bombs > 0 || this.superBombs > 0)) this.throwGrenade();
+    Weapons.updateBeam(this, time);
 
     let legs = 'stand';
     if (!onGround) legs = 'jump';
@@ -107,41 +138,39 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     this.setAlpha(time < this.invulnUntil && Math.floor(time / 80) % 2 ? 0.35 : 1);
   }
 
-  shoot(time, w) {
-    this.lastShot = time;
-    let x, y, angle;
-    if (this.aim === 'up') {
-      x = this.x + this.facing * 4;
-      y = this.y - 26;
-      angle = -Math.PI / 2;
-    } else if (this.aim === 'down') {
-      x = this.x;
-      y = this.y - 2;
-      angle = Math.PI / 2;
-    } else {
-      x = this.x + this.facing * 9;
-      y = this.y - (this.crouching ? 6 : 13);
-      angle = this.facing > 0 ? 0 : Math.PI;
+  // Melee when an enemy is right in front, otherwise fire the current gun.
+  attack(time) {
+    const s = this.scene, w = CFG.WEAPONS[this.weapon];
+    const foe = this.aim === 'fwd' && s.meleeTarget(this);
+    if (foe) {
+      Weapons.melee(this, foe);
+      this.readyAt = time + CFG.MELEE.DELAY * 0.6;
+      this.holdAt = time + CFG.MELEE.DELAY;
+      return;
     }
-    if (w.spread) angle += Phaser.Math.FloatBetween(-w.spread, w.spread);
-    this.scene.firePlayerBullet(x, y, angle, w.speed, w.damage, w.tex, this);
-    Fx.spark(this.scene, x, y);
-    if (this.weapon === 'mg') {
-      Sfx.mg();
-      if (--this.ammo <= 0) this.setWeapon('pistol');
-    } else Sfx.shoot();
+    this.readyAt = time + w.delay;
+    this.holdAt = time + w.hold;
+    Weapons.fire(this, this.weapon, time);
+    if (--this.ammo <= 0) this.setWeapon('pistol');
   }
 
+  // A super grenade goes first; otherwise a grenade or molotov.
   throwGrenade() {
-    this.bombs--;
+    let kind = 'super';
+    if (this.superBombs > 0) this.superBombs--;
+    else {
+      this.bombs--;
+      kind = this.bombType;
+    }
     const G = CFG.GRENADE;
-    this.scene.throwGrenade(this.x + this.facing * 4, this.y - 18, this.facing * G.vx + this.body.velocity.x * 0.5, G.vy, this);
+    this.scene.throwGrenade(this.x + this.facing * 4, this.y - 18, this.facing * G.vx + this.body.velocity.x * 0.5, G.vy, this, kind);
     Sfx.throw();
   }
 
   die() {
     if (!this.canBeHit()) return;
     this.alive = false;
+    Weapons.clearBeam(this);
     Sfx.playerDie();
     this.body.setSize(8, 20).setOffset(4, 4);
     this.crouching = false;
@@ -156,6 +185,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
   fallDeath() {
     if (this.state !== 'play' || !this.alive) return;
     this.alive = false;
+    Weapons.clearBeam(this);
     Sfx.playerDie();
     this.setVisible(false);
     this.body.enable = false;
@@ -173,13 +203,14 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     this.angle = 0;
     this.clearTint();
     this.setWeapon('pistol');
-    this.bombs = CFG.PLAYER.START_BOMBS;
+    this.resetThrowables();
     this.invulnUntil = this.scene.time.now + CFG.PLAYER.INVULN_MS;
   }
 
   // Remove from play (continue countdown, game over, not joined yet).
   deactivate() {
     this.alive = false;
+    Weapons.clearBeam(this);
     this.setVisible(false);
     this.body.enable = false;
     this.setVelocity(0, 0);
@@ -188,6 +219,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
   enterVehicle(v) {
     this.vehicle = v;
+    Weapons.clearBeam(this);
     this.setVisible(false);
     this.body.enable = false;
     v.board(this);

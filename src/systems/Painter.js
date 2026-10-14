@@ -106,14 +106,14 @@ class Painter {
     return this;
   }
 
-  text(str, x, y, c) {
+  text(str, x, y, c, scale = 1) {
     let cx = x;
     for (const ch of str.toUpperCase()) {
       const g = FONT3X5[ch];
       if (g) g.split('|').forEach((row, j) => {
-        for (let i = 0; i < 3; i++) if (row[i] === '#') this.set(cx + i, y + j, c);
+        for (let i = 0; i < 3; i++) if (row[i] === '#') this.rect(cx + i * scale, y + j * scale, scale, scale, c);
       });
-      cx += 4;
+      cx += 4 * scale;
     }
     return this;
   }

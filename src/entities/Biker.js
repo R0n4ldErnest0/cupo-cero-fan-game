@@ -28,17 +28,18 @@ class Biker extends Phaser.Physics.Arcade.Sprite {
     }
   }
 
-  hit(dmg, explosive, owner) {
+  hit(dmg, explosive, owner, how) {
     if (!this.alive) return;
     this.hp -= dmg;
     Fx.flash(this);
-    if (this.hp <= 0) this.die(explosive, owner);
+    if (this.hp <= 0) this.die(explosive, owner, how);
   }
 
-  die(explosive, owner) {
+  die(explosive, owner, how) {
     if (!this.alive) return;
     this.alive = false;
     const s = this.scene;
+    if (how === 'fire') this.setTint((this.baseTint = 0x2b2522));
     s.addScore(this.score, this.x, this.y - 26, owner);
     Sfx.scream();
     this.setVelocity(60, -180);

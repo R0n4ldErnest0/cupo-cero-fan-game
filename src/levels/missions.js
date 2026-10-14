@@ -10,13 +10,13 @@
 //   legend { ch: def }         extra map markers, e.g. h: { t: 'grunt', hp: 3 }
 //   width                      level length (default: map width)
 //   arenaX                     the camera locks here; the arena spans arenaX .. width (default: width - 480)
-//   start { x }                player start (or a 'P' marker)
+//   start { x }                player start (or an '@' marker)
 //   bg                         optional tints { sky, hills, city }
 // Objects can be listed here or placed as letter markers in the map. Without a y they stand at street level.
 //   combi { x }                parked Combi Slug (optional)
 //   abuelitas [{ x }]          tied-up helpers
 //   crates [{ x, stack }]      one-way platforms
-//   pickups [{ x, kind }]      'H' machine gun, 'B' grenades, 'food'
+//   pickups [{ x, kind }]      a crate letter (guns H R A E G F D L P, throwables B M S; see CFG) or 'food'
 //   spawns [{ x, t, ... }]     enemies, spawned when x reaches the right screen edge.
 //                              t: 'grunt' (skin, variant, y, hp) or 'biker' (enters from the right edge)
 //   decor [{ type, ... }]      'text' | 'controls' | 'image' | 'graffiti' | 'sign' | 'copcar'; an `id`

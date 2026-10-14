@@ -1,6 +1,6 @@
 // Tile-based terrain built from a text map (one character = one 16x16 tile).
 //
-// Terrain characters are symbols; object markers are letters (see MAP_LEGEND and mission.legend).
+// Terrain characters are symbols; object markers are letters and @ (see MAP_LEGEND and mission.legend).
 //   #  street / concrete (solid)        %  brick (solid)        *  dirt, cerro (solid)
 //   =  concrete slab (one-way: stand on it, jump up through it, ↓+jump to drop down)
 //   -  wooden plank (one-way)           :  back wall (decoration, no collision)
@@ -25,19 +25,21 @@ const ONE_WAY = { slab: 1, plank: 1 };
 const SLOPE = { up: 1, down: 1 };
 
 // Default object markers. Missions can add their own in `legend` (same format).
-// Enemy entries are spawn definitions ({ t, skin, variant, hp }); others: { pickup }, { abuelita }, { combi }, { start }.
+// Lowercase = enemies (spawn definitions { t, skin, variant, hp }). Uppercase = item crates, using the letter
+// the crate shows (CFG.WEAPONS / CFG.THROWABLES: H R A E G F D L P guns, B M S throwables).
+// Others: @ player start, W abuelita, V Combi Slug, O food (pan con chicharrón).
 const MAP_LEGEND = {
   g: { t: 'grunt' },
   s: { t: 'grunt', skin: 'thug2' },
   t: { t: 'grunt', variant: 'thrower' },
   b: { t: 'biker' },
-  H: { pickup: 'H' },
-  G: { pickup: 'B' },
-  F: { pickup: 'food' },
-  A: { abuelita: true },
-  C: { combi: true },
-  P: { start: true },
+  O: { pickup: 'food' },
+  W: { abuelita: true },
+  V: { combi: true },
+  '@': { start: true },
 };
+Object.values(CFG.WEAPONS).forEach((w) => { if (w.letter) MAP_LEGEND[w.letter] = { pickup: w.letter }; });
+Object.keys(CFG.THROWABLES).forEach((letter) => (MAP_LEGEND[letter] = { pickup: letter }));
 
 class Terrain {
   // A flat street at y = CFG.GROUND_Y, used by missions without a `terrain` map.
@@ -77,7 +79,7 @@ class Terrain {
         if (TERRAIN_CHARS[ch]) line.push(TERRAIN_CHARS[ch]);
         else {
           line.push(null);
-          if (/[A-Za-z]/.test(ch)) {
+          if (/[A-Za-z@]/.test(ch)) {
             if (legend[ch]) this.objects.push(Object.assign({ x: c * TILE + TILE / 2, y: (r + 1) * TILE, ch }, legend[ch]));
             else console.warn(`Terrain: unknown marker '${ch}' at row ${r}, column ${c}`);
           }

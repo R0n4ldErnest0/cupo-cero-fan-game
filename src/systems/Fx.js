@@ -55,6 +55,34 @@ const Fx = {
     scene.tweens.add({ targets: s, alpha: 0, scale: 1.6, duration: 120, onComplete: () => s.destroy() });
   },
 
+  // Small fading sparkle (rocket trail).
+  trail(scene, x, y, tint) {
+    const s = scene.add.image(x, y, 'spark').setScale(0.5).setTint(tint).setDepth(11);
+    scene.tweens.add({ targets: s, alpha: 0, scale: 0.1, y: y + 3, duration: 260, onComplete: () => s.destroy() });
+  },
+
+  // New Year's firework burst: a ring of colored sparks around a small blast.
+  firework(scene, x, y) {
+    const colors = [0xff3fa4, 0xffe600, 0x3cff6a, 0x5ad1ff, 0xff7a00];
+    const main = Phaser.Utils.Array.GetRandom(colors);
+    Fx.boom(scene, x, y, 0.55);
+    for (let i = 0; i < 12; i++) {
+      const a = (i / 12) * Math.PI * 2, r = 16 + Math.random() * 8;
+      const s = scene.add.image(x, y, 'spark').setTint(i % 3 ? main : 0xffffff).setDepth(41);
+      scene.tweens.add({ targets: s, x: x + Math.cos(a) * r, y: y + Math.sin(a) * r + 4, alpha: 0, scale: 0.4, duration: 420, onComplete: () => s.destroy() });
+    }
+  },
+
+  feathers(scene, x, y) {
+    Fx.puff(scene, x, y, 1, 0xffffff);
+    for (let i = 0; i < 9; i++) {
+      const f = scene.add.image(x, y, 'feather').setDepth(41).setTint(i % 3 ? 0xffffff : 0xc0582a);
+      const dx = Phaser.Math.Between(-22, 22);
+      scene.tweens.add({ targets: f, x: x + dx, y: y + Phaser.Math.Between(-18, 6), duration: 250, ease: 'Quad.Out' });
+      scene.tweens.add({ targets: f, y: `+=${Phaser.Math.Between(20, 34)}`, angle: Phaser.Math.Between(-180, 180), alpha: 0, delay: 250, duration: 700, onComplete: () => f.destroy() });
+    }
+  },
+
   floatText(scene, x, y, text, color = '#ffe066') {
     const t = scene.add
       .text(Math.round(x), Math.round(y), text, {

@@ -20,6 +20,7 @@ See `ROADMAP.md` for the plan, level list and open decisions.
 - Goofy Metal Slug energy (exaggerated deaths, silly bosses, speech bubbles) on top of a serious theme.
 - **Fictional names only.** No real politicians, officers, gangs or real victims. Caricatures are fine.
 - In-game text is in **Peruvian Spanish** (limeño slang welcome: "causa", "chamba", "al fondo hay sitio").
+  Exception: the arcade classics "Heavy Machine Gun" (H) and "Rocket Launcher" (R) keep their English name and announcer line.
   Code, comments and docs are in English.
 
 ## Tech
@@ -49,7 +50,8 @@ Controls (solo): ←/→ move, ↑ aim up, ↓ crouch (in the air: shoot down), 
 2 players: 1P WASD + F shoot / G jump / H grenade, 2P arrows + , shoot / . jump / / grenade; gamepads work
 (A jump, X shoot, B grenade, Start). Keys are defined in `CFG.KEYS`.
 Testing: **5** inserts a coin, **F2** toggles FREE PLAY (infinite credits, saved in localStorage),
-**F3** on the title picks the starting mission, **F4** finishes the current mission, `?mission=2` preselects a mission.
+**F3** on the title picks the starting mission, **F4** finishes the current mission, **F6** drops the next weapon crate,
+`?mission=2` preselects a mission.
 
 ## Layout
 
@@ -57,8 +59,8 @@ Testing: **5** inserts a coin, **F2** toggles FREE PLAY (infinite credits, saved
 index.html            entry; script load order lives here
 lib/phaser.min.js     vendored engine
 src/config.js         constants (sizes, speeds, tuning)
-src/systems/          Textures (procedural art), Sfx (synth audio), Session (credits), Controls (input), Fx,
-                      Terrain (text-map tiles, one-way floors, slopes)
+src/systems/          Textures (procedural art), Sfx (synth audio), Voice (announcer), Session (credits), Controls (input),
+                      Fx, Terrain (text-map tiles, one-way floors, slopes), Weapons (guns, melee, player projectiles)
 src/entities/         Player, enemies, Abuelita (helper), CombiSlug (vehicle), bosses, projectiles
 src/levels/           missions.js (registry + data schema), missionN.js (one data file per mission)
 src/scenes/           MenuScenes (Boot, Title, CharSelect, MissionEnd, Ending, GameOver), HUDScene, LevelScene
@@ -71,11 +73,13 @@ tools/serve.py        no-cache dev server
 - One class per entity file; entities extend Phaser sprites/containers and expose `update(time, dt)`.
 - Tuning numbers go in `src/config.js`, not scattered literals. Level layouts go in `src/levels/`.
 - New missions: add `src/levels/missionN.js` (push onto `MISSIONS`) and a `<script>` tag in `index.html`.
-  Terrain is a text map (key at the top of `src/systems/Terrain.js`): symbols are tiles, letters are markers.
+  Terrain is a text map (key at the top of `src/systems/Terrain.js`): symbols are tiles, letters (and @ = start) are markers.
   The player jumps ~60px, so floors meant to be climbed are at most 3 tiles (48px) apart.
 - Arcade physics has no slopes: `Terrain.snap` puts walkers on slope surfaces after each physics step.
   Vehicles only touch the tile under their center (plus walls 2+ tiles taller than the wheels), and tilt.
   Mission-specific logic goes in the data (`events[].run`) or a new entity, not in `LevelScene`.
-- Damage values: pistol 1, machine gun 1, emoliente 2, grenade 5, combi cannon 6.
+- Damage values: pistol 1, machine gun 1, emoliente 2, grenade 5, combi cannon 6; pickup weapons in `CFG.WEAPONS`.
+- Weapons: data in `CFG.WEAPONS` / `CFG.THROWABLES` (name, crate letter = map marker, ammo, cadence), behavior in
+  `Weapons.FIRE` and `Weapons.PROJECTILES`. Crate letters are Spanish initials except H and R (see docs/LEVELS.md).
 - Third-party/ripped Metal Slug assets may be used only as private placeholders in `assets/_private/`
   (gitignored). Never commit or ship SNK assets.

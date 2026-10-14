@@ -23,6 +23,7 @@ class LevelScene extends Phaser.Scene {
     this.finished = false;
     this.frozen = false;
     this.boss = null;
+    this.fires = [];
     this.registry.set({ bossHp: 0, bossMax: 1, bossName: '' });
     // Clock and tweens survive a scene restart; make sure a previous freeze doesn't carry over.
     this.time.paused = false;
@@ -273,9 +274,9 @@ class LevelScene extends Phaser.Scene {
 
     P.collider(this.enemies, solids);
     P.collider(this.pickups, solids);
-    P.collider(this.pBombs, solids, (a, b) => this.onPlayerBombGround(pick(a, b, 'kind')));
+    P.collider(this.pBombs, solids, (a, b) => this.onPlayerBombGround(pick(a, b, 'kind'), 'ground'));
     P.collider(this.eBombs, solids, (a, b) => this.explodeEnemyBomb(pick(a, b, 'isEnemyBomb')));
-    P.overlap(this.pBullets, this.enemies, (b, e) => this.bulletHitsEnemy(b, e));
+    P.overlap(this.pBullets, this.enemies, (b, e) => this.bulletHits(b, e));
     P.overlap(this.pBombs, this.enemies, (b, e) => e.alive && this.detonate(b));
     this.abuelitas.forEach((ab) => {
       P.collider(ab, solids, null, notDropping);
@@ -346,6 +347,9 @@ class LevelScene extends Phaser.Scene {
     });
     this.abuelitas.forEach((a) => a.active && a.update(time, delta));
     if (this.boss && this.boss.active) this.boss.update(time, delta);
+    // Homing rockets, drones, roosters, flames...
+    [this.pBullets, this.pBombs].forEach((g) => g.getChildren().slice().forEach((b) => b.active && b.step && b.step(time, delta)));
+    Weapons.updateFires(this, time);
 
     this.cleanupProjectiles();
     Fx.updateBubbles(this, time);
@@ -370,6 +374,7 @@ class LevelScene extends Phaser.Scene {
     this.abuelitas.forEach((a) => a.active && T.snap(a));
     this.enemies.getChildren().forEach((e) => T.snap(e));
     this.pickups.getChildren().forEach((k) => T.snap(k));
+    this.pBombs.getChildren().forEach((b) => b.kind === 'rooster' && T.snap(b));
   }
 
   // What enemies aim at: the nearest player (or their combi) to x (and y, when given).
@@ -463,7 +468,7 @@ class LevelScene extends Phaser.Scene {
       }),
     );
     // Tile collisions handle flat ground; slopes have no collision, so bombs that sink into one go off here.
-    this.pBombs.getChildren().slice().forEach((b) => b.active && T.inSlope(b.x, b.y + 2) && this.detonate(b));
+    this.pBombs.getChildren().slice().forEach((b) => b.active && T.inSlope(b.x, b.y + 2) && this.onPlayerBombGround(b, 'slope'));
     this.eBombs.getChildren().slice().forEach((b) => b.active && T.inSlope(b.x, b.y + 2) && this.explodeEnemyBomb(b));
   }
 
@@ -477,13 +482,16 @@ class LevelScene extends Phaser.Scene {
     return b;
   }
 
-  throwGrenade(x, y, vx, vy, owner) {
-    const g = this.pBombs.create(x, y, 'grenade').setDepth(12);
-    g.kind = 'grenade';
+  // kind: 'grenade' (bounces, then a timer), 'molotov' (bursts on landing) or 'super'.
+  throwGrenade(x, y, vx, vy, owner, kind = 'grenade') {
+    const g = this.pBombs.create(x, y, kind === 'molotov' ? 'molotov' : 'grenade').setDepth(12);
+    g.kind = kind;
     g.owner = owner;
     g.bounces = 0;
-    g.setBounce(0.45).setVelocity(vx, vy).setAngularVelocity(vx >= 0 ? 500 : -500);
-    this.time.delayedCall(1600, () => this.detonate(g));
+    if (kind === 'super') g.setScale(2);
+    if (kind !== 'molotov') g.setBounce(0.45);
+    g.setVelocity(vx, vy).setAngularVelocity(vx >= 0 ? 500 : -500);
+    this.time.delayedCall(kind === 'molotov' ? 3000 : 1600, () => this.detonate(g));
   }
 
   fireShell(x, y, angle, owner) {
@@ -513,25 +521,18 @@ class LevelScene extends Phaser.Scene {
     b.setVelocity((tx - x) / T, (ty - y - 0.5 * g * T * T) / T).setAngularVelocity(tx < x ? -400 : 400);
   }
 
-  onPlayerBombGround(b) {
+  // Player projectiles that touch the ground or a slope (where: 'ground' | 'slope'); see Weapons.PROJECTILES.
+  onPlayerBombGround(b, where) {
     if (!b || !b.active) return;
-    if (b.kind === 'grenade' && ++b.bounces < 2) return;
-    this.detonate(b);
+    const K = Weapons.PROJECTILES[b.kind], fn = K && (K[where] || K.ground);
+    if (fn) fn(this, b);
+    else this.detonate(b);
   }
 
   detonate(b) {
     if (!b || !b.active) return;
-    const { x, y, kind, owner } = b;
-    b.destroy();
-    if (kind === 'cup') {
-      Fx.splash(this, x, y);
-      Sfx.splash();
-      this.damageEnemiesInRadius(x, y, CFG.ABUELITA.SPLASH, CFG.ABUELITA.DAMAGE, false, owner);
-    } else if (kind === 'shell') {
-      this.explodeAt(x, y, CFG.COMBI.CANNON_RADIUS, CFG.COMBI.CANNON_DAMAGE, true, 1.1, owner);
-    } else {
-      this.explodeAt(x, y, CFG.GRENADE.radius, CFG.GRENADE.damage, true, 1, owner);
-    }
+    Weapons.PROJECTILES[b.kind].burst(this, b);
+    if (b.active) b.destroy();
   }
 
   explodeEnemyBomb(b) {
@@ -550,12 +551,18 @@ class LevelScene extends Phaser.Scene {
     else this.hurtArea(x, y, radius);
   }
 
-  damageEnemiesInRadius(x, y, r, dmg, explosive, owner) {
+  // how: optional cause of death ('fire' chars enemies, 'melee', 'laser').
+  damageEnemiesInRadius(x, y, r, dmg, explosive, owner, how) {
     this.enemies.getChildren().slice().forEach((e) => {
-      if (e.alive && Phaser.Math.Distance.Between(x, y, e.x, e.y - 12) <= r + 8) e.hit(dmg, explosive, owner);
+      if (e.alive && Phaser.Math.Distance.Between(x, y, e.x, e.y - 12) <= r + 8) e.hit(dmg, explosive, owner, how);
     });
     const b = this.boss;
     if (b && b.alive && Phaser.Geom.Intersects.CircleToRectangle(new Phaser.Geom.Circle(x, y, r), b.getBounds())) b.hit(dmg, owner);
+  }
+
+  hitTarget(t, dmg, explosive, owner, how) {
+    if (t === this.boss) t.hit(dmg, owner);
+    else t.hit(dmg, explosive, owner, how);
   }
 
   hurtArea(x, y, r) {
@@ -569,11 +576,24 @@ class LevelScene extends Phaser.Scene {
     }
   }
 
-  bulletHitsEnemy(b, e) {
-    if (!e.alive || !b.active) return;
+  // Piercing shots (flames) hit each target once and keep going.
+  bulletHits(b, t) {
+    if (!t.alive || !b.active) return;
+    if (b.pierce) {
+      b.hitSet = b.hitSet || new Set();
+      if (b.hitSet.has(t)) return;
+      b.hitSet.add(t);
+    }
     Fx.spark(this, b.x, b.y);
-    e.hit(b.damage, false, b.owner);
-    b.destroy();
+    this.hitTarget(t, b.damage, false, b.owner, b.how);
+    if (!b.pierce) b.destroy();
+  }
+
+  // An enemy (or the boss) right in front of the player, close enough for a melee hit.
+  meleeTarget(p) {
+    const R = CFG.MELEE.RANGE;
+    const zone = new Phaser.Geom.Rectangle(p.facing > 0 ? p.x - 4 : p.x - R, p.y - 22, R + 4, 20);
+    return Weapons.targets(this).find((t) => Phaser.Geom.Intersects.RectangleToRectangle(zone, t.getBounds())) || null;
   }
 
   nearestEnemy(x, y, range) {
@@ -712,13 +732,7 @@ class LevelScene extends Phaser.Scene {
     Sfx.rev();
     const b = (this.boss = new BOSSES[type](this, this.levelW + 70, this.floorY({ x: this.levelW - 40 })));
     const P = this.physics.add;
-    P.overlap(b, this.pBullets, (bb, bullet) => {
-      if (!b.alive || !bullet.active) return;
-      Fx.spark(this, bullet.x, bullet.y);
-      const owner = bullet.owner;
-      bullet.destroy();
-      b.hit(bullet.damage, owner);
-    });
+    P.overlap(b, this.pBullets, (bb, bullet) => b.state !== 'enter' && this.bulletHits(bullet, b));
     P.overlap(b, this.pBombs, (bb, bomb) => b.alive && this.detonate(bomb));
     this.players.forEach((pl) => P.overlap(b, pl, () => b.alive && pl.canBeHit() && pl.die()));
     if (this.combi) {
@@ -747,6 +761,7 @@ class LevelScene extends Phaser.Scene {
     this.updateFreeze();
     Sfx.stopMusic();
     Sfx.fanfare();
+    Voice.say('mission_complete', 'Misión cumplida');
     const O = this.mission.outro || { title: '¡MISIÓN CUMPLIDA!', sub: '' };
     this.message(O.title, O.sub, 4500);
     this.savePlayers();

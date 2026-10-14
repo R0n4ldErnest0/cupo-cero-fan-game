@@ -51,6 +51,7 @@ const Sfx = {
     this.noiseBuf = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate);
     const d = this.noiseBuf.getChannelData(0);
     for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    Voice.init();
   },
 
   toggleMute() {
@@ -102,6 +103,26 @@ const Sfx = {
 
   shoot() { this.tone('square', 880, 220, 0.08, 0.1); this.noise(0.05, 0.08, { type: 'highpass', f0: 4000 }); },
   mg() { this.tone('sawtooth', 520, 140, 0.06, 0.07); this.noise(0.04, 0.1, { type: 'highpass', f0: 3000 }); },
+  rocket() { this.noise(0.35, 0.12, { type: 'bandpass', f0: 1200, f1: 4000 }); this.tone('square', 300, 900, 0.2, 0.04); },
+  flame() { this.noise(0.3, 0.2, { f0: 900, f1: 300 }); },
+  shotgun() { this.noise(0.35, 0.45, { f0: 3000, f1: 150 }); this.tone('square', 140, 50, 0.18, 0.15); },
+  rooster() {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    [0, 0.07, 0.14].forEach((d, i) => this.tone('square', 700 + i * 120, 500, 0.06, 0.05, { when: t + d }));
+  },
+  kick() { this.tone('sine', 160, 60, 0.1, 0.25); this.noise(0.04, 0.1, { f0: 1200 }); },
+  drone() { this.tone('sawtooth', 900, 1100, 0.12, 0.04, { vibrato: 40 }); },
+  laser() { this.tone('square', 1800, 1500, 0.07, 0.03); },
+  stone() { this.noise(0.08, 0.1, { type: 'bandpass', f0: 2500, f1: 1200 }); },
+  whack() { this.tone('square', 200, 60, 0.08, 0.14); this.noise(0.06, 0.2, { f0: 1500 }); },
+  firework() {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    this.noise(0.3, 0.3, { f0: 2500, f1: 300 });
+    for (let i = 0; i < 6; i++) this.noise(0.03, 0.12, { type: 'highpass', f0: 5000, when: t + 0.08 + i * 0.05 + Math.random() * 0.03 });
+  },
+  feathers() { this.noise(0.25, 0.15, { type: 'bandpass', f0: 3000, f1: 1500 }); this.tone('square', 1200, 900, 0.15, 0.04, { vibrato: 20 }); },
   enemyShot() { this.tone('square', 500, 180, 0.09, 0.06); },
   jump() { this.tone('square', 260, 520, 0.12, 0.06); },
   throw() { this.tone('triangle', 400, 900, 0.12, 0.08); },
