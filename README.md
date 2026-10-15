@@ -20,6 +20,17 @@ subject; the satire punches up, never at the victims. Plays in the browser, on P
 > Corporation. This is a non-commercial project. All characters, gangs, officers, politicians and organizations are
 > fictional; any resemblance to real people is coincidental. All art and sound are original, generated in code.
 
+## Screenshots
+
+| | |
+|---|---|
+| ![Title screen](docs/screenshots/01-title.png) | ![Mission 1: the Combi Slug](docs/screenshots/02-combi.png) |
+| *Title screen* | *Mission 1: the Combi Slug on the paradero street* |
+| ![Mission 3: on the roof of the Lentopolitano](docs/screenshots/03-lentopolitano.png) | ![Final mission: the air level](docs/screenshots/04-air.png) |
+| *Mission 3: on the roof of the Lentopolitano* | *Final mission: Don Tito's old police helicopter* |
+| ![Final mission: the plaza](docs/screenshots/05-plaza.png) | ![Final boss: the mayor's bulldozer](docs/screenshots/06-mayor.png) |
+| *The plaza: the combi against the serenazgo's tanqueta, honest cops behind* | *Final boss: the mayor's bulldozer, with the honest police bombing from above* |
+
 ## Controls
 
 | | Keyboard (1 player) | Phone / tablet |
