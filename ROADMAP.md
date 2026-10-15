@@ -132,6 +132,8 @@ Full design, weapons list and build order: `docs/LEVELS.md`.
       respawns), screen locks with ambush waves, fewer enemies in Mission 1, slower enemy lobs, brawlers that run in
       to stab while gunners keep their distance, weaker enemies and shields, a fairer Metropolitano helicopter,
       mototaxi aims down like the combi
+- [x] Air level variety: missile planes (a blinking line warns each missile), parachuting serenazgo, more police
+      helicopters; El Contador's stomp telegraphed (crouch, hang over a shadow), El Cobrador's charge can be jumped
 - [ ] Illustrated cutscenes (real art) for the intro and between missions
 
 ### M5 — Release

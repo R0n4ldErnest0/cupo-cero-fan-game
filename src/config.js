@@ -178,6 +178,10 @@ const CFG = {
     polheli: { hp: 6, score: 400, speed: 90, stay: 9 },
     drone: { hp: 1, score: 150, speed: 85 },
     tv: { hp: 1, score: 0, speed: 35 },
+    // Missile plane: aligns with you, the warning line blinks WARN ms, then a slow missile flies straight across.
+    plane: { hp: 8, score: 600, speed: 120, aimMs: 500, warn: 950, missile: 115, gap: 450 },
+    // Parachuting serenazgo: falls slowly, drifts back and shoots now and then.
+    para: { hp: 1, score: 200, fall: 24, drift: 16, shot: [1600, 2400] },
   },
 
   // The town helps in the Mission 5 plaza (src/systems/Town.js): allies = freed honest cops, supplies = clues.
@@ -192,11 +196,13 @@ const CFG = {
   RIOT: { HP: 2, SHIELD: 5, SPEED: 18, SWING_RANGE: 22, SWING_WINDUP: 400, PEEK_EVERY: [2800, 4200], PEEK_MS: 900 },
   SNIPER: { AIM_MS: 1100, LOCK_MS: 380, BULLET_SPEED: 260, RELOAD: [1800, 2800] },
 
-  BOSS1: { HP: 70, RAGE_AT: 35, CHARGE_SPEED: 250, BULLET_SPEED: 100, RAGE_BULLET_SPEED: 125 },
+  // CHARGE_REV: ms he revs up in place, flashing (the warning). While charging only the low front hurts: jump over him.
+  BOSS1: { HP: 70, RAGE_AT: 35, CHARGE_SPEED: 230, CHARGE_REV: 1150, BULLET_SPEED: 100, RAGE_BULLET_SPEED: 125 },
   // Mission 2 mid-boss (src/entities/BossTruck.js): the armored collection truck.
   TRUCK: { HP: 80, TURRET_HP: 14, RAM_SPEED: 230, BULLET_SPEED: 120 },
   // Mission 2 boss (src/entities/BossContador.js): the accountant's mech.
-  CONTADOR: { HP: 110, ARM_HP: 16, WALK: 22, STOMP_HEIGHT: 90, BILL_SPEED: 120, BOLETA_SPEED: 60 },
+  // Stomp: crouches STOMP_WINDUP ms, jumps, hangs STOMP_HANG ms over a shadow where he'll land, falls in STOMP_FALL ms.
+  CONTADOR: { HP: 110, ARM_HP: 16, WALK: 22, STOMP_HEIGHT: 90, STOMP_WINDUP: 550, STOMP_HANG: 650, STOMP_FALL: 480, BILL_SPEED: 120, BOLETA_SPEED: 60 },
   // Mission 4 boss (src/entities/BossComisario.js): the filing-cabinet mech.
   COMISARIO: { HP: 130, DRAWER_HP: 18, CHARGE_SPEED: 170, STAMP_SPEED: 125, RAIN_SPEED: 70 },
   // Final boss (src/entities/BossAlcalde.js): the mayor's obra-paralizada mech. To tune by trial and error.

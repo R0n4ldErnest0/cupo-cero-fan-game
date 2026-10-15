@@ -4,7 +4,9 @@
 //
 // Section data: flight: { speed, seconds, events: [{ at, type, y }] }
 //   type 'polheli' | 'drone' | 'tv'   a flying enemy enters from the right (y: height in a 0-180 band, default random)
+//   type 'plane'  { y, shots }         a missile plane (each missile is announced by a blinking line; see Flyer)
 //   type 'swarm'  { count }            a column of serenazgo drones
+//   type 'paras'  { count }            serenazgo parachuting from the top, spread across the screen
 class Flight {
   constructor(scene, def) {
     this.scene = scene;
@@ -61,10 +63,21 @@ class Flight {
       for (let i = 0; i < (e.count || 5); i++) s.time.delayedCall(i * 160, () => this.spawn({ type: 'drone', y: 20 + (i * 37) % 160 }));
       return;
     }
+    if (e.type === 'paras') {
+      for (let i = 0; i < (e.count || 3); i++) {
+        s.time.delayedCall(i * 450, () => {
+          const f = new Flyer(s, s.viewLeft + 120 + ((i * 71) % (CFG.VIEW_W - 130)), s.viewTop + 10, 'para');
+          s.enemies.add(f);
+          f.body.setAllowGravity(false);
+        });
+      }
+      return;
+    }
     // Event heights are written for a 0-180 band; map them into the visible air (below the HUD, above the roofs).
     const top = s.viewTop + 36, bottom = s.viewTop + CFG.VIEW_H - CFG.AIRCRAFT.FLOOR_MARGIN;
     const y = top + ((e.y === undefined ? Math.random() * 180 : Phaser.Math.Clamp(e.y, 0, 180)) / 180) * (bottom - top);
     const f = new Flyer(s, s.viewLeft + CFG.VIEW_W + 40, y, e.type);
+    if (e.shots) f.shots = e.shots;
     s.enemies.add(f);
     f.body.setAllowGravity(false);
   }

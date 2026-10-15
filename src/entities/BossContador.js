@@ -65,37 +65,57 @@ class BossContador extends Boss {
     });
   }
 
-  // Jumps and comes down on the player: a shockwave along the floor (jump to dodge it).
+  // Crouches (shaking), jumps, hangs in the air over a shadow that marks where he'll land, then comes down on it:
+  // a shockwave along the floor (move away from the shadow, or jump the wave). The timing doesn't speed up when angry.
   attack_stomp(time) {
     const s = this.scene, C = CFG.CONTADOR;
-    const t = s.target(this.x, this.y);
-    const tx = Phaser.Math.Clamp(t.x, this.leftX, this.rightX);
-    let landed = false;
+    const baseX = this.x, jumpAt = time + C.STOMP_WINDUP;
+    let landed = false, jumped = false, shadow = null;
     Fx.say(s, this, '¡Caja fuerte va!', 900);
-    s.tweens.chain({
-      targets: this,
-      tweens: [
-        { y: this.floor - C.STOMP_HEIGHT, x: (this.x + tx) / 2, duration: 450 / this.sp, ease: 'Quad.Out' },
-        { y: this.floor, x: tx, duration: 350 / this.sp, ease: 'Quad.In' },
-      ],
-      onComplete: () => {
-        landed = true;
-        s.cameras.main.shake(250, 0.01);
-        Sfx.explode(true);
-        // The shockwave runs along the floor on both sides: anyone standing on the floor nearby is hit.
-        for (let i = 1; i <= 3; i++) {
-          s.time.delayedCall(i * 90, () => {
-            [-1, 1].forEach((d) => {
-              const x = this.x + d * (20 + i * 28);
-              Fx.puff(s, x, this.floor - 4, 1.2, 0xb0a090);
-              s.players.forEach((p) => p.canBeHit() && Math.abs(p.x - x) < 16 && p.y > this.floor - 6 && p.die());
+    const jump = () => {
+      jumped = true;
+      this.x = baseX;
+      const t = s.target(this.x, this.y);
+      const tx = Phaser.Math.Clamp(t.x, this.leftX, this.rightX);
+      shadow = s.add.ellipse(tx, this.floor - 1, 30, 5, 0x000000, 0.35).setDepth(4);
+      s.time.delayedCall(450 + C.STOMP_HANG + C.STOMP_FALL + 200, () => shadow.active && shadow.destroy()); // if he dies mid-air
+      s.tweens.add({ targets: shadow, scaleX: 2.2, scaleY: 1.6, alpha: 0.6, duration: 450 + C.STOMP_HANG + C.STOMP_FALL });
+      s.tweens.chain({
+        targets: this,
+        tweens: [
+          { y: this.floor - C.STOMP_HEIGHT, x: tx, duration: 450, ease: 'Quad.Out' },
+          { y: this.floor - C.STOMP_HEIGHT - 6, duration: C.STOMP_HANG, ease: 'Sine.InOut' },
+          { y: this.floor, duration: C.STOMP_FALL, ease: 'Quad.In' },
+        ],
+        onComplete: () => {
+          landed = true;
+          if (shadow.active) shadow.destroy();
+          s.cameras.main.shake(250, 0.01);
+          Sfx.explode(true);
+          // The shockwave runs along the floor on both sides: anyone standing on the floor nearby is hit.
+          for (let i = 1; i <= 3; i++) {
+            s.time.delayedCall(i * 90, () => {
+              [-1, 1].forEach((d) => {
+                const x = this.x + d * (20 + i * 28);
+                Fx.puff(s, x, this.floor - 4, 1.2, 0xb0a090);
+                s.players.forEach((p) => p.canBeHit() && Math.abs(p.x - x) < 16 && p.y > this.floor - 6 && p.die());
+              });
             });
-          });
-        }
-      },
-    });
+          }
+        },
+      });
+    };
     let until = 0;
-    return { step: (tm) => { if (landed && !until) until = tm + 400; return landed && tm > until; } };
+    return {
+      step: (tm) => {
+        if (!jumped) {
+          if (tm < jumpAt) { this.x = baseX + Math.sin(tm * 0.08) * 1.5; this.y = this.floor + 2; return false; }
+          jump();
+        }
+        if (landed && !until) until = tm + 400;
+        return landed && tm > until;
+      },
+    };
   }
 
   // A storm of boletas falling from the ceiling.

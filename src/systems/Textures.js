@@ -449,6 +449,20 @@ const Textures = {
     tv.rect(10, 6, 12, 5, '#f4f4f4').text('TV', 12, 6, '#c0282e').rect(13, 0, 2, 3, PAL.G).rect(4, 16, 18, 1, PAL.G);
     tv.outline();
     tv.register(scene, 'flyer_tv');
+    // The missile plane (facing left): a navy "patrol" plane with a missile under each wing.
+    const mp = new Painter(40, 18);
+    mp.rect(4, 7, 30, 6, '#26324a').rect(6, 9, 26, 2, '#f4f4f4').disc(5, 10, 3, '#26324a').rect(0, 5, 2, 10, '#5a6068'); // body, prop
+    mp.rect(14, 3, 8, 14, '#1b2430').rect(8, 7, 5, 3, '#8fd0ee').rect(32, 3, 6, 6, '#26324a').rect(34, 9, 5, 2, '#1b2430'); // wing, cockpit, tail
+    mp.rect(13, 15, 9, 2, '#d8d8d8').rect(12, 15, 2, 2, '#c0282e'); // missile under the wing
+    mp.outline();
+    mp.register(scene, 'flyer_plane');
+    // A parachute canopy (orange and white panels) for the serenazgo who jump.
+    const pc = new Painter(24, 16);
+    pc.disc(12, 8, 11, '#e3842c').clear(0, 8, 24, 8);
+    for (let x = 4; x < 20; x += 8) for (let y = 0; y < 8; y++) for (let i = 0; i < 4; i++) if (pc.get(x + i, y)) pc.set(x + i, y, '#f4f4f4');
+    pc.rect(0, 7, 24, 1, '#b05a10');
+    pc.line(1, 8, 9, 15, '#3a3d45').line(23, 8, 15, 15, '#3a3d45').line(12, 8, 12, 15, '#3a3d45');
+    pc.register(scene, 'parachute');
   },
 
   // Final boss: the mayor's obra-paralizada mech (facing left, 96x108): scaffolding legs, a concrete-mixer body, a

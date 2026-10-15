@@ -51,15 +51,21 @@ class BossCobrador extends Boss {
 
   // Rev up in place, then charge to the other side of the arena.
   attack_charge(time) {
-    const s = this.scene, baseX = this.x, revUntil = time + 750;
+    const s = this.scene, baseX = this.x, revUntil = time + CFG.BOSS1.CHARGE_REV;
     Sfx.rev();
+    Fx.say(s, this, '¡Ahí te voy!', 900);
     this.hitCombi = false;
     return {
       step: (t) => {
         if (t < revUntil) {
           this.x = baseX + Math.sin(t * 0.09) * 1.5;
+          this.setTint(Math.floor(t / 110) % 2 ? 0xffffff : 0xffb0b0); // flashing: he's about to charge
           if (Math.random() < 0.3) Fx.puff(s, this.x - this.facing * 46, this.y - 10, 1, 0x777777);
           return false;
+        }
+        if (!this.charging) {
+          this.setTint(this.baseTint || 0xffffff);
+          this.body.setSize(50, 22).setOffset(20, 24); // only the low front hurts while charging: you can jump over it
         }
         this.charging = true;
         this.setVelocityX(this.facing * CFG.BOSS1.CHARGE_SPEED * this.sp);
@@ -69,6 +75,7 @@ class BossCobrador extends Boss {
         this.setVelocityX(0);
         this.facing *= -1;
         this.charging = false;
+        this.body.setSize(74, 34).setOffset(8, 12);
         return true;
       },
     };
