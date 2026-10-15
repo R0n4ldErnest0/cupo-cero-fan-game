@@ -20,6 +20,8 @@ See `ROADMAP.md` for the plan, level list and open decisions.
   Drivers, cobradores, vendors, students and other victims are never the punchline.
 - Goofy Metal Slug energy (exaggerated deaths, silly bosses, speech bubbles) on top of a serious theme.
 - **Fictional names only.** No real politicians, officers, gangs or real victims. Caricatures are fine.
+  Places are parodies too: Lima → **Pima**, Gamarra → **Kamarra**, the Metropolitano → **Lentopolitano**,
+  Ate — Callao → Ate — **Kallao**, Tumbes → **Tumbas** (SUNAT stays as is). Code and comments may use the real names.
 - In-game text is in **Peruvian Spanish** (limeño slang welcome: "causa", "chamba", "al fondo hay sitio").
   Exceptions, in English like the arcade: "Heavy Machine Gun" (H), "Rocket Launcher" (R) and the banners
   "MISSION 1 START!" / "MISSION FINAL START!" / "MISSION COMPLETE!" (with the announcer).

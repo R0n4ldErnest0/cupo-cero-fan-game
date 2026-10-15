@@ -8,7 +8,7 @@
 MISSIONS.push({
   id: 'gamarra',
   title: 'MISSION 2',
-  subtitle: 'GAMARRA NO SE CIERRA',
+  subtitle: 'KAMARRA NO SE CIERRA',
   name: 'EL MERCADO',
   draft: true,
   bg: { sky: 0xffc89a, hills: 0xd8a080, city: 0xe0b090 },
@@ -28,7 +28,7 @@ MISSIONS.push({
       title: 'EL LIBRO DE CUPOS',
       entries: [
         { text: 'Combis "La Veloz" (ruta 13-B)', amount: 'S/ 2,000/día' },
-        { text: 'Gamarra: cada puesto', amount: 'S/ 20/día' },
+        { text: 'Kamarra: cada puesto', amount: 'S/ 20/día' },
         { text: 'Colegio "Los Pinitos"', amount: 'S/ 500/mes' },
         { text: 'Comisaría Sectorial (protección)', amount: 'S/ 5,000', mark: true },
         { text: 'Regidor ██████ (permisos)', amount: 'S/ 10,000' },

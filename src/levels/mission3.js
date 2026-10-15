@@ -69,7 +69,7 @@ MISSIONS.push({
         { type: 'sign', x: 600, y: 230, text: 'SE VENDE LOTE\n(CON CUPO INCLUIDO)', bg: '#1b1b22' },
         { type: 'sign', id: 'comisaria', x: 1100, y: 92, text: 'MÓDULO POLICIAL\nCERRADO POR "OPERATIVO"', bg: '#2e7d32' },
         { type: 'sign', x: 1800, y: 150, text: 'AQUÍ NO SUBE\nNI EL SERENAZGO', bg: '#c06a1e' },
-        { type: 'sign', x: 2470, y: 140, text: 'PARADERO DEL\nMETROPOLITANO →', bg: '#1e5fb4' },
+        { type: 'sign', x: 2470, y: 140, text: 'PARADERO DEL\nLENTOPOLITANO →', bg: '#1e5fb4' },
       ],
       events: [
         // The first police: they "don't see" the cuperos... until they see you.
@@ -113,13 +113,13 @@ MISSIONS.push({
         { type: 'image', key: 'turnstile', x: 330 }, { type: 'image', key: 'turnstile', x: 352 }, { type: 'image', key: 'turnstile', x: 374 },
         { type: 'sign', x: 360, y: 180, text: 'PASE SU TARJETA', bg: '#1b1b22' },
         { type: 'graffiti', x: 560, text: 'EL CUPO NO\nES PASAJE', color: '#1e5fb4' },
-        { type: 'sign', x: 860, y: 168, text: '¡SUBE AL\nMETROPOLITANO!', bg: '#c0282e' },
+        { type: 'sign', x: 860, y: 168, text: '¡SUBE AL\nLENTOPOLITANO!', bg: '#c0282e' },
       ],
     },
     // C — The Metropolitano, with buses breaking down: jump to the next one while it's right in front.
     // At the terminal the bus stops and the police helicopter that came for El Cobrador attacks (boss).
     {
-      area: 'METROPOLITANO',
+      area: 'LENTOPOLITANO',
       bg: { sky: 0xb8c0d0 },
       start: { x: 120, y: 152 },
       ride: {

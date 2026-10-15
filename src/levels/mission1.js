@@ -6,7 +6,7 @@ MISSIONS.push({
   subtitle: '¡PAGA O YA SABES!',
   name: 'EL PARADERO',
   story: [
-    { type: 'talk', who: 'DON TITO', text: '¿Contactos en la comisaría? En Gamarra dicen que la banda lleva un libro de cuentas...' },
+    { type: 'talk', who: 'DON TITO', text: '¿Contactos en la comisaría? En Kamarra dicen que la banda lleva un libro de cuentas...' },
   ],
   // Expediente: what the honest cops tell you (gang -> protection).
   clues: {
@@ -116,7 +116,7 @@ MISSIONS.push({
       ],
       decor: [
         { type: 'graffiti', x: 390, text: 'NO A LA\nEXTORSIÓN', color: '#2e7d32' },
-        { type: 'sign', x: 735, y: 170, text: 'TERMINAL\nATE — CALLAO', bg: '#1e5fb4' },
+        { type: 'sign', x: 735, y: 170, text: 'TERMINAL\nATE — KALLAO', bg: '#1e5fb4' },
       ],
       arena: { alert: ['¡ALERTA!', 'EL COBRADOR DE CUPOS'], boss: 'cobrador' },
     },

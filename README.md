@@ -2,12 +2,19 @@
 
 **▶ Play in your browser: https://r0n4ldernest0.github.io/cupo-cero-fan-game/** (PC or phone)
 
-*Un fan game run-and-gun al estilo Metal Slug que satiriza la extorsión ("el cobro de cupos") en Lima.*
+## Sobre el proyecto
 
-Pancho, a combi driver whose compadre was killed for not paying the "cupo", teams up with a mercenary hired by the
-drivers' union, a retired honest cop and a drugstore owner. Over 5 missions they fight the gangs, then the corrupt police
-who protect them, and finally the mayor behind it all. The tone is goofy Metal Slug action on top of a serious subject,
-and the satire punches up: the targets are extortionists, corrupt police and politicians, never their victims.
+**Cupo Cero** es un fan game run-and-gun al estilo Metal Slug que satiriza la extorsión, "el cobro de cupos", en
+**Pima**, una ciudad que se parece mucho a Lima. Pancho, chofer de combi, se cansa de pagar después de que matan a su
+compadre, y junto a Amaru (un mercenario contratado por el gremio), Don Tito (un policía retirado, de los honestos) e
+Inés (dueña de una botica extorsionada) recorre 5 misiones: primero las bandas, luego la policía corrupta que las
+protege y al final el alcalde detrás de todo. Humor de Metal Slug sobre un tema serio: la sátira apunta a los
+extorsionadores, a los malos policías y a los políticos, nunca a las víctimas.
+
+**In English:** a Metal Slug-style run-and-gun fan game satirizing the extortion racket ("cupos") that hits bus
+drivers, shop owners and schools in Pima, a city that looks a lot like Lima, Peru. A combi driver and three allies fight
+the gangs, the corrupt police who protect them and, finally, the mayor behind it all. Goofy arcade action on a serious
+subject; the satire punches up, never at the victims. Plays in the browser, on PC or phone, for 1 or 2 players.
 
 > **Unofficial fan game.** Not affiliated with, endorsed by or connected to SNK. "Metal Slug" is a trademark of SNK
 > Corporation. This is a non-commercial project. All characters, gangs, officers, politicians and organizations are

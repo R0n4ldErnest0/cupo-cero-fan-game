@@ -1,4 +1,4 @@
-// Ride mode: the section takes place on top of a moving vehicle (the Metropolitano bus; later the air level).
+// Ride mode: the section takes place on top of a moving vehicle (the Lentopolitano bus, our Metropolitano).
 // The camera stays put; the road, the backgrounds and the scenery rush past at `speed`. Things happen on a timeline
 // (seconds since the start); at `seconds` the bus brakes into a station: the section is cleared, or, if the section
 // has an `arena`, the bus stops at the terminal (a platform appears around it) and the arena starts (e.g. a boss).

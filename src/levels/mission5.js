@@ -16,15 +16,24 @@ MISSIONS.push({
     {
       type: 'tv',
       headline: 'ALCALDE DETENIDO: "Es una persecución política", declaró desde la mesa de diálogo',
-      ticker: '· Cae la red de los cupos · Comisario "Archivo" capturado en Tumbes · Transportistas levantan el paro · Gamarra abre todos sus puestos ·',
+      ticker: '· Cae la red de los cupos · Comisario "Archivo" capturado en Tumbas · Transportistas levantan el paro · Kamarra abre todos sus puestos ·',
       face: 'EL ALCALDE (DETENIDO)',
     },
     { type: 'talk', who: 'PANCHO', text: 'Mañana vuelvo a manejar mi combi. Ruta 13-B. Sin cupo. Por Lucho.' },
+    {
+      type: 'text',
+      title: '',
+      lines: [
+        'Para ti, esto fue un juego. Para mucha gente, no lo es.',
+        'Seamos parte de la conversación: visibiliza, cuestiona, critica, elige responsablemente.',
+        'Para que algún día, para ellos también, esto sea solo un juego.',
+      ],
+    },
   ],
   clues: {
     m5a: 'El alcalde firmó la obra, cobró la obra... y nunca hizo la obra.',
     m5b: 'Los serenos tienen orden de no dejar pasar a la prensa.',
-    m5c: 'En la oficina del alcalde está la caja chica de los cupos de toda Lima.',
+    m5c: 'En la oficina del alcalde está la caja chica de los cupos de toda Pima.',
   },
   sections: [
     // A — Vuelo: the old police helicopter Don Tito knew about. Free flight while Lima scrolls by below.

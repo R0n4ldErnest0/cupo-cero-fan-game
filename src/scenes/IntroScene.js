@@ -1,7 +1,7 @@
 // The story intro: text scrolling up from the bottom of the screen, after character select on a new game from
 // Mission 1. Fire / jump / start skips it. Then the first mission starts.
 const INTRO_TEXT = [
-  'LIMA. HOY.',
+  'PIMA. HOY.',
   '',
   'En los paraderos, en los mercados, en los colegios,',
   'nadie trabaja sin pagar.',
