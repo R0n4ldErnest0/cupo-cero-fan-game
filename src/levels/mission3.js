@@ -96,8 +96,8 @@ MISSIONS.push({
       vehicles: false,
       doors: [{ x: 860 }],
       props: [
-        { x: 230, type: 'lootbag', drop: 'R' },
-        { x: 520, type: 'box', drop: 'B' },
+        { x: 230, type: 'lootbag', drop: 'B' },
+        { x: 520, type: 'box', drop: 'R' },
       ],
       prisoners: [{ x: 160, drop: 'H', clue: 'm3c' }],
       spawns: [

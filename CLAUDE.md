@@ -101,6 +101,8 @@ tools/serve.py        no-cache dev server
 - On-screen text: no floating sentences in levels; area names are physical signs (`sign` decor stands on posts or
   hangs from a ceiling); ordinary enemies rarely talk (`CFG.ENEMY.TALK_CHANCE`); warnings are short (`CFG.ALERT_MS`);
   after a mission only "MISSION COMPLETE!", then few story pages. Pickups don't print their names (the voice says it).
+- Weapon crates (and drops that give a gun) stay about a screen (300+ px) apart; a pair together only for a special
+  moment (e.g. a choice right before a boss).
 - Damage values: pistol 1, machine gun 1, emoliente 2, grenade 5, combi cannon 6; pickup weapons in `CFG.WEAPONS`.
 - Weapons: data in `CFG.WEAPONS` / `CFG.THROWABLES` (name, crate letter = map marker, ammo, cadence), behavior in
   `Weapons.FIRE` and `Weapons.PROJECTILES`. Crate letters are Spanish initials except H and R (see docs/LEVELS.md).

@@ -75,16 +75,13 @@ MISSIONS.push({
       // A chichería stand next to a caldo cart (3 jora + pisco = drunk; the caldo cures it).
       vendors: [{ x: 560, food: 'makis' }, { x: 1250, food: 'jora' }, { x: 1310, food: 'caldo' }],
       // Honest cops tied up on the gallery floors (y = the floor's top) and one in a box.
-      prisoners: [{ x: 1000, y: 208, drop: 'H', clue: 'm2a' }, { x: 1650, drop: 'random' }],
+      prisoners: [{ x: 1000, y: 208, drop: 'E', clue: 'm2a' }, { x: 1650, drop: 'random' }],
       props: [
         { x: 700, type: 'box', drop: 'prisoner' }, { x: 735, type: 'box', drop: 'enemy' },
         { x: 1250, type: 'lootbag', drop: 'random' }, { x: 1760, type: 'barrel', drop: 'none' },
       ],
-      // Greybox: weapon crates to try them out.
-      pickups: [
-        { x: 420, kind: 'A' }, { x: 640, kind: 'D' }, { x: 960, kind: 'E' }, { x: 1150, kind: 'M' }, { x: 1560, kind: 'G' },
-        { x: 1640, kind: 'F' },
-      ],
+      // Weapons about a screen apart (the H crate is on the gallery, in the map).
+      pickups: [{ x: 330, kind: 'A' }, { x: 1300, kind: 'M' }, { x: 1650, kind: 'F' }],
       decor: [
         { type: 'graffiti', x: 400, text: 'TODO A\nS/ 5', color: '#a81f25' },
         { type: 'sign', x: 848, y: 196, text: 'GALERÍA EL PROGRESO', bg: '#a81f25' },
@@ -149,7 +146,7 @@ MISSIONS.push({
         { x: 1916, type: 'box', drop: 'prisoner' }, { x: 2636, type: 'barrel', drop: 'none' },
         { x: 2816, type: 'lootbag', drop: 'emoliente' },
       ],
-      pickups: [{ x: 1276, kind: 'H' }, { x: 2356, kind: 'R' }, { x: 900, kind: 'S' }, { x: 1700, kind: 'L' }, { x: 2200, kind: 'P' }],
+      pickups: [{ x: 600, kind: 'G' }, { x: 900, kind: 'S' }, { x: 1276, kind: 'H' }, { x: 1700, kind: 'L' }, { x: 2200, kind: 'P' }, { x: 2356, kind: 'R' }],
       decor: [
         { type: 'sign', x: 1496, y: 120, text: 'SE ALQUILA AZOTEA\n(CUPO NO INCLUIDO)', bg: '#1b1b22' },
         { type: 'sign', x: 2876, y: 150, text: 'ALMACÉN →', bg: '#1b1b22' },
@@ -194,7 +191,7 @@ MISSIONS.push({
         { x: 990, type: 'barrel', drop: 'none' }, { x: 1120, type: 'lootbag', drop: 'lomo' },
         { x: 1290, type: 'box', drop: 'random' }, { x: 1440, type: 'lootbag', drop: 'B' },
       ],
-      pickups: [{ x: 520, kind: 'A' }, { x: 1380, kind: 'H' }],
+      pickups: [{ x: 520, kind: 'A' }, { x: 950, kind: 'D' }, { x: 1380, kind: 'H' }],
       decor: [
         { type: 'sign', x: 420, y: 100, text: 'PROHIBIDO EL PASO\n(SALVO PARA PAGAR)', bg: '#c0282e' },
         { type: 'sign', x: 950, y: 100, text: 'RECAUDACIÓN DIARIA\nMETA: S/ 50,000', bg: '#1b1b22' },

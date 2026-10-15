@@ -73,7 +73,7 @@ MISSIONS.push({
       bg: { sky: 0xd8c0a0 },
       abuelitas: [{ x: 900 }],
       prisoners: [{ x: 1500, drop: 'H', clue: 'm5b' }],
-      props: [{ x: 700, type: 'patrol', drop: 'B' }, { x: 1700, type: 'patrol', drop: 'R' }, { x: 2200, type: 'barrel', drop: 'none' }],
+      props: [{ x: 700, type: 'patrol', drop: 'R' }, { x: 1700, type: 'patrol', drop: 'B' }, { x: 2200, type: 'barrel', drop: 'none' }],
       spawns: [
         { x: 560, t: 'tank' }, { x: 1120, t: 'tank' }, { x: 1750, t: 'tank' }, { x: 1780, t: 'cop' }, { x: 2250, t: 'tank' },
         { x: 450, t: 'sere' }, { x: 520, t: 'sere' }, { x: 640, t: 'riot' }, { x: 800, t: 'sere' }, { x: 860, t: 'motocop' },
