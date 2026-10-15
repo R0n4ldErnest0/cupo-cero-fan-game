@@ -19,8 +19,19 @@ const Session = {
     if (sec) this.startSection = Math.max(0, +sec[1] - 1);
   },
 
+  // A new game: players carried between missions, and the clues found for the expediente (kept all game long).
   newRun() {
-    this.run = { players: null };
+    this.run = { players: null, clues: [] };
+  },
+
+  hasClue(id) {
+    return !!(this.run && this.run.clues && this.run.clues.includes(id));
+  },
+
+  addClue(id) {
+    this.run = this.run || { players: null, clues: [] };
+    this.run.clues = this.run.clues || [];
+    if (!this.run.clues.includes(id)) this.run.clues.push(id);
   },
 
   // Stage select (testing): cycles the mission a new game starts on.

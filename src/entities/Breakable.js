@@ -11,6 +11,7 @@ class Breakable extends Phaser.Physics.Arcade.Sprite {
     this.body.setAllowGravity(false).setImmovable(true);
     this.type = def.type;
     this.drop = def.drop || 'random';
+    this.clue = def.clue;
     this.cfg = CFG.PROPS[def.type];
     this.hp = this.cfg.hp;
     this.alive = true;
@@ -45,7 +46,7 @@ class Breakable extends Phaser.Physics.Arcade.Sprite {
       e.setVelocityY(-160);
       Fx.say(s, e, '¡Sorpresa, causa!', 1200);
     } else if (drop === 'prisoner') {
-      s.addPrisoner(x, y, { drop: 'random' });
+      s.addPrisoner(x, y, { drop: 'random', clue: this.clue });
     } else if (drop !== 'none') {
       const k = s.spawnPickup(x, y - h, drop);
       k.setVelocityY(-150);

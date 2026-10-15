@@ -16,6 +16,12 @@ MISSIONS.push({
     h: { t: 'grunt', hp: 3, skin: 'thug2' },
   },
   outro: { sub: '¡Encontraste el libro de cupos!' },
+  // Expediente: who collects at the comisaría and where the money goes.
+  clues: {
+    m2a: 'Un suboficial recoge la plata del mercado. El Contador la cuenta y la reparte.',
+    m2b: 'El Contador lleva dos libros: uno para la banda y otro para "los de arriba".',
+    m2c: 'Parte de la plata va a una empresa: "Obras y Proyectos El Progreso SAC".',
+  },
   // After the boss: a page of the ledger (fictional names; the censored ones point at Missions 3-5).
   story: [
     {
@@ -69,7 +75,7 @@ MISSIONS.push({
       // A chichería stand next to a caldo cart (3 jora + pisco = drunk; the caldo cures it).
       vendors: [{ x: 560, food: 'makis' }, { x: 1250, food: 'jora' }, { x: 1310, food: 'caldo' }],
       // Honest cops tied up on the gallery floors (y = the floor's top) and one in a box.
-      prisoners: [{ x: 1000, y: 208, drop: 'H' }, { x: 1650, drop: 'random' }],
+      prisoners: [{ x: 1000, y: 208, drop: 'H', clue: 'm2a' }, { x: 1650, drop: 'random' }],
       props: [
         { x: 700, type: 'box', drop: 'prisoner' }, { x: 735, type: 'box', drop: 'enemy' },
         { x: 1250, type: 'lootbag', drop: 'random' }, { x: 1760, type: 'barrel', drop: 'none' },
@@ -138,7 +144,7 @@ MISSIONS.push({
         |################%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         |################%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%`,
       vendors: [{ x: 1756, food: 'pan' }],
-      prisoners: [{ x: 200, y: 304, drop: 'B' }],
+      prisoners: [{ x: 200, y: 304, drop: 'B', clue: 'm2b' }],
       props: [
         { x: 856, type: 'box', drop: 'random' }, { x: 1436, type: 'lootbag', drop: 'B' },
         { x: 1916, type: 'box', drop: 'prisoner' }, { x: 2636, type: 'barrel', drop: 'none' },
@@ -184,7 +190,7 @@ MISSIONS.push({
       props: [
         { x: 150, type: 'box', drop: 'random' }, { x: 175, type: 'box', drop: 'none' },
         { x: 340, type: 'barrel', drop: 'none' }, { x: 470, type: 'lootbag', drop: 'random' },
-        { x: 700, type: 'box', drop: 'enemy' }, { x: 860, type: 'box', drop: 'prisoner' },
+        { x: 700, type: 'box', drop: 'enemy' }, { x: 860, type: 'box', drop: 'prisoner', clue: 'm2c' },
         { x: 990, type: 'barrel', drop: 'none' }, { x: 1120, type: 'lootbag', drop: 'lomo' },
         { x: 1290, type: 'box', drop: 'random' }, { x: 1440, type: 'lootbag', drop: 'B' },
       ],

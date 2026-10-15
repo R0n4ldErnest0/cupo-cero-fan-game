@@ -38,6 +38,8 @@
 //                              past the view width = runs in from the right edge)
 //   outro { title, sub }       mission-complete banner (title defaults to "MISSION COMPLETE!")
 //   story [{ type, ... }]      story pages shown after the outro, before the tally (see src/scenes/StoryScene.js)
+//   clues { id: 'text' }       the expediente: clues the honest cops give when freed (prisoners `clue`, props with
+//                              drop 'prisoner' + `clue`, or `markerClues` for T markers). A page lists them at the end
 //
 // Sections: a mission can instead list `sections: [{ ... }]`, areas joined by a quick fade (like Metal Slug's
 // doors, holes and vehicles). Each section takes the per-area fields above (terrain, width, spawns, props,

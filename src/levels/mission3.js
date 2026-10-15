@@ -10,11 +10,18 @@ MISSIONS.push({
   subtitle: 'LA RUTA',
   name: 'LOS CERROS',
   draft: true,
-  outro: { sub: 'En la estación espera... ¿un helicóptero de la policía?' },
+  outro: { sub: 'El Cobrador se escapó... rumbo a la comisaría.' },
+  // Expediente: the comisario and his ties to the Municipalidad.
+  clues: {
+    m3a: 'Al comisario le dicen "Archivo": todas las denuncias contra los cuperos terminan en su cajón.',
+    m3b: 'Ese helicóptero no es para operativos: el comisario lo presta para "favores".',
+    m3c: 'Cada lunes el comisario almuerza con un regidor de la Municipalidad.',
+  },
   sections: [
     // A — Cerros: up the hill to the Metropolitano stop. Leaves by the right edge.
     {
       area: 'CERROS',
+      markerClues: ['m3a', 'm3b'], // the two tied-up cops on the hill (T markers, left to right)
       bg: { sky: 0xd0c8c0, hills: 0xc0a080 },
       terrain: String.raw`
         |
@@ -123,7 +130,7 @@ MISSIONS.push({
         { x: 230, type: 'lootbag', drop: 'R' },
         { x: 520, type: 'box', drop: 'B' },
       ],
-      prisoners: [{ x: 160, drop: 'H' }],
+      prisoners: [{ x: 160, drop: 'H', clue: 'm3c' }],
       spawns: [
         { x: 300, t: 'cop' },
         { x: 380, t: 'cop' },

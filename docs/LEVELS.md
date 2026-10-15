@@ -215,7 +215,7 @@ Same green uniform as the honest cops you rescue, plus **sunglasses and a mustac
 
 Tuning: `CFG.RIOT`, `CFG.SNIPER`; behavior in `src/entities/RiotCop.js`, `Sniper.js`, `Grunt.js` (cop preset), `Biker.js`.
 
-## Prisoners — prototype built (expediente decided)
+## Prisoners — prototype built; expediente built
 
 Our Metal Slug POWs. For now one kind: **honest cops** who refused to collect cupos, so their corrupt colleagues
 handed them to the gang (foreshadows the police reveal; ties in with El Sargento). Tied up on the floor (map marker
@@ -224,7 +224,7 @@ they salute, walk to you, hand over their item (set in the data, or random) and 
 "POLICÍAS HONESTOS RESCATADOS x N" (+1000 each); the count carries over sections and missions and **goes back to 0
 when you die** (arcade rule).
 
-**Decided — the expediente (case file):** each honest cop you free gives a **clue** in his line ("El comisario
+**✅ The expediente (case file)** (mission `clues`; built for Missions 1–3, 3 clues each): each honest cop you free gives a **clue** in his line ("El comisario
 recibe un sobre cada viernes..."), saved in an **EXPEDIENTE** shown as a story page after each mission (missed clues
 show as "???"). The clues build the arc step by step: M1 the gang has protection, M2 who collects at the comisaría,
 M3 the comisario's name, M4 the regidor and the public works, M5 the proof against the mayor. In Mission 5 the cops

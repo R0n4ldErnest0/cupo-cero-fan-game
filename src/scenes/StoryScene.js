@@ -6,6 +6,7 @@
 //      a page of "EL LIBRO DE CUPOS": entries appear one by one; `mark` circles one in red. '█' blocks render as a
 //      censored name (black bar).
 //   { type: 'talk', who, text }   a line of dialogue in a box at the bottom (over the last page shown).
+//   { type: 'file', title, items: [{ text, found }] }   the expediente: clues from the honest cops, "???" if missed.
 class StoryScene extends Phaser.Scene {
   constructor() {
     super('Story');
@@ -32,6 +33,7 @@ class StoryScene extends Phaser.Scene {
     const page = this.pages[this.index];
     this.readyAt = this.time.now + 600;
     if (page.type === 'ledger') this.showLedger(page);
+    else if (page.type === 'file') this.showFile(page);
     else this.showTalk(page);
   }
 
@@ -71,6 +73,39 @@ class StoryScene extends Phaser.Scene {
         if (this.layer.active) this.layer.add(this.add.text(x0 + w - 24, y0 + h - 40, page.footer, Object.assign({}, ink, { fontSize: '16px', fontStyle: 'italic' })).setOrigin(1, 0));
       });
       this.readyAt = this.time.now + 600 + n * 450;
+    }
+  }
+
+  showFile(page) {
+    this.layer.removeAll(true);
+    this.talkBox.removeAll(true);
+    const g = this.add.graphics();
+    const x0 = 110, y0 = 50, w = 740, h = 390;
+    g.fillStyle(0xc8a165).fillRect(x0, y0 - 18, 180, 26); // folder tab
+    g.fillStyle(0xd9b878).fillRect(x0, y0, w, h);
+    g.fillStyle(0xf4efe0).fillRect(x0 + 20, y0 + 56, w - 40, h - 76); // the sheet
+    this.layer.add(g);
+    const style = { fontFamily: FONT, fontSize: '17px', color: '#1b1b22', fontStyle: 'bold', wordWrap: { width: w - 110 } };
+    this.layer.add(this.add.text(x0 + 24, y0 + 14, page.title, Object.assign({}, style, { fontSize: '24px', color: '#5b3a20' })));
+    const found = page.items.filter((it) => it.found).length;
+    this.layer.add(this.add.text(x0 + w - 24, y0 + 18, `PISTAS ${found}/${page.items.length}`, Object.assign({}, style, { color: '#7a1f1f' })).setOrigin(1, 0));
+    page.items.forEach((it, i) => {
+      const y = y0 + 76 + i * 98;
+      this.time.delayedCall(300 + i * 400, () => {
+        if (!this.layer.active) return;
+        this.layer.add(this.add.text(x0 + 40, y, `${i + 1}.`, style));
+        this.layer.add(this.add.text(x0 + 76, y, it.found ? it.text : '???  (Libera a todos los policías honestos)', Object.assign({}, style, { color: it.found ? '#1b2a5a' : '#9a9a9a' })));
+        if (it.found) Sfx.throw();
+      });
+    });
+    this.readyAt = this.time.now + 300 + page.items.length * 400;
+    if (found === page.items.length) {
+      this.time.delayedCall(400 + page.items.length * 400, () => {
+        if (!this.layer.active) return;
+        const st = this.add.text(x0 + w - 60, y0 + h - 60, 'COMPLETO', Object.assign({}, style, { fontSize: '30px', color: '#c0282e' })).setOrigin(0.5).setAngle(-12);
+        this.layer.add(st);
+        Sfx.hit();
+      });
     }
   }
 

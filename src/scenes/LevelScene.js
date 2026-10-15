@@ -75,7 +75,10 @@ class LevelScene extends Phaser.Scene {
     (M.props || []).forEach((d) => this.props.add(new Breakable(this, d.x, this.floorY(d), d)));
     this.vendors = (M.vendors || []).map((d) => new Vendor(this, d.x, this.floorY(d), d));
     this.prisoners = this.physics.add.group();
-    (M.prisoners || []).concat(marks.filter((o) => o.prisoner)).forEach((d) => this.addPrisoner(d.x, this.floorY(d), d));
+    // 'T' markers take their clues from `markerClues`, in map order (left to right).
+    const markerPrisoners = marks.filter((o) => o.prisoner).sort((a, b) => a.x - b.x)
+      .map((o, i) => Object.assign({}, o, { clue: (M.markerClues || [])[i] }));
+    (M.prisoners || []).concat(markerPrisoners).forEach((d) => this.addPrisoner(d.x, this.floorY(d), d));
     (M.pickups || []).forEach((p) => this.spawnPickup(p.x, this.floorY(p) - 40, p.kind));
     marks.filter((o) => o.pickup).forEach((p) => this.spawnPickup(p.x, p.y - 8, p.pickup));
     this.spawns = (M.spawns || []).concat(marks.filter((o) => o.t)).map((s) => Object.assign({}, s)).sort((a, b) => a.x - b.x);
@@ -1004,7 +1007,14 @@ class LevelScene extends Phaser.Scene {
     this.time.delayedCall(5200, () => {
       this.scene.stop('HUD');
       const end = { mission: this.missionIndex, scores: this.scores() };
-      if (this.mission.story) this.scene.start('Story', { pages: this.mission.story, next: 'MissionEnd', data: end });
+      // The expediente page (this mission's clues: found or "???"), then the mission's own story pages.
+      const C = this.mission.clues;
+      const file = C ? [{
+        type: 'file', title: `EXPEDIENTE — ${this.mission.title}`,
+        items: Object.keys(C).map((id) => ({ text: C[id], found: Session.hasClue(id) })),
+      }] : [];
+      const pages = file.concat(this.mission.story || []);
+      if (pages.length) this.scene.start('Story', { pages, next: 'MissionEnd', data: end });
       else this.scene.start('MissionEnd', end);
     });
   }

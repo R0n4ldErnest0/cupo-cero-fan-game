@@ -6,6 +6,12 @@ MISSIONS.push({
   subtitle: '¡PAGA O YA SABES!',
   name: 'EL PARADERO',
   outro: { sub: '...¿contactos en la comisaría?' },
+  // Expediente: what the honest cops tell you (gang -> protection).
+  clues: {
+    m1a: 'Los cuperos le pagan a alguien de la comisaría. Por eso nadie los detiene.',
+    m1b: 'Cada viernes un patrullero recoge un sobre en el terminal.',
+    m1c: 'El Cobrador se jacta de que su "padrino" es el comisario.',
+  },
   sections: [
     // A — Paradero: the street. Leaves by the right edge (on foot or in the Combi Slug).
     {
@@ -21,7 +27,7 @@ MISSIONS.push({
       ],
       vendors: [{ x: 300, food: 'pan' }, { x: 1560, food: 'morada' }, { x: 2560, food: 'caldo' }],
       // Honest cops the gang tied up (prisoners): one more is hidden in a CUPO box.
-      prisoners: [{ x: 820, drop: 'H' }, { x: 1950, drop: 'B' }, { x: 2650, drop: 'random' }],
+      prisoners: [{ x: 820, drop: 'H', clue: 'm1a' }, { x: 1950, drop: 'B' }, { x: 2650, drop: 'random', clue: 'm1b' }],
       props: [
         { x: 620, type: 'box', drop: 'mote' },
         { x: 860, type: 'lootbag', drop: 'random' },
@@ -86,7 +92,7 @@ MISSIONS.push({
       width: 1250,
       bg: { sky: 0xd8c8b0 },
       crates: [{ x: 300, stack: 1 }],
-      prisoners: [{ x: 560, drop: 'S' }],
+      prisoners: [{ x: 560, drop: 'S', clue: 'm1c' }],
       props: [
         { x: 450, type: 'barrel', drop: 'none' },
         { x: 710, type: 'box', drop: 'emoliente' },

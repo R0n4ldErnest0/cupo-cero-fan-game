@@ -92,7 +92,7 @@ Full design, weapons list and build order: `docs/LEVELS.md`.
 - [x] Announcer voice on pickups (browser speech placeholder until clips are recorded in `assets/voice/`)
 - [x] Rescuable prisoners (POWs), prototype: honest cops tied up by the gang; freed by a shot or a touch, they
       hand over an item; rescue count + bonus on the tally, reset to 0 on death (arcade rule)
-- [ ] Expediente: each freed honest cop gives a clue; a case-file story page after each mission
+- [x] Expediente: each freed honest cop with a clue tells it; a case-file page after each mission ("???" if missed)
 - [ ] More prisoner types (the journalist in Mission 4, denunciantes, municipal workers)
 - [x] Mission 2 restructure to 4 sections (Mototaxi Slug in the Mercado, Azoteas on foot)
 - [x] Intro crawl after character select (new game from Mission 1); characters renamed

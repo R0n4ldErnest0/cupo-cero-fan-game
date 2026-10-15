@@ -1,6 +1,7 @@
 // Tied-up honest cop (our Metal Slug POW): he refused to collect cupos, so his corrupt colleagues handed him to the
 // gang. A shot or a touch frees him; he salutes, walks to the nearest player, hands over his item and runs off.
-// Mission data: prisoners: [{ x, y?, drop }] or a 'T' map marker; Breakable props can hide one (drop: 'prisoner').
+// Mission data: prisoners: [{ x, y?, drop, clue }] or a 'T' map marker; Breakable props can hide one (drop: 'prisoner').
+// A prisoner with a `clue` (an id of the mission's `clues`) tells it when freed: it goes into the expediente.
 const PRISONER_LINES = [
   '¡Gracias, colega!', 'Me amarraron por no querer cobrar cupos.', '¡Viva la policía honesta... somos tres!',
   'Mi comisario me vendió por un cupo.', '¡Yo sí tomé tu denuncia!', 'Toma, te va a servir.',
@@ -14,6 +15,7 @@ class Prisoner extends Phaser.Physics.Arcade.Sprite {
     this.setOrigin(0.5, 1).setDepth(5);
     this.body.setSize(10, 14).setOffset(3, 10);
     this.drop = def.drop || 'random';
+    this.clue = def.clue || null;
     this.state = 'tied';
     this.facing = 1;
     this.walkT = 0;
@@ -28,7 +30,12 @@ class Prisoner extends Phaser.Physics.Arcade.Sprite {
     if (this.rescuer) this.rescuer.rescued++;
     this.setTexture('poli_salute');
     this.body.setSize(8, 20).setOffset(4, 4);
-    Fx.say(s, this, Phaser.Utils.Array.GetRandom(PRISONER_LINES), 1600);
+    const clue = this.clue && s.mission.clues && s.mission.clues[this.clue];
+    if (clue) {
+      Session.addClue(this.clue);
+      Fx.say(s, this, clue, 3800);
+      s.message('', '¡PISTA PARA EL EXPEDIENTE!', 1800);
+    } else Fx.say(s, this, Phaser.Utils.Array.GetRandom(PRISONER_LINES), 1600);
     Sfx.pickup();
     s.time.delayedCall(700, () => {
       if (this.active && this.state === 'thanks') {
