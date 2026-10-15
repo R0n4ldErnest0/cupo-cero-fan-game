@@ -89,7 +89,7 @@ class LevelScene extends Phaser.Scene {
       .map((s) => Object.assign({}, s)).sort((a, b) => a.x - b.x);
     this.triggers = (M.events || []).map((e) => Object.assign({}, e)).sort((a, b) => a.x - b.x);
 
-    this.town = M.town ? new Town(this) : null;
+    this.town = M.town ? new Town(this, M.town) : null;
     this.setupCollisions();
     if (this.flight) this.players.forEach((p) => p.state === 'play' && this.flight.board(p));
     this.updateCamera(true);
@@ -489,8 +489,10 @@ class LevelScene extends Phaser.Scene {
       });
       P.overlap(pl, this.eBombs, (p, b) => {
         if (!pl.canBeHit()) return;
-        if (b.coin) {
-          b.destroy();
+        if (b.coin || b.onLand) {
+          // Coins, and lobs that only leave something where they land, hurt on a direct hit.
+          if (b.onLand) this.explodeEnemyBomb(b);
+          else b.destroy();
           pl.die();
         } else this.explodeEnemyBomb(b);
       });
@@ -640,7 +642,7 @@ class LevelScene extends Phaser.Scene {
 
   // Enemies without a y stand at street level. Bikers always ride in from the right edge.
   // t: 'grunt' | 'biker' | 'sere' (serenazgo) | 'shieldthug' (cupero behind a metal shutter) | 'gangsniper' |
-  // 'cop' (patrullero) | 'motocop' | 'riot' (antimotines) | 'sniper'.
+  // 'cop' (patrullero) | 'motocop' | 'riot' (antimotines) | 'sniper' | 'tank' (serenazgo tanqueta).
   // Riders always come in from the right edge.
   spawnEnemy(s, x) {
     if (s.t === 'biker' || s.t === 'motocop') x = this.viewLeft + CFG.VIEW_W + 30;
@@ -653,6 +655,7 @@ class LevelScene extends Phaser.Scene {
       motocop: () => new Biker(this, x, y, { tex: 'motocop', hp: 2, shots: 3, score: 300, shout: '¡PAPELETA!' }),
       cop: () => new Grunt(this, x, y, Object.assign({ skin: 'tombo', hp: 1, burst: 2, cop: true }, s)),
       riot: () => new RiotCop(this, x, y),
+      tank: () => new PoliceTank(this, x, y, 'enemy'),
       sniper: () => new Sniper(this, x, y),
     };
     const e = (make[s.t] || (() => new Grunt(this, x, y, s)))();

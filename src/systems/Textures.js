@@ -449,6 +449,29 @@ const Textures = {
     tv.rect(10, 6, 12, 5, '#f4f4f4').text('TV', 12, 6, '#c0282e').rect(13, 0, 2, 3, PAL.G).rect(4, 16, 18, 1, PAL.G);
     tv.outline();
     tv.register(scene, 'flyer_tv');
+    // Police tanquetas: the honest police's (white, POLICIA) and the serenazgo's (navy). One texture per direction
+    // (<key>_r / <key>_l) so the lettering never reads mirrored.
+    const tank = (key, body, stripe, label, ink) => {
+      for (const left of [false, true]) {
+        const t = new Painter(56, 30);
+        const R = (x, y, w, h, c) => t.rect(left ? 56 - x - w : x, y, w, h, c);
+        R(2, 20, 50, 9, '#2b2b30');
+        [8, 18, 28, 38, 46].forEach((x) => t.disc(left ? 55 - x : x, 24, 4, '#5a6068').set(left ? 55 - x : x, 24, '#2b2b30'));
+        R(4, 9, 46, 12, body);
+        R(4, 18, 46, 2, stripe);
+        R(16, 2, 22, 8, body);
+        R(30, 4, 6, 4, '#8fd0ee');
+        R(38, 4, 18, 3, '#3a3d45');
+        R(20, 0, 4, 2, PAL.r);
+        R(24, 0, 4, 2, '#2c6fd1');
+        const w = label.length * 4 - 1;
+        t.text(label, left ? 56 - 6 - w : 6, 11, ink);
+        t.outline();
+        t.register(scene, `${key}_${left ? 'l' : 'r'}`);
+      }
+    };
+    tank('tank_ally', '#f4f4f4', '#2e7d32', 'POLICIA', '#2e7d32');
+    tank('tank_enemy', '#26324a', '#c0282e', 'SERENAZGO', '#f2c94c');
     // The missile plane (facing left): a navy "patrol" plane with a missile under each wing.
     const mp = new Painter(40, 18);
     mp.rect(4, 7, 30, 6, '#26324a').rect(6, 9, 26, 2, '#f4f4f4').disc(5, 10, 3, '#26324a').rect(0, 5, 2, 10, '#5a6068'); // body, prop
@@ -465,45 +488,36 @@ const Textures = {
     pc.register(scene, 'parachute');
   },
 
-  // Final boss: the mayor's obra-paralizada mech (facing left, 96x108): scaffolding legs, a concrete-mixer body, a
-  // podium cockpit with the mayor in his sash, traffic cones; the crane, the scissors and his attacks' sprites.
+  // Final boss: the mayor's bulldozer, its megaphone and his attacks' sprites.
   alcalde(scene) {
-    const m = new Painter(96, 108);
-    // podium + the mayor (sash, red-white)
-    m.disc(48, 8, 6, PAL.s).rect(42, 2, 12, 3, '#2b1d14').rect(44, 8, 2, 2, PAL.k).rect(50, 8, 2, 2, PAL.k);
-    m.rect(40, 14, 16, 12, '#2b2b33').rect(40, 14, 3, 12, '#d8343a').rect(43, 14, 3, 12, '#f4f4f4');
-    m.rect(34, 24, 28, 12, '#8a5a33').rect(46, 18, 2, 8, PAL.G).disc(47, 17, 2, PAL.k); // podium + mic
-    m.rect(36, 28, 24, 4, '#f2c94c').text('OBRA', 40, 28, '#1b1b22');
-    // concrete-mixer body
-    m.disc(48, 56, 22, '#c8c4b8');
-    for (let i = -18; i <= 18; i += 9) m.line(48 + i, 36, 48 + i - 8, 76, '#9d9a92');
-    m.rect(26, 36, 44, 4, '#e3842c');
-    m.rect(18, 64, 12, 6, '#5a6068').rect(66, 64, 12, 6, '#5a6068');
-    // traffic cones on the shoulders
-    [[22, 30], [72, 30]].forEach(([x, y]) => m.rect(x - 2, y + 8, 6, 2, '#e3842c').rect(x - 1, y + 3, 4, 5, '#e3842c').rect(x, y, 2, 3, '#e3842c').rect(x - 1, y + 5, 4, 1, '#f4f4f4'));
-    // scaffolding legs
-    for (const x0 of [24, 56]) {
-      m.rect(x0, 78, 2, 30, '#9aa0a8').rect(x0 + 14, 78, 2, 30, '#9aa0a8');
-      for (let y = 80; y < 108; y += 9) m.line(x0, y, x0 + 15, y + 8, '#7d838b');
+    // The mayor's bulldozer (facing left, 104x74): blade in front, the mayor in his sash in the cab, "OBRA" on the side.
+    const d = new Painter(104, 74);
+    d.rect(16, 56, 84, 16, '#2b2b30');
+    for (let x = 22; x < 98; x += 12) d.disc(x, 64, 5, '#5a6068').set(x, 64, '#2b2b30');
+    d.rect(16, 56, 84, 2, '#1b1b22');
+    d.rect(28, 28, 70, 28, '#f2c94c');
+    for (let x = 28; x < 98; x += 8) d.rect(x, 50, 4, 6, '#1b1b22');
+    d.text('OBRA', 32, 34, '#1b1b22').text('MUNI', 32, 41, '#1b1b22');
+    d.rect(58, 4, 34, 24, '#3a3d45').rect(61, 7, 28, 17, '#8fd0ee');
+    d.disc(74, 13, 5, PAL.s).rect(69, 7, 10, 2, '#2b1d14').set(72, 12, PAL.k).set(76, 12, PAL.k).rect(71, 16, 6, 1, '#2b1d14');
+    d.rect(67, 19, 14, 5, '#2b2b33').rect(70, 19, 2, 5, '#d8343a').rect(72, 19, 2, 5, '#f4f4f4');
+    d.rect(44, 10, 5, 18, '#3a3d45').rect(43, 8, 7, 3, '#1b1b22');
+    d.rect(10, 44, 20, 5, '#3a3d45').rect(12, 32, 4, 14, '#3a3d45');
+    for (let y = 26; y < 72; y++) {
+      const x = 2 + Math.round(((y - 49) * (y - 49)) / 120);
+      d.rect(x, y, 8, 1, '#9aa0a8').set(x, y, '#c9ced6');
     }
-    m.rect(12, 92, 72, 8, '#f2c94c').text('OBRA EN EJECUCION', 14, 94, '#1b1b22');
-    m.outline();
-    m.register(scene, 'alcalde_mech');
-    const cr = new Painter(40, 10);
-    cr.rect(0, 3, 36, 4, '#f2c94c');
-    for (let x = 0; x < 36; x += 6) cr.line(x, 3, x + 3, 6, '#c8a030');
-    cr.rect(34, 0, 4, 10, '#3a3d45').outline();
-    cr.register(scene, 'crane');
-    const sc = new Painter(26, 14);
-    sc.line(0, 2, 20, 7, '#c9ced6').line(0, 12, 20, 7, '#c9ced6').line(0, 3, 20, 8, '#9aa0a8').line(0, 11, 20, 6, '#9aa0a8');
-    sc.disc(21, 7, 3, '#d8343a').rect(23, 4, 3, 6, '#d8343a').outline();
-    sc.register(scene, 'ribbon_scissors');
+    d.outline();
+    d.register(scene, 'alcalde_dozer');
+    const mg = new Painter(14, 10);
+    mg.rect(0, 3, 4, 4, '#3a3d45').rect(4, 2, 4, 6, '#d8d8d8').rect(8, 0, 5, 10, '#f4f4f4').rect(12, 1, 2, 8, '#c0282e').outline();
+    mg.register(scene, 'megafono');
+    const db = new Painter(9, 8);
+    db.rect(0, 2, 9, 5, '#b0603a').rect(1, 1, 5, 1, '#c87a50').rect(2, 4, 6, 1, '#8a4a2a').rect(5, 2, 1, 5, '#d8d0c0').outline();
+    db.register(scene, 'debris');
     const pr = new Painter(40, 16);
     pr.rect(1, 1, 38, 11, '#f4f4f4').rect(6, 12, 4, 3, '#f4f4f4').text('PROMESA', 6, 4, '#c0282e').outline();
     pr.register(scene, 'promesa');
-    new Painter(10, 9).disc(5, 4, 4, '#9d9a92').set(3, 3, '#c8c4b8').register(scene, 'concrete');
-    new Painter(36, 6).rect(2, 2, 32, 4, '#8a877f').rect(0, 4, 36, 2, '#7a776f').rect(6, 2, 10, 1, '#a8a49a').register(scene, 'concrete_puddle');
-    new Painter(20, 20).disc(10, 10, 9, '#3a3d45').disc(7, 7, 3, '#5a6068').outline().register(scene, 'wrecking_ball');
     const md = new Painter(44, 20);
     md.rect(0, 4, 44, 4, '#8a5a33').rect(2, 8, 3, 12, '#5b3a20').rect(39, 8, 3, 12, '#5b3a20').rect(8, 0, 28, 4, '#f4f4f4');
     md.text('DIALOGO', 9, 0, '#1e5fb4').outline();

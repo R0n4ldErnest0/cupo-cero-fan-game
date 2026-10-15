@@ -17,7 +17,7 @@ The driver ends the game as a folk hero and a fugitive ("going rogue").
 | **Emoliente Abuelita** | Rescuable helper (our "Hyakutaro"): follows you and throws boiling emoliente cups. |
 | **El Cobrador de Cupos** | Mission 1 boss, rides an armored mototaxi. |
 | **Corrupt Comisario** | Mission 4 boss. |
-| **Corrupt Mayor** | Final boss, in a mech built from unfinished public works. |
+| **Corrupt Mayor** | Final boss, in a municipal bulldozer ("obra pública"), defended by his police. |
 
 ## Vehicles
 
@@ -37,7 +37,7 @@ Full design, weapons list and build order: `docs/LEVELS.md`.
 | 2 | Gamarra no se cierra | Street → Galleries → Rooftops → Almacén | You find the **ledger**. Truck mid-boss, accountant boss. |
 | 3 | La ruta | Cerros → Metropolitano roof → Station | A **police helicopter** rescues El Cobrador (reveal). |
 | 4 | Su denuncia es importante para nosotros | Front desk → Cells → Evidence room → Escape | The comisario. |
-| 5 | Obra paralizada | Air level → Plaza (the town joins you) → Municipalidad → Mayor | Mayor mech; ending. |
+| 5 | Obra paralizada | Air level → Plaza (the town joins you) → Municipalidad → Mayor | Mayor's bulldozer; ending. |
 
 ## Milestones
 
@@ -134,6 +134,10 @@ Full design, weapons list and build order: `docs/LEVELS.md`.
       mototaxi aims down like the combi
 - [x] Air level variety: missile planes (a blinking line warns each missile), parachuting serenazgo, more police
       helicopters; El Contador's stomp telegraphed (crouch, hang over a shadow), El Cobrador's charge can be jumped
+- [x] Final mission rework: the honest police help all mission (escort helicopter in the air, cops + tanqueta in the
+      plaza with reinforcements, cops in the Municipalidad, a bomber helicopter at the obra), a Combi Slug in the
+      plaza, serenazgo tanquetas and bigger police crowds, the mayor in a bulldozer with guards; the TV page before
+      the final mission is now a text page
 - [ ] Illustrated cutscenes (real art) for the intro and between missions
 
 ### M5 — Release

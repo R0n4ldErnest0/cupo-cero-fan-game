@@ -6,6 +6,7 @@
 //      a page of "EL LIBRO DE CUPOS": entries appear one by one; `mark` circles one in red. '█' blocks render as a
 //      censored name (black bar).
 //   { type: 'talk', who, text }   a line of dialogue in a box at the bottom (over the last page shown).
+//   { type: 'text', title, lines }   "what happened": a title and a few short paragraphs, appearing one by one.
 //   { type: 'file', title, items: [{ text, found }] }   the expediente: clues from the honest cops, "???" if missed.
 //   { type: 'tv', channel, headline, ticker, face, reveal }   a TV news screen: a headline, a scrolling ticker and a
 //      face behind a black bar; if `reveal` is set, the bar slides away after a moment and shows that name.
@@ -37,7 +38,24 @@ class StoryScene extends Phaser.Scene {
     if (page.type === 'ledger') this.showLedger(page);
     else if (page.type === 'file') this.showFile(page);
     else if (page.type === 'tv') this.showTv(page);
+    else if (page.type === 'text') this.showText(page);
     else this.showTalk(page);
+  }
+
+  showText(page) {
+    this.layer.removeAll(true);
+    this.talkBox.removeAll(true);
+    const style = { fontFamily: FONT, fontSize: '20px', color: '#e8e8e8', align: 'center', wordWrap: { width: 760 } };
+    this.layer.add(this.add.text(480, 70, page.title, menuStyle({ fontSize: '30px', color: '#ffe066' })).setOrigin(0.5));
+    (page.lines || []).forEach((line, i) => {
+      this.time.delayedCall(300 + i * 700, () => {
+        if (!this.layer.active) return;
+        const t = this.add.text(480, 130 + i * 62, line, style).setOrigin(0.5, 0).setAlpha(0);
+        this.layer.add(t);
+        this.tweens.add({ targets: t, alpha: 1, duration: 400 });
+      });
+    });
+    this.readyAt = this.time.now + 300 + (page.lines || []).length * 700;
   }
 
   showLedger(page) {

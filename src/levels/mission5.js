@@ -1,7 +1,9 @@
-// Mission Final — "Obra paralizada" (greybox). After the TV report, the union marches to the Municipalidad and the
-// serenazgo surrounds the plaza. A) the air level: Don Tito's old police helicopter (2P: a small plane) over Lima;
-// B) the plaza, where the town helps (allies = the honest cops you freed; supplies = the expediente's clues);
-// C) the Municipalidad; D) the obra paralizada, where "El Jefe" waits in his mech.
+// Mission Final — "Obra paralizada" (greybox). After the report goes out, the union marches to the Municipalidad and
+// the serenazgo surrounds the plaza. The honest police fight with you all mission long (section `town`, see Town.js):
+// A) the air level: Don Tito's old police helicopter (2P: a small plane) over Lima, escorted by the honest police's
+// helicopter; B) the plaza: a Combi Slug, honest cops on foot and their tanqueta against the serenazgo and its tanquetas;
+// supplies from the neighbors (more with more clues); C) the Municipalidad, the cops still with you; D) the obra
+// paralizada: the mayor in his bulldozer, his police coming to defend him, the honest police bombing from a helicopter.
 MISSIONS.push({
   id: 'municipalidad',
   title: 'MISSION FINAL',
@@ -28,6 +30,7 @@ MISSIONS.push({
     // A — Vuelo: the old police helicopter Don Tito knew about. Free flight while Lima scrolls by below.
     {
       area: 'VUELO',
+      town: { escort: true },
       bg: { sky: 0xa8c0e0, hills: 0xb8a088, city: 0x9098a8 },
       flight: {
         speed: 110,
@@ -63,14 +66,16 @@ MISSIONS.push({
     {
       area: 'PLAZA',
       locks: [{ x: 700, waves: 2 }, { x: 1600, waves: 3 }],
-      crowd: { every: 100, types: [{ t: 'sere' }, { t: 'sere' }, { t: 'cop' }, { t: 'riot' }, { t: 'grunt', hp: 2, skin: 'thug2' }] },
+      crowd: { every: 75, cluster: 0.45, types: [{ t: 'sere' }, { t: 'sere' }, { t: 'cop' }, { t: 'cop' }, { t: 'riot' }, { t: 'grunt', hp: 2, skin: 'thug2' }] },
       width: 2600,
-      town: true,
+      combi: { x: 240 },
+      town: { cops: true, tanks: 1, supplies: true, intro: true },
       bg: { sky: 0xd8c0a0 },
       abuelitas: [{ x: 900 }],
       prisoners: [{ x: 1500, drop: 'H', clue: 'm5b' }],
       props: [{ x: 700, type: 'patrol', drop: 'B' }, { x: 1700, type: 'patrol', drop: 'R' }, { x: 2200, type: 'barrel', drop: 'none' }],
       spawns: [
+        { x: 560, t: 'tank' }, { x: 1120, t: 'tank' }, { x: 1750, t: 'tank' }, { x: 1780, t: 'cop' }, { x: 2250, t: 'tank' },
         { x: 450, t: 'sere' }, { x: 520, t: 'sere' }, { x: 640, t: 'riot' }, { x: 800, t: 'sere' }, { x: 860, t: 'motocop' },
         { x: 1000, t: 'cop' }, { x: 1100, t: 'sere' }, { x: 1180, t: 'riot' }, { x: 1300, t: 'grunt', hp: 2, skin: 'thug2' },
         { x: 1400, t: 'sere' }, { x: 1600, t: 'motocop' }, { x: 1650, t: 'riot' }, { x: 1800, t: 'sere' }, { x: 1900, t: 'cop' },
@@ -90,7 +95,8 @@ MISSIONS.push({
     {
       area: 'MUNICIPALIDAD',
       locks: [{ x: 600, waves: 2 }],
-      crowd: { every: 120, types: [{ t: 'sere' }, { t: 'sere' }, { t: 'cop' }, { t: 'riot' }] },
+      crowd: { every: 90, cluster: 0.45, types: [{ t: 'sere' }, { t: 'sere' }, { t: 'cop' }, { t: 'cop' }, { t: 'riot' }] },
+      town: { cops: true, supplies: true },
       terrain: String.raw`
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -118,9 +124,11 @@ MISSIONS.push({
         { type: 'sign', x: 1520, y: 150, text: 'A LA OBRA →', bg: '#e3842c' },
       ],
     },
-    // D — La obra paralizada: the unfinished works behind the Municipalidad. "El Jefe" in his mech.
+    // D — La obra paralizada: the unfinished works behind the Municipalidad. "El Jefe" in his bulldozer; the honest
+    // police's helicopter crosses now and then bombing his guards.
     {
       area: 'LA OBRA',
+      town: { heli: true },
       width: 820,
       bg: { sky: 0xe0b890 },
       props: [{ x: 160, type: 'barrel', drop: 'B' }, { x: 260, type: 'lootbag', drop: 'R' }],

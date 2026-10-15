@@ -176,11 +176,13 @@ MISSIONS.push({
   // After the mission: the journalist airs everything (the arc's trigger).
   story: [
     {
-      type: 'tv',
-      headline: 'EL LIBRO DE LOS CUPOS: la banda, la comisaría y "EL JEFE"',
-      ticker: '· Comisario "Archivo" se da a la fuga · El libro registra pagos a la Municipalidad · "Obras y Proyectos El Progreso SAC" a nombre del cuñado del alcalde ·',
-      face: '"EL JEFE" ES...',
-      reveal: 'EL ALCALDE',
+      type: 'text',
+      title: 'ESA MISMA NOCHE...',
+      lines: [
+        'La periodista que rescataste salió en vivo con el libro de los cupos y el expediente de los policías honestos.',
+        'Los pagos de la banda y de la comisaría iban a un solo lugar: la Municipalidad. "EL JEFE" era el alcalde.',
+        'El comisario se dio a la fuga. Los policías honestos que liberaste dijeron: "Esta vez vamos con ustedes".',
+      ],
     },
     { type: 'talk', who: 'DIRIGENTE DEL GREMIO', text: '¡Mañana paro y marcha a la Municipalidad! (Y el alcalde ya mandó a los serenos a rodear la plaza.)' },
     { type: 'talk', who: 'DON TITO', text: 'Entonces llegamos por el aire. Sé dónde hay un helicóptero viejo... todavía vuela.' },

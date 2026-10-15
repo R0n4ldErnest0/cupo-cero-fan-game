@@ -23,7 +23,8 @@ Status: ✅ built · 🚧 greybox (playable, placeholder) · 📝 designed only 
 
 Shown after MISSION COMPLETE, before the tally (`StoryScene`; mission `story` data): the **expediente** of every
 mission, then: M1 the team reacts to El Cobrador's escape; M2 the **ledger**; M3 the helicopter reveal → "vamos a
-entrar" (comisaría); M4 the journalist → a **TV news page** ("EL JEFE" ES... EL ALCALDE, revealed) → the union calls a
+entrar" (comisaría); M4 the journalist → a **text page** ("ESA MISMA NOCHE...": the report aired, "EL JEFE" is the mayor, the freed cops
+join you) → the union calls a
 strike and a march → Don Tito knows where an old helicopter is; M5 (**provisional ending**) the mayor arrested on TV
 ("es una persecución política"), each character's closing line, then the FIN screen with the freed cops, clues and
 score. The ending's tone (happy or bittersweet) is still to decide.
@@ -164,14 +165,21 @@ the Comisario in a **filing-cabinet mech** ("ARCHIVADO" stamps, flying complaint
 
 ## Mission 5 — "Obra paralizada" (MISSION FINAL) 🚧 greybox
 
-**Built (greybox):** A **Vuelo** (flight mode, `flight`): 1P flies Don Tito's old police helicopter, 2P a small plane;
-free movement while Lima scrolls below; machine gun + homing rockets; small police helicopters, kamikaze serenazgo
-drones and a TV news helicopter that can't be shot down; lose an aircraft = lose a life and come back in a new one;
-out of fuel, you crash-land at the plaza. B **Plaza** (`town: true`): the march surrounded by the **serenazgo** (new
-enemy) and the police; **allies** = the honest cops you freed in the whole game (1 + one per 3, max 4; they shoot,
-and pull back instead of dying), **supply crates** thrown from the balconies (more often with more clues in the
-expediente), the abuelita. C **Municipalidad** (indoor; "TRANSPARENCIA: PASE NOMÁS"). D **La obra**: the mayor's
-mech (promesas, concrete puddles that slow you, the wrecking ball, the scissors, the mesa de diálogo).
+**Built (greybox):** the honest police fight with you **all mission long** (section `town`, `src/systems/Town.js`).
+A **Vuelo** (flight mode, `flight`): 1P flies Don Tito's old police helicopter, 2P a small plane; free movement while
+Lima scrolls below; machine gun + homing rockets; small police helicopters, kamikaze serenazgo drones and swarms,
+**missile planes** (a red line blinks at your height ~1 s before each slow, straight missile), **parachuting
+serenazgo**, a TV news helicopter that can't be shot down; the honest police's helicopter **escorts** you and shoots;
+lose an aircraft = lose a life and come back in a new one; out of fuel, you crash-land at the plaza.
+B **Plaza**: a **Combi Slug**; the march surrounded by the **serenazgo**, the police and the serenazgo's
+**tanquetas** (`t: 'tank'`, weak: slow shells you can jump); **allies**: the honest cops you freed (2 + one per 3,
+max 5) and the honest police's **tanqueta**; anyone who gets hurt pulls back and is **replaced** a few seconds later,
+so the help never runs out; **supply crates** from the balconies (more often with more clues), the abuelita.
+C **Municipalidad** (indoor; "TRANSPARENCIA: PASE NOMÁS"): the cops still with you, more police.
+D **La obra**: the mayor in a **bulldozer** ("OBRA MUNI"): promesas from his megaphone (breakable), rubble flung by
+the blade, a **ram** (revs and flashes ~1 s first; stops short of the screen edge: that pocket is safe), the mesa de
+diálogo; police keep coming to defend him (max 3 at once); the honest police's helicopter crosses now and then and
+two cops drop bombs on his guards and on him.
 
 Earlier design notes:
 

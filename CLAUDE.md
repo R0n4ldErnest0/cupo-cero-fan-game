@@ -68,13 +68,14 @@ src/systems/          Textures (procedural art), Sfx (synth audio), Voice (annou
                       Ride (sections on a moving vehicle: the Metropolitano roof), Flight (air level), Town (Mission 5 help)
 src/entities/         Player, enemies (Grunt + cop preset, Biker + motocop, RiotCop, Sniper), Abuelita (helper),
                       CombiSlug (vehicle base) + MototaxiSlug, RochabusSlug, Aircraft, Flyer (flying enemies), Ally,
+                      PoliceTank (ally / enemy tanqueta), AllyHeli (honest police helicopter),
                       Boss (framework) + BossCobrador, BossTruck, BossContador, BossHeli, BossComisario, BossAlcalde, Pickup,
                       Breakable (gang props),
                       Vendor (food carts), Prisoner (honest cops to rescue)
 src/levels/           missions.js (registry + data schema), missionN.js (one data file per mission)
 src/scenes/           MenuScenes (Boot, Title, CharSelect, MissionEnd, Ending, GameOver), IntroScene (story crawl),
                       HUDScene, LevelScene,
-                      StoryScene (story pages between a mission and its tally: talk, ledger, expediente, TV news)
+                      StoryScene (story pages between a mission and its tally: talk, text, ledger, expediente, TV news)
 docs/LEVELS.md        mission designs + what's missing for Missions 2–5
 tools/serve.py        no-cache dev server
 ```

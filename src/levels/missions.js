@@ -20,7 +20,7 @@
 //   rochabus { x }             parked rochabus instead (Mission 4 escape)
 //   autoscroll                 px/s: the screen moves forward on its own (players get pushed by the left edge)
 //   flight { speed, seconds, events }  air level: players fly aircraft (src/systems/Flight.js)
-//   town: true                 the town helps: allies (freed cops) and supply crates (clues) (src/systems/Town.js)
+//   town: true | { cops, tanks, heli, escort, supplies, intro }   the honest police and the town help (src/systems/Town.js)
 //   abuelitas [{ x }]          tied-up helpers
 //   crates [{ x, stack }]      one-way platforms
 //   props [{ x, type, drop }]  breakable gang property (CFG.PROPS: box, lootbag, trash, barrel, moto); drop: an item

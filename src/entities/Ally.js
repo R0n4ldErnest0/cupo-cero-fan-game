@@ -30,7 +30,12 @@ class Ally extends Phaser.Physics.Arcade.Sprite {
       // Keep a spot near the players (spread out by index), shoot the nearest enemy in view.
       const lead = s.players.find((p) => p.state === 'play' && p.alive) || s.players[0];
       const spot = lead.x - 30 - this.index * 22;
-      if (Math.abs(spot - this.x) > 10) vx = Math.sign(spot - this.x) * T.ALLY_SPEED;
+      if (Math.abs(spot - this.x) > 10) vx = Math.sign(spot - this.x) * T.ALLY_SPEED * (Math.abs(spot - this.x) > 70 ? 1.8 : 1);
+      // Left behind (stuck at a ledge, or the players ran ahead): come back in at the left edge of the screen.
+      if (this.x < s.viewLeft - 24) {
+        this.setPosition(s.viewLeft - 8, s.floorY({ x: s.viewLeft + 8 }) - 4);
+        this.body.reset(this.x, this.y);
+      }
       const e = s.nearestEnemy(this.x, this.y - 14, T.ALLY_RANGE);
       if (e) this.facing = e.x < this.x ? -1 : 1;
       else if (vx) this.facing = Math.sign(vx);

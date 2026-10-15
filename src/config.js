@@ -186,7 +186,8 @@ const CFG = {
 
   // The town helps in the Mission 5 plaza (src/systems/Town.js): allies = freed honest cops, supplies = clues.
   TOWN: {
-    ALLY_SPEED: 70, ALLY_RANGE: 220, ALLY_SHOT_MS: 900, ALLY_HITS: 2, MAX_ALLIES: 4, FREED_PER_ALLY: 3,
+    ALLY_SPEED: 70, ALLY_RANGE: 220, ALLY_SHOT_MS: 900, ALLY_HITS: 3, MAX_ALLIES: 5, FREED_PER_ALLY: 3,
+    REINFORCE_MS: 4000, TANK_BACK_MS: 9000, HELI_FIRST_MS: 4000, HELI_MS: 9000,
     SUPPLY_MS: 9000, SUPPLY_MIN_MS: 3500, SUPPLY_PER_CLUE: 450, SUPPLIES: ['B', 'H', 'pan', 'mote', 'R', 'caldo', 'B'],
   },
 
@@ -205,8 +206,16 @@ const CFG = {
   CONTADOR: { HP: 110, ARM_HP: 16, WALK: 22, STOMP_HEIGHT: 90, STOMP_WINDUP: 550, STOMP_HANG: 650, STOMP_FALL: 480, BILL_SPEED: 120, BOLETA_SPEED: 60 },
   // Mission 4 boss (src/entities/BossComisario.js): the filing-cabinet mech.
   COMISARIO: { HP: 130, DRAWER_HP: 18, CHARGE_SPEED: 170, STAMP_SPEED: 125, RAIN_SPEED: 70 },
-  // Final boss (src/entities/BossAlcalde.js): the mayor's obra-paralizada mech. To tune by trial and error.
-  ALCALDE: { HP: 180, PART_HP: 20, PROMISE_SPEED: 55, PROMISE_MS: 3200, PUDDLE_MS: 4000, PUDDLE_SLOW: 0.45, DIALOGO_MS: 3200 },
+  // Final boss (src/entities/BossAlcalde.js): the mayor's bulldozer. RAM_REV ms of warning before the ram; it stops
+  // RAM_GAP px short of the screen edge (a safe pocket). GUARD_MS: police come to defend him, up to MAX_GUARDS.
+  ALCALDE: {
+    HP: 200, PART_HP: 20, PROMISE_SPEED: 55, PROMISE_MS: 3200, DIALOGO_MS: 3000,
+    RAM_REV: 1100, RAM_SPEED: 160, RAM_GAP: 34, RUBBLE_T: 1.05, GUARD_MS: 6500, MAX_GUARDS: 3,
+  },
+  // Police tanquetas (src/entities/PoliceTank.js), the honest police's and the serenazgo's (weaker than a Slug).
+  TANK: { SPEED: 55, CATCHUP: 125, RANGE: 230, ALLY_HP: 8, ALLY_SHOT_MS: 2200, ENEMY_HP: 10, ENEMY_SHOT_MS: 2600, WARN_MS: 450, SHELL_SPEED: 115, STOP_AT: 130, SCORE: 800 },
+  // The honest police's helicopter (src/entities/AllyHeli.js): bomber passes and the air-level escort.
+  ALLY_HELI: { SPEED: 70, BOMBS: 3, DROP_GAP: 500, RANGE: 220, SHOT_MS: 700 },
   // Mission 3 boss (src/entities/BossHeli.js): hovers HOVER px above the floor, comes down to DROP_HOVER to lower cops.
   HELI: { HP: 90, PART_HP: 15, HOVER: 100, DROP_HOVER: 64, DRIFT: 70, BULLET_SPEED: 100, MISSILE_SPEED: 90, MAX_ENEMIES: 2 },
 
