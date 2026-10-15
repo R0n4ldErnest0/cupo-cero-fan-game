@@ -1,7 +1,6 @@
 // Mission 3 — "La ruta" (greybox). A) the cerros: climbing a hillside of unfinished houses where the corrupt police
-// show up for the first time; B) the roof of a Metropolitano bus, braking into a station; C) through the station on
-// foot to the next bus; D) the second ride, jumping between buses that break down, ending at the terminal where a
-// police helicopter comes for El Cobrador (boss).
+// show up for the first time; B) through the station on foot to the bus; C) the ride on the bus roof, jumping between
+// buses that break down, ending at the terminal where a police helicopter comes for El Cobrador (boss).
 //
 // Map key: see src/systems/Terrain.js. Rows 0-29, street top at row 27 (y = 432); the hill climbs to row 11.
 MISSIONS.push({
@@ -86,46 +85,7 @@ MISSIONS.push({
         { x: 1100, say: { who: 'comisaria', text: '(Adentro se escucha: "...y el cupo de este mes, comisario...")', ms: 3000 } },
       ],
     },
-    // B — On the roof of the Metropolitano.
-    {
-      area: 'METROPOLITANO',
-      bg: { sky: 0xc8d0d8 },
-      start: { x: 120, y: 152 },
-      ride: {
-        speed: 260,
-        seconds: 62,
-        events: [
-          { at: 2, type: 'grunt', x: 240 },
-          { at: 6, type: 'jumper', from: 'right' },
-          { at: 8, type: 'wave', size: 4 },
-          { at: 21, type: 'wave', size: 5 },
-          { at: 33, type: 'wave', size: 5, cop: true },
-          { at: 44, type: 'wave', size: 6 },
-          { at: 53, type: 'wave', size: 6, cop: true },
-          { at: 10, type: 'bridge' },
-          { at: 13, type: 'jumper', from: 'left', variant: 'knife' },
-          { at: 15, type: 'grunt', x: 250, variant: 'thrower' },
-          { at: 19, type: 'bridge' },
-          { at: 22, type: 'jumper', from: 'right', cop: true },
-          { at: 23, type: 'jumper', from: 'left' },
-          { at: 28, type: 'bridge' },
-          { at: 30, type: 'grunt', x: 300 },
-          { at: 31, type: 'grunt', x: 200, variant: 'knife' },
-          { at: 36, type: 'jumper', from: 'right', variant: 'knife' },
-          { at: 38, type: 'bridge' },
-          { at: 41, type: 'jumper', from: 'left', cop: true },
-          { at: 44, type: 'grunt', x: 280, variant: 'thrower' },
-          { at: 47, type: 'bridge' },
-          { at: 49, type: 'jumper', from: 'right' },
-          { at: 50, type: 'jumper', from: 'left', variant: 'knife' },
-          { at: 55, type: 'bridge' },
-          { at: 57, type: 'grunt', x: 260 },
-        ],
-      },
-      decor: [
-      ],
-    },
-    // C — Estación: off the bus and through the station on foot (turnstiles, cops guarding it), then board the
+    // B — Estación: down from the cerros and through the station on foot (turnstiles, cops guarding it), then board the
     // next bus through its door at the end of the platform.
     {
       area: 'ESTACIÓN',
@@ -156,10 +116,10 @@ MISSIONS.push({
         { type: 'sign', x: 860, y: 168, text: '¡SUBE AL\nMETROPOLITANO!', bg: '#c0282e' },
       ],
     },
-    // D — Metropolitano again, now with buses breaking down: jump to the next one while it's right in front.
+    // C — The Metropolitano, with buses breaking down: jump to the next one while it's right in front.
     // At the terminal the bus stops and the police helicopter that came for El Cobrador attacks (boss).
     {
-      area: 'METROPOLITANO 2',
+      area: 'METROPOLITANO',
       bg: { sky: 0xb8c0d0 },
       start: { x: 120, y: 152 },
       ride: {

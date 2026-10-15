@@ -53,7 +53,7 @@ A chain across the missions, so the ending feels earned:
 |---|---|---|---|
 | 1 | ¡Paga o ya sabes! | A Paradero → B Terminal (boss) | ✅ prototype (both sections) |
 | 2 | Gamarra no se cierra | A Mercado (Mototaxi Slug) → B Azoteas → C Almacén (mid-boss) → D Oficina (boss) | 🚧 greybox (all sections) |
-| 3 | La ruta | A Cerros → B Metropolitano → C Estación (on foot) → D Metropolitano 2 + terminal (boss) | 🚧 greybox (all sections) |
+| 3 | La ruta | A Cerros → B Estación (on foot) → C Metropolitano with bus jumps + terminal (boss) | 🚧 greybox (all sections) |
 | 4 | Su denuncia es importante para nosotros | A Mesa de partes → B Oficinas y celdas → C Sala de evidencias (riot wall) → D La fuga (rochabus, boss) | 🚧 greybox (all sections) |
 | 5 | Obra paralizada (MISSION FINAL) | A Vuelo → B Plaza (the town helps) → C Municipalidad → D La obra (the mayor) | 🚧 greybox (all sections) |
 
@@ -113,7 +113,8 @@ refill every 6 s. It carries over between sections like the combi.
   follows. The **first police** appear: the first cop "doesn't see" the cuperos ("¿Cuperos? Yo no veo ningún
   cuperos...") until he sees you. Patrol cops, riot shields, a motorbike cop and snipers on the rooftops; the
   "módulo policial" is closed "por operativo". ✅ greybox
-- B **On the roof of a Metropolitano bus** (ride mode, built as a greybox): the articulated bus rushes along the
+- (Removed after playtesting: two bus rides felt redundant; the bridges and waves live on in the remaining ride.)
+  **On the roof of a Metropolitano bus** (ride mode): the articulated bus rushes along the
   busway; cuperos jump on from motorbikes alongside or are already on the roof; **pedestrian bridges** pass at head
   height: crouch or lose a life (a "¡AGÁCHATE!" warning comes first); falling off the bus = run over. At the end the
   bus brakes into the station. Timeline in `src/levels/mission3.js` (`ride.events`). ✅ greybox
