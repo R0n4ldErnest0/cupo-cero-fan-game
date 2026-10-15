@@ -53,7 +53,8 @@ MISSIONS.push({
     // B — La plaza: the march is surrounded by the serenazgo and the police. The town helps.
     {
       area: 'PLAZA',
-      crowd: { every: 100, types: [{ t: 'sere' }, { t: 'sere' }, { t: 'cop' }, { t: 'riot' }, { t: 'grunt', hp: 3, skin: 'thug2' }] },
+      locks: [{ x: 700, waves: 2 }, { x: 1600, waves: 3 }],
+      crowd: { every: 100, types: [{ t: 'sere' }, { t: 'sere' }, { t: 'cop' }, { t: 'riot' }, { t: 'grunt', hp: 2, skin: 'thug2' }] },
       width: 2600,
       town: true,
       bg: { sky: 0xd8c0a0 },
@@ -62,9 +63,9 @@ MISSIONS.push({
       props: [{ x: 700, type: 'patrol', drop: 'B' }, { x: 1700, type: 'patrol', drop: 'R' }, { x: 2200, type: 'barrel', drop: 'none' }],
       spawns: [
         { x: 450, t: 'sere' }, { x: 520, t: 'sere' }, { x: 640, t: 'riot' }, { x: 800, t: 'sere' }, { x: 860, t: 'motocop' },
-        { x: 1000, t: 'cop' }, { x: 1100, t: 'sere' }, { x: 1180, t: 'riot' }, { x: 1300, t: 'grunt', hp: 3, skin: 'thug2' },
+        { x: 1000, t: 'cop' }, { x: 1100, t: 'sere' }, { x: 1180, t: 'riot' }, { x: 1300, t: 'grunt', hp: 2, skin: 'thug2' },
         { x: 1400, t: 'sere' }, { x: 1600, t: 'motocop' }, { x: 1650, t: 'riot' }, { x: 1800, t: 'sere' }, { x: 1900, t: 'cop' },
-        { x: 2000, t: 'grunt', hp: 3, skin: 'thug2' }, { x: 2100, t: 'sere' }, { x: 2300, t: 'riot' }, { x: 2400, t: 'sere' },
+        { x: 2000, t: 'grunt', hp: 2, skin: 'thug2' }, { x: 2100, t: 'sere' }, { x: 2300, t: 'riot' }, { x: 2400, t: 'sere' },
       ],
       decor: [
         { type: 'image', key: 'vendor_fwd_stand', x: 140 }, { type: 'image', key: 'chato_fwd_stand', x: 160 },
@@ -79,6 +80,7 @@ MISSIONS.push({
     // C — Municipalidad: offices, a balcony, the press room. Leaves through the door to the works out back.
     {
       area: 'MUNICIPALIDAD',
+      locks: [{ x: 600, waves: 2 }],
       crowd: { every: 120, types: [{ t: 'sere' }, { t: 'sere' }, { t: 'cop' }, { t: 'riot' }] },
       terrain: String.raw`
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

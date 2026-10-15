@@ -46,7 +46,6 @@ class Pickup extends Phaser.Physics.Arcade.Sprite {
       p.eat(k);
       name = f.name;
     }
-    s.message('', lang === 'en' ? `${name}!` : `¡${name}!`, 1200);
     if (voice) Voice.say(id, voice.charAt(0) + voice.slice(1).toLowerCase(), lang);
     Sfx.pickup();
     this.destroy();

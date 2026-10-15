@@ -21,6 +21,7 @@ MISSIONS.push({
     // A — Mesa de partes: the lobby. An endless queue of complaints; cops fire ARCHIVADO stamps... and shoot.
     {
       area: 'MESA DE PARTES',
+      locks: [{ x: 700, waves: 2 }],
       crowd: { every: 120, types: [{ t: 'cop' }, { t: 'cop' }, { t: 'riot' }, { t: 'grunt' }] },
       terrain: String.raw`
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -57,6 +58,7 @@ MISSIONS.push({
     // police. The journalist is locked in a cell upstairs.
     {
       area: 'OFICINAS Y CELDAS',
+      locks: [{ x: 900, waves: 2 }],
       crowd: { every: 130, types: [{ t: 'cop' }, { t: 'grunt', variant: 'knife' }, { t: 'riot' }] },
       terrain: String.raw`
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

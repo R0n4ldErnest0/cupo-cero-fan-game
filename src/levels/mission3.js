@@ -23,6 +23,7 @@ MISSIONS.push({
     // A — Cerros: up the hill to the Metropolitano stop. Leaves by the right edge.
     {
       area: 'CERROS',
+      locks: [{ x: 1300, waves: 2 }],
       crowd: { every: 130, types: [{ t: 'grunt' }, { t: 'grunt', variant: 'knife' }, { t: 'cop' }, { t: 'cop' }, { t: 'grunt', variant: 'thrower' }] },
       markerClues: ['m3a', 'm3b'], // the two tied-up cops on the hill (T markers, left to right)
       bg: { sky: 0xd0c8c0, hills: 0xc0a080 },
@@ -128,6 +129,7 @@ MISSIONS.push({
     // next bus through its door at the end of the platform.
     {
       area: 'ESTACIÓN',
+      locks: [{ x: 400, waves: 2 }],
       crowd: { every: 90, types: [{ t: 'cop' }, { t: 'cop' }, { t: 'riot' }, { t: 'grunt', variant: 'knife' }] },
       width: 900,
       bg: { sky: 0xb8c0c8 },

@@ -13,7 +13,7 @@ MISSIONS.push({
   draft: true,
   bg: { sky: 0xffc89a, hills: 0xd8a080, city: 0xe0b090 },
   legend: {
-    h: { t: 'grunt', hp: 3, skin: 'thug2' },
+    h: { t: 'grunt', hp: 2, skin: 'thug2' },
   },
   // Expediente: who collects at the comisaría and where the money goes.
   clues: {
@@ -43,6 +43,7 @@ MISSIONS.push({
     // street. Ends with an ambush in front of the second gallery (the way up to the rooftops).
     {
       area: 'MERCADO',
+      locks: [{ x: 700, waves: 2 }],
       crowd: { every: 120, types: [{ t: 'grunt' }, { t: 'grunt', skin: 'thug2' }, { t: 'grunt', variant: 'thrower' }, { t: 'grunt', variant: 'knife' }].concat([{ t: 'shieldthug' }]) },
       terrain: String.raw`
         |
@@ -103,8 +104,8 @@ MISSIONS.push({
         alert: ['¡EMBOSCADA!', 'LOS CUPEROS DE LA GALERÍA'],
         waves: [
           [{ dx: 270, t: 'grunt' }, { dx: 255, t: 'grunt', skin: 'thug2' }, { dx: -20, t: 'grunt', variant: 'thrower' }, { dx: 270, t: 'grunt', variant: 'knife' }],
-          [{ dx: 270, t: 'grunt', hp: 3 }, { dx: -40, t: 'grunt', skin: 'thug2' }, { dx: 260, t: 'shieldthug' }, { dx: -20, t: 'grunt', variant: 'knife' }],
-          [{ dx: 270, t: 'grunt', variant: 'thrower' }, { dx: -20, t: 'grunt', hp: 3, skin: 'thug2' }, { dx: 140, y: 304, t: 'gangsniper' }, { dx: 270, t: 'grunt', variant: 'knife' }, { dx: -40, t: 'grunt' }],
+          [{ dx: 270, t: 'grunt', hp: 2 }, { dx: -40, t: 'grunt', skin: 'thug2' }, { dx: 260, t: 'shieldthug' }, { dx: -20, t: 'grunt', variant: 'knife' }],
+          [{ dx: 270, t: 'grunt', variant: 'thrower' }, { dx: -20, t: 'grunt', hp: 2, skin: 'thug2' }, { dx: 140, y: 304, t: 'gangsniper' }, { dx: 270, t: 'grunt', variant: 'knife' }, { dx: -40, t: 'grunt' }],
         ],
       },
     },
@@ -165,6 +166,7 @@ MISSIONS.push({
     // Camión Recaudador arrives with the day's cupos (mid-boss). Rows 0-15: ceiling 0-1, floor top row 14 (y = 224).
     {
       area: 'ALMACÉN',
+      locks: [{ x: 700, waves: 3 }],
       crowd: { every: 110, types: [{ t: 'grunt' }, { t: 'grunt', skin: 'thug2' }, { t: 'grunt', variant: 'thrower' }, { t: 'grunt', variant: 'knife' }].concat([{ t: 'shieldthug' }]) },
       bg: { sky: 0x505058, hills: 0x404048, city: 0x48484f },
       terrain: String.raw`

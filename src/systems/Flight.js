@@ -27,6 +27,7 @@ class Flight {
     s.aircraft.push(a);
     s.addVehicleColliders(a);
     p.vehicle = a;
+    p.dropping = false;
     p.setVisible(false);
     p.body.enable = false;
     a.hurtUntil = s.time.now + CFG.PLAYER.INVULN_MS; // a moment of grace when coming back

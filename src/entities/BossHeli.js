@@ -13,8 +13,8 @@ class BossHeli extends Boss {
       introMs: 2200,
       deathMs: 2600,
       phases: [
-        { below: 1, attacks: ['spray', 'gas', 'drop'], pause: [900, 1400] },
-        { below: 0.5, attacks: ['spray', 'gas', 'drop', 'missiles'], pause: [600, 1000], speed: 1.3, line: '¡Central, refuerzos! ¡Fuego a discreción!' },
+        { below: 1, attacks: ['spray', 'gas', 'drop'], pause: [1400, 2000] },
+        { below: 0.5, attacks: ['spray', 'gas', 'drop', 'missiles'], pause: [1000, 1500], speed: 1.15, line: '¡Central, refuerzos! ¡Fuego a discreción!' },
       ],
     });
     this.contactKills = false;
@@ -55,10 +55,10 @@ class BossHeli extends Boss {
   // Nose gun: a burst that sweeps across the player.
   attack_spray(time) {
     const s = this.scene;
-    return this.repeat(time, 10, 90, (i) => {
+    return this.repeat(time, 6, 150, (i) => {
       if (!this.gun.alive) return;
       const t = s.target(this.x, this.y);
-      const a = Phaser.Math.Angle.Between(this.gun.x, this.gun.y, t.x, t.y - 10) + (i - 4.5) * 0.08 * -this.facing;
+      const a = Phaser.Math.Angle.Between(this.gun.x, this.gun.y, t.x, t.y - 10) + (i - 2.5) * 0.12 * -this.facing;
       s.enemyShoot(this.gun.x, this.gun.y, a, CFG.HELI.BULLET_SPEED);
       Sfx.enemyShot();
     });
@@ -88,10 +88,11 @@ class BossHeli extends Boss {
         }
         if (phase === 'drop') {
           const alive = s.enemies.getChildren().filter((e) => e.alive).length;
-          if (dropped < 2 && t >= at && alive < H.MAX_ENEMIES) {
-            this.dropCop(dropped++ ? 'riot' : 'cop');
+          if (dropped < 1 && t >= at && alive < H.MAX_ENEMIES) {
+            this.dropCop(Math.random() < 0.3 ? 'riot' : 'cop');
+            dropped++;
             at = t + 500;
-          } else if (dropped >= 2 || alive >= H.MAX_ENEMIES) {
+          } else if (dropped >= 1 || alive >= H.MAX_ENEMIES) {
             phase = 'up';
           }
           return false;
@@ -122,7 +123,7 @@ class BossHeli extends Boss {
   attack_missiles(time) {
     const s = this.scene;
     Fx.say(s, this, '¡Misiles! ¡Total, los paga el Estado!', 1300);
-    return this.repeat(time, 4, 260, (i) => {
+    return this.repeat(time, 3, 380, (i) => {
       if (!this.pod.alive) return;
       const t = s.target(this.x, this.y);
       const a = Phaser.Math.Angle.Between(this.pod.x, this.pod.y, t.x, t.y - 8) + (i - 1.5) * 0.12;

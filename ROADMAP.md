@@ -128,6 +128,10 @@ Full design, weapons list and build order: `docs/LEVELS.md`.
 - [x] Playtest feedback round 1: zoom 3 (consistent sizes), physical signs and no floating texts, less enemy
       chatter, short boss warnings, more enemies (section `crowd`) and Metropolitano waves, a lighter end of mission
       (banner + the expediente only if you found clues + 1-3 story lines)
+- [x] Playtest feedback round 2: no pickup names on screen, the camera keeps the floor in view (no lift on jumps or
+      respawns), screen locks with ambush waves, fewer enemies in Mission 1, slower enemy lobs, brawlers that run in
+      to stab while gunners keep their distance, weaker enemies and shields, a fairer Metropolitano helicopter,
+      mototaxi aims down like the combi
 - [ ] Illustrated cutscenes (real art) for the intro and between missions
 
 ### M5 — Release

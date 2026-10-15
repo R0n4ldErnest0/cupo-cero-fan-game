@@ -14,6 +14,9 @@ Status: ✅ built · 🚧 greybox (playable, placeholder) · 📝 designed only 
 - More enemies: each section has a `crowd` (extra enemies all along it, the mission's own mix); the Metropolitano
   rides have **waves** (several bikers at once from both sides + cuperos dropping on the roof); the air level has
   drone **swarms**.
+- **Screen locks** (section `locks`): at some spots the screen stops and ambush waves come from both sides until
+  cleared (the camera never follows a player up a jump or a respawn drop; it keeps the floor in view).
+- Enemy mix: about a third of the gunners are brawlers that run in to stab; the rest keep shooting from a distance.
 - End of mission: "MISSION COMPLETE!" only, the expediente only if you found a clue there, then 1–3 story lines.
 
 ## Story pages (built)

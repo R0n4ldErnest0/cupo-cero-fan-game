@@ -145,6 +145,8 @@ const CFG = {
     BULLET_SPEED: 95, GRUNT_SPEED: 35, BIKER_SPEED: 150, BOMB_RADIUS: 20,
     // Chatter: only some enemies talk (once), and few have a last word, so speech bubbles don't crowd the screen.
     TALK_CHANCE: 0.25, DEATH_LINE_CHANCE: 0.12,
+    LOB_TIME: 1.3, // seconds a thrown bomb (molotov) takes to land: longer = slower, easier to dodge
+    BRAWLER_CHANCE: 0.33, BRAWLER_SPEED: 55, // some gunners (and cops) walk up to stab you and shoot less
     FIRST_SHOT: [1200, 2200], SHOT_GAP: [2200, 3800], AIM_MS: 400,
     KNIFE_RANGE: 20, KNIFE_REACH: 24, KNIFE_WINDUP: 350, KNIFE_COOLDOWN: 900, KNIFER_SPEED: 70,
   },
@@ -187,7 +189,7 @@ const CFG = {
   ABUELITA: { DURATION: 22000, THROW_DELAY: 1000, RANGE: 230, DAMAGE: 2, SPLASH: 16 },
 
   // Corrupt police (Mission 3 on). Patrullero = Grunt preset 'cop' (2 hp, 2-shot bursts); motocop = Biker preset.
-  RIOT: { HP: 3, SHIELD: 10, SPEED: 18, SWING_RANGE: 22, SWING_WINDUP: 400, PEEK_EVERY: [2800, 4200], PEEK_MS: 900 },
+  RIOT: { HP: 2, SHIELD: 5, SPEED: 18, SWING_RANGE: 22, SWING_WINDUP: 400, PEEK_EVERY: [2800, 4200], PEEK_MS: 900 },
   SNIPER: { AIM_MS: 1100, LOCK_MS: 380, BULLET_SPEED: 260, RELOAD: [1800, 2800] },
 
   BOSS1: { HP: 70, RAGE_AT: 35, CHARGE_SPEED: 250, BULLET_SPEED: 100, RAGE_BULLET_SPEED: 125 },
@@ -200,7 +202,7 @@ const CFG = {
   // Final boss (src/entities/BossAlcalde.js): the mayor's obra-paralizada mech. To tune by trial and error.
   ALCALDE: { HP: 180, PART_HP: 20, PROMISE_SPEED: 55, PROMISE_MS: 3200, PUDDLE_MS: 4000, PUDDLE_SLOW: 0.45, DIALOGO_MS: 3200 },
   // Mission 3 boss (src/entities/BossHeli.js): hovers HOVER px above the floor, comes down to DROP_HOVER to lower cops.
-  HELI: { HP: 90, PART_HP: 15, HOVER: 100, DROP_HOVER: 64, DRIFT: 70, BULLET_SPEED: 130, MISSILE_SPEED: 120, MAX_ENEMIES: 3 },
+  HELI: { HP: 90, PART_HP: 15, HOVER: 100, DROP_HOVER: 64, DRIFT: 70, BULLET_SPEED: 100, MISSILE_SPEED: 90, MAX_ENEMIES: 2 },
 
   // Level layouts live in src/levels/missionN.js.
 };

@@ -158,6 +158,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       return;
     }
     const s = this.scene, c = this.ctrl, P = CFG.PLAYER;
+    if (this.dropping && onGround) this.dropping = false;
 
     if (c.downP && s.combi && s.combi.canBoard(this)) {
       this.enterVehicle(s.combi);
@@ -272,6 +273,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   respawn(x, y) {
+    this.dropping = true; // the camera ignores us until we land
     this.state = 'play';
     this.alive = true;
     this.setVisible(true);

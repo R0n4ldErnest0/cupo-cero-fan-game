@@ -30,6 +30,7 @@
 //   vendors [{ x, food }]      street vendor with a cart, tosses that CFG.FOOD to a player walking by
 //   pickups [{ x, kind }]      a crate letter (guns H R A E G F D L, throwables B M P S) or a food id (CFG.FOOD)
 //   crowd { every, types, from, cluster }  extra enemies all along the section (see LevelScene.makeCrowd)
+//   locks [{ x, waves, types }]  the screen stops at x and waves come from both sides until cleared
 //   spawns [{ x, t, ... }]     enemies, spawned when x reaches the right screen edge.
 //                              t: 'grunt' (skin, variant 'gunner' | 'thrower' | 'knife', y, hp), 'biker', and the
 //                              police: 'cop' (patrullero), 'riot' (antimotines), 'motocop', 'sniper'; 'sere' (serenazgo)

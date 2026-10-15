@@ -30,6 +30,8 @@ class Grunt extends Phaser.Physics.Arcade.Sprite {
     this.body.setSize(8, 20).setOffset(4, 4);
     this.hp = opts.hp || 1;
     this.burst = opts.burst || 1; // shots per attack
+    // Brawler: walks right up to you to stab (and shoots less). The rest keep their distance and shoot.
+    this.brawler = this.variant === 'gunner' && Math.random() < CFG.ENEMY.BRAWLER_CHANCE;
     this.cop = !!opts.cop;
     this.sere = !!opts.sere;
     this.alive = true;
@@ -72,6 +74,7 @@ class Grunt extends Phaser.Physics.Arcade.Sprite {
     } else {
       this.facing = dx < 0 ? -1 : 1;
       if (this.variant === 'knife') vx = dist > 12 ? this.facing * E.KNIFER_SPEED : 0;
+      else if (this.brawler && time >= this.crouchUntil) vx = dist > 12 && Math.abs(t.y - this.y) < 30 ? this.facing * E.BRAWLER_SPEED : 0;
       else if (time < this.crouchUntil) vx = 0;
       else if (dist > 150) vx = this.facing * E.GRUNT_SPEED;
       else if (dist < 55 && this.variant === 'thrower') vx = -this.facing * 30;
@@ -123,7 +126,7 @@ class Grunt extends Phaser.Physics.Arcade.Sprite {
   act(time, t) {
     const s = this.scene;
     if (this.variant === 'thrower' && Math.random() < 0.6) {
-      s.enemyLob(this.x, this.y - 20, t.x, t.y - 4, 'molotov', 0.9);
+      s.enemyLob(this.x, this.y - 20, t.x, t.y - 4, 'molotov', CFG.ENEMY.LOB_TIME);
       Sfx.throw();
       this.nextAction = time + Phaser.Math.Between(1800, 2800);
       return;
@@ -155,7 +158,7 @@ class Grunt extends Phaser.Physics.Arcade.Sprite {
       });
     }
     Sfx.enemyShot();
-    this.nextAction = time + Phaser.Math.Between(...CFG.ENEMY.SHOT_GAP);
+    this.nextAction = time + Phaser.Math.Between(...CFG.ENEMY.SHOT_GAP) * (this.brawler ? 2 : 1);
   }
 
   // ---------- knife ----------

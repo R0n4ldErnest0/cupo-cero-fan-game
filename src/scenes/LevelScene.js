@@ -84,6 +84,7 @@ class LevelScene extends Phaser.Scene {
     (M.prisoners || []).concat(markerPrisoners).forEach((d) => this.addPrisoner(d.x, this.floorY(d), d));
     (M.pickups || []).forEach((p) => this.spawnPickup(p.x, this.floorY(p) - 40, p.kind));
     marks.filter((o) => o.pickup).forEach((p) => this.spawnPickup(p.x, p.y - 8, p.pickup));
+    this.locks = (M.locks || []).map((l) => Object.assign({}, l)).sort((a, b) => a.x - b.x);
     this.spawns = (M.spawns || []).concat(marks.filter((o) => o.t), this.makeCrowd(M.crowd))
       .map((s) => Object.assign({}, s)).sort((a, b) => a.x - b.x);
     this.triggers = (M.events || []).map((e) => Object.assign({}, e)).sort((a, b) => a.x - b.x);
@@ -562,6 +563,7 @@ class LevelScene extends Phaser.Scene {
     if (this.ride) this.ride.update(time, delta);
     else if (this.flight) this.flight.update(time, delta);
     else if (!this.arenaStarted && this.viewLeft >= this.arenaX - 0.5) this.startArena();
+    this.checkLocks();
     if (this.waves) this.updateWaves();
     this.checkExit();
   }
@@ -601,16 +603,23 @@ class LevelScene extends Phaser.Scene {
 
   // Horizontally the camera only scrolls forward and never leaves the rear player behind.
   // Vertically it eases toward the players (only matters in maps taller than the screen).
+  // Vertically it follows the floor the players stand on (not their jumps), and players dropping back in after a
+  // death don't move it at all.
   updateCamera(snap = false) {
-    const objs = this.players.filter((p) => p.state === 'play' && (p.alive || p.vehicle)).map((p) => p.vehicle || p);
+    const objs = this.players.filter((p) => p.state === 'play' && (p.alive || p.vehicle) && !p.dropping).map((p) => p.vehicle || p);
+    const lock = this.locks && this.locks.find((l) => !l.done);
     const maxTop = Math.max(0, this.levelH - CFG.VIEW_H);
     if (objs.length) {
       const front = Math.max(...objs.map((o) => o.x)), back = Math.min(...objs.map((o) => o.x));
       let want = Math.min(front - CFG.PLAYER.CAM_LEAD, back - 16);
       // Auto-scroll (section `autoscroll`: px/s): the screen keeps moving forward on its own.
       if (this.mission.autoscroll && !snap && !this.finished) want = Math.max(want, this.viewLeft + this.mission.autoscroll * this.game.loop.delta / 1000);
-      this.viewLeft = Phaser.Math.Clamp(Math.max(this.viewLeft, want), 0, this.arenaX);
-      const avgY = objs.reduce((a, o) => a + Math.min(o.y, this.levelH), 0) / objs.length;
+      this.viewLeft = Phaser.Math.Clamp(Math.max(this.viewLeft, want), 0, lock ? Math.min(lock.x, this.arenaX) : this.arenaX);
+      const floorOf = (o) => {
+        if (o.body && (o.body.blocked.down || o.onSlope)) o.camFloorY = o.y;
+        return o.camFloorY !== undefined ? o.camFloorY : o.y;
+      };
+      const avgY = objs.reduce((a, o) => a + Math.min(floorOf(o), this.levelH), 0) / objs.length;
       const wantTop = Phaser.Math.Clamp(avgY - CFG.VIEW_H * 0.68, 0, maxTop);
       this.viewTop = snap ? wantTop : this.viewTop + (wantTop - this.viewTop) * 0.08;
     }
@@ -638,11 +647,11 @@ class LevelScene extends Phaser.Scene {
     const y = this.floorY({ x, y: s.y });
     const make = {
       biker: () => new Biker(this, x, y),
-      sere: () => new Grunt(this, x, y, Object.assign({ skin: 'sere', hp: 2, sere: true }, s)),
+      sere: () => new Grunt(this, x, y, Object.assign({ skin: 'sere', hp: 1, sere: true }, s)),
       shieldthug: () => new RiotCop(this, x, y, { gang: true }),
       gangsniper: () => new Sniper(this, x, y, { gang: true }),
-      motocop: () => new Biker(this, x, y, { tex: 'motocop', hp: 3, shots: 3, score: 300, shout: '¡PAPELETA!' }),
-      cop: () => new Grunt(this, x, y, Object.assign({ skin: 'tombo', hp: 2, burst: 2, cop: true }, s)),
+      motocop: () => new Biker(this, x, y, { tex: 'motocop', hp: 2, shots: 3, score: 300, shout: '¡PAPELETA!' }),
+      cop: () => new Grunt(this, x, y, Object.assign({ skin: 'tombo', hp: 1, burst: 2, cop: true }, s)),
       riot: () => new RiotCop(this, x, y),
       sniper: () => new Sniper(this, x, y),
     };
@@ -994,6 +1003,28 @@ class LevelScene extends Phaser.Scene {
     } else this.sectionCleared();
   }
 
+  // Lock points (section `locks`: [{ x, waves, types }]): when the camera reaches x it stops there, `waves` waves come
+  // in from both sides (types: the lock's own, or the section's crowd mix), and when they're cleared it moves on.
+  checkLocks() {
+    const lock = this.locks.find((l) => !l.done);
+    if (!lock || lock.started || this.waves || this.viewLeft < lock.x - 0.5) return;
+    lock.started = true;
+    const types = lock.types || (this.mission.crowd && this.mission.crowd.types) || [{ t: 'grunt' }];
+    const rnd = mulberry32(2000 + this.missionIndex * 10 + this.sectionIndex + lock.x);
+    const list = [];
+    for (let w = 0; w < (lock.waves || 2); w++) {
+      const wave = [];
+      for (let i = 0; i < 3 + w; i++) {
+        const t = types[Math.floor(rnd() * types.length)];
+        wave.push(Object.assign({}, t, { dx: i % 2 ? -20 - i * 6 : CFG.VIEW_W + 10 + i * 6 }));
+      }
+      list.push(wave);
+    }
+    this.message('¡EMBOSCADA!', '', CFG.ALERT_MS);
+    this.waves = { list, index: -1, pending: 0, baseX: lock.x, onDone: () => { lock.done = true; this.waves = null; } };
+    this.time.delayedCall(700, () => this.waves && this.nextWave());
+  }
+
   // Locked-screen ambush: the next wave comes when the current one is dead.
   nextWave() {
     const W = this.waves;
@@ -1003,7 +1034,7 @@ class LevelScene extends Phaser.Scene {
     wave.forEach((s, i) => this.time.delayedCall(i * 450, () => {
       if (this.finished) return;
       // dx past the view means "run in from the right edge" (the view size depends on CFG.ZOOM).
-      this.spawnEnemy(s, this.arenaX + Math.min(s.dx, CFG.VIEW_W + 24));
+      this.spawnEnemy(s, (W.baseX !== undefined ? W.baseX : this.arenaX) + Math.min(s.dx, CFG.VIEW_W + 24));
       W.pending--;
     }));
   }
@@ -1017,7 +1048,8 @@ class LevelScene extends Phaser.Scene {
       this.time.delayedCall(900, () => { W.pending = 0; this.nextWave(); });
     } else {
       W.done = true;
-      this.sectionCleared();
+      if (W.onDone) W.onDone();
+      else this.sectionCleared();
     }
   }
 

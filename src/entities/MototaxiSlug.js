@@ -1,5 +1,5 @@
 // The Mototaxi Slug: light and fast, jumps high, only CFG.MOTOTAXI.HP hits. Fire = machine gun on the canopy,
-// aimed forward or up (diagonal with ↑ + direction). Grenade button = the passenger throws a grenade;
+// aimed like the combi's (8 directions, including down). Grenade button = the passenger throws a grenade;
 // ↓ + grenade = ¡BOCINAZO!: the horn stuns and pushes back the enemies in front (charges refill over time).
 const MOTO_SPEC = {
   kind: 'mototaxi', name: 'MOTOTAXI SLUG', tex: 'mototaxi', body: [40, 20, 4, 10],
@@ -31,13 +31,6 @@ class MototaxiSlug extends CombiSlug {
     this.hp = st.hp;
     this.grenades = st.grenades;
     this.honks = st.honks;
-  }
-
-  // Forward or up only (the canopy gun can't point down); diagonal with ↑ + direction.
-  aim(c, move) {
-    const ay = c.up ? -1 : 0;
-    const ax = move || (c.up ? 0 : this.facing);
-    this.aimAngle = Math.atan2(ay, ax);
   }
 
   bomb(c, time) {

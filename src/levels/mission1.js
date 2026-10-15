@@ -18,7 +18,8 @@ MISSIONS.push({
     // A — Paradero: the street. Leaves by the right edge (on foot or in the Combi Slug).
     {
       area: 'PARADERO',
-      crowd: { every: 115, types: [{ t: 'grunt' }, { t: 'grunt', skin: 'thug2' }, { t: 'grunt', variant: 'thrower' }, { t: 'grunt', variant: 'knife' }].concat([{ t: 'biker' }]) },
+      locks: [{ x: 1200, waves: 2 }],
+      crowd: { types: [{ t: 'grunt' }, { t: 'grunt', skin: 'thug2' }, { t: 'grunt', variant: 'thrower' }, { t: 'grunt', variant: 'knife' }].concat([{ t: 'biker' }]), every: 260, cluster: 0.1 },
       width: 2950,
       combi: { x: 1840 },
       abuelitas: [{ x: 1040 }],
@@ -91,7 +92,7 @@ MISSIONS.push({
     // B — Terminal: a short run-up and the boss arena.
     {
       area: 'TERMINAL',
-      crowd: { every: 95, types: [{ t: 'grunt' }, { t: 'grunt', skin: 'thug2' }, { t: 'grunt', variant: 'thrower' }, { t: 'grunt', variant: 'knife' }] },
+      crowd: { every: 200, types: [{ t: 'grunt' }, { t: 'grunt', skin: 'thug2' }, { t: 'grunt', variant: 'thrower' }, { t: 'grunt', variant: 'knife' }] },
       width: 1250,
       bg: { sky: 0xd8c8b0 },
       crates: [{ x: 300, stack: 1 }],
