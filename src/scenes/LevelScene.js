@@ -2,7 +2,7 @@
 // Start with this.scene.start('Level', { mission: index, section: index }). A mission can be split into
 // `sections` (areas joined by a fade); each one is a fresh scene start with { carry: true }, so players keep
 // their lives, weapons, bombs, fat/drunk state and the Combi Slug they're driving.
-const BOSSES = { cobrador: BossCobrador, heli: BossHeli, truck: BossTruck, contador: BossContador, comisario: BossComisario };
+const BOSSES = { cobrador: BossCobrador, heli: BossHeli, truck: BossTruck, contador: BossContador, comisario: BossComisario, alcalde: BossAlcalde };
 
 class LevelScene extends Phaser.Scene {
   constructor() {
@@ -16,7 +16,7 @@ class LevelScene extends Phaser.Scene {
     this.lastSection = this.sectionIndex === sections.length - 1;
     // The section's fields (terrain, enemies, arena, exit...) on top of the mission's (title, outro...).
     const M = (this.mission = Object.assign({}, mission, sections[this.sectionIndex]));
-    if (M.ride) {
+    if (M.ride || M.flight) {
       M.terrain = Array(14).fill('|').join('\n');
       M.width = CFG.VIEW_W;
       M.vehicles = false;
@@ -49,6 +49,8 @@ class LevelScene extends Phaser.Scene {
     this.buildGround();
     this.buildDecor();
     this.ride = M.ride ? new Ride(this, M.ride) : null;
+    this.flight = M.flight ? new Flight(this, M.flight) : null;
+    this.aircraft = [];
 
     this.enemies = this.physics.add.group();
     this.pickups = this.physics.add.group();
@@ -85,7 +87,9 @@ class LevelScene extends Phaser.Scene {
     this.spawns = (M.spawns || []).concat(marks.filter((o) => o.t)).map((s) => Object.assign({}, s)).sort((a, b) => a.x - b.x);
     this.triggers = (M.events || []).map((e) => Object.assign({}, e)).sort((a, b) => a.x - b.x);
 
+    this.town = M.town ? new Town(this) : null;
     this.setupCollisions();
+    if (this.flight) this.players.forEach((p) => p.state === 'play' && this.flight.board(p));
     this.updateCamera(true);
     this.updateParallax();
 
@@ -188,6 +192,19 @@ class LevelScene extends Phaser.Scene {
     if (Math.random() < 0.6) Fx.say(this, e, Phaser.Utils.Array.GetRandom(BOCINA_LINES), 1000);
   }
 
+  // Collisions for a vehicle that isn't the section's combi (the aircraft of a flight section).
+  addVehicleColliders(v) {
+    const P = this.physics.add, driven = () => v.active && v.state === 'driven';
+    P.overlap(v, this.eBullets, (vv, b) => { if (driven()) { b.destroy(); v.damage(1); } });
+    P.overlap(v, this.eBombs, (vv, b) => driven() && this.explodeEnemyBomb(b));
+    P.overlap(v, this.enemies, (vv, e) => {
+      if (!driven() || !e.alive || !e.contactKills) return;
+      e.hit(99, true, v.driver); // a drone bursts on you
+      v.damage(1);
+    });
+    P.overlap(v, this.pickups, (vv, k) => driven() && k.collect(v.driver));
+  }
+
   // ---------- sections ----------
 
   // A door marker ('>' in the map): walking into it on foot leads to the next section.
@@ -201,7 +218,7 @@ class LevelScene extends Phaser.Scene {
 
   // Leaving a section: 'edge' (walk/drive to the right end of the map, the default) or 'door'.
   checkExit() {
-    if (this.lastSection || this.finished || this.mission.arena || this.ride) return;
+    if (this.lastSection || this.finished || this.mission.arena || this.ride || this.flight) return;
     const type = (this.mission.exit || {}).type || (this.doors.length ? 'door' : 'edge');
     for (const p of this.players) {
       if (p.state !== 'play' || !(p.alive || p.vehicle)) continue;
@@ -333,7 +350,7 @@ class LevelScene extends Phaser.Scene {
   updateParallax() {
     // In a ride the camera stands still and the distance travelled scrolls the backgrounds.
     const L = Math.round(this.viewLeft), top = Math.round(this.viewTop);
-    const D = this.ride ? Math.round(this.ride.dist) : L;
+    const D = this.ride ? Math.round(this.ride.dist) : this.flight ? Math.round(this.flight.dist) : L;
     const climb = Math.max(0, this.levelH - CFG.VIEW_H) - top;
     this.bgSky.setPosition(L, top);
     this.bgHills.setPosition(L, top + 70 + Math.round(climb * 0.15));
@@ -411,6 +428,7 @@ class LevelScene extends Phaser.Scene {
     P.overlap(this.pBombs, this.enemies, (b, e) => e.alive && this.detonate(b));
     P.overlap(this.pBullets, this.props, (b, o) => this.bulletHits(b, o));
     P.collider(this.prisoners, solids, null, notDropping);
+    if (this.town) this.town.setupCollisions(solids);
     P.overlap(this.pBullets, this.prisoners, (b, pr) => {
       if (pr.state !== 'tied' || !b.active) return;
       b.destroy();
@@ -497,16 +515,18 @@ class LevelScene extends Phaser.Scene {
     });
     this.abuelitas.forEach((a) => a.active && a.update(time, delta));
     this.vendors.forEach((v) => v.update(time));
+    if (this.town) this.town.update(time, delta);
     this.prisoners.getChildren().slice().forEach((pr) => pr.active && pr.update(time, delta));
     this.cameras.main.setRotation(this.players.some((p) => p.state === 'play' && p.alive && p.drunk) ? Math.sin(time / 500) * CFG.DRUNK.SWAY : 0);
     if (this.boss && this.boss.active) this.boss.update(time, delta);
     // Homing rockets, drones, roosters, flames...
-    [this.pBullets, this.pBombs].forEach((g) => g.getChildren().slice().forEach((b) => b.active && b.step && b.step(time, delta)));
+    [this.pBullets, this.pBombs, this.eBombs].forEach((g) => g.getChildren().slice().forEach((b) => b.active && b.step && b.step(time, delta)));
     Weapons.updateFires(this, time);
 
     this.cleanupProjectiles();
     Fx.updateBubbles(this, time);
     if (this.ride) this.ride.update(time, delta);
+    else if (this.flight) this.flight.update(time, delta);
     else if (!this.arenaStarted && this.viewLeft >= this.arenaX - 0.5) this.startArena();
     if (this.waves) this.updateWaves();
     this.checkExit();
@@ -576,7 +596,7 @@ class LevelScene extends Phaser.Scene {
   }
 
   // Enemies without a y stand at street level. Bikers always ride in from the right edge.
-  // t: 'grunt' | 'biker' | 'shieldthug' (cupero behind a metal shutter) | 'gangsniper' |
+  // t: 'grunt' | 'biker' | 'sere' (serenazgo) | 'shieldthug' (cupero behind a metal shutter) | 'gangsniper' |
   // 'cop' (patrullero) | 'motocop' | 'riot' (antimotines) | 'sniper'.
   // Riders always come in from the right edge.
   spawnEnemy(s, x) {
@@ -584,6 +604,7 @@ class LevelScene extends Phaser.Scene {
     const y = this.floorY({ x, y: s.y });
     const make = {
       biker: () => new Biker(this, x, y),
+      sere: () => new Grunt(this, x, y, Object.assign({ skin: 'sere', hp: 2, sere: true }, s)),
       shieldthug: () => new RiotCop(this, x, y, { gang: true }),
       gangsniper: () => new Sniper(this, x, y, { gang: true }),
       motocop: () => new Biker(this, x, y, { tex: 'motocop', hp: 3, shots: 3, score: 300, shout: '¡PAPELETA!' }),
@@ -727,6 +748,7 @@ class LevelScene extends Phaser.Scene {
       Fx.spark(this, x, y);
       return;
     }
+    if (b.onLand) return b.onLand(x, y); // e.g. the mayor's concrete leaves a puddle
     this.explodeAt(x, y, CFG.ENEMY.BOMB_RADIUS, 1, false, 0.7);
   }
 
@@ -890,7 +912,7 @@ class LevelScene extends Phaser.Scene {
     for (const p of this.players) {
       if (p.state !== 'play') continue;
       const v = p.vehicle;
-      if (v && v.y > limit) {
+      if (v && v.fellIntoPit && v.y > limit) {
         v.fellIntoPit();
         p.fallDeath();
       } else if (!v && p.alive && p.y > limit) p.fallDeath();

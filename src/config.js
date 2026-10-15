@@ -166,6 +166,20 @@ const CFG = {
     WATER_DELAY: 60, WATER_SPEED: 320, WATER_DAMAGE: 0.35, STUN_MS: 700, WATER_DROOP: 300, // jet gravity (px/s²)
   },
 
+  // Flight section (Mission 5 air level, src/systems/Flight.js + entities/Aircraft.js, Flyer.js).
+  AIRCRAFT: { HP: 4, ROCKETS: 12, SPEED: 130, PLANE_SPEED: 160, DELAY: 90, PLANE_DELAY: 70, FLOOR_MARGIN: 50 },
+  FLYERS: {
+    polheli: { hp: 6, score: 400, speed: 90, stay: 9 },
+    drone: { hp: 1, score: 150, speed: 85 },
+    tv: { hp: 1, score: 0, speed: 35 },
+  },
+
+  // The town helps in the Mission 5 plaza (src/systems/Town.js): allies = freed honest cops, supplies = clues.
+  TOWN: {
+    ALLY_SPEED: 70, ALLY_RANGE: 220, ALLY_SHOT_MS: 900, ALLY_HITS: 2, MAX_ALLIES: 4, FREED_PER_ALLY: 3,
+    SUPPLY_MS: 9000, SUPPLY_MIN_MS: 3500, SUPPLY_PER_CLUE: 450, SUPPLIES: ['B', 'H', 'pan', 'mote', 'R', 'caldo', 'B'],
+  },
+
   ABUELITA: { DURATION: 22000, THROW_DELAY: 1000, RANGE: 230, DAMAGE: 2, SPLASH: 16 },
 
   // Corrupt police (Mission 3 on). Patrullero = Grunt preset 'cop' (2 hp, 2-shot bursts); motocop = Biker preset.
@@ -179,6 +193,8 @@ const CFG = {
   CONTADOR: { HP: 110, ARM_HP: 16, WALK: 22, STOMP_HEIGHT: 90, BILL_SPEED: 120, BOLETA_SPEED: 60 },
   // Mission 4 boss (src/entities/BossComisario.js): the filing-cabinet mech.
   COMISARIO: { HP: 130, DRAWER_HP: 18, CHARGE_SPEED: 170, STAMP_SPEED: 125, RAIN_SPEED: 70 },
+  // Final boss (src/entities/BossAlcalde.js): the mayor's obra-paralizada mech. To tune by trial and error.
+  ALCALDE: { HP: 180, PART_HP: 20, PROMISE_SPEED: 55, PROMISE_MS: 3200, PUDDLE_MS: 4000, PUDDLE_SLOW: 0.45, DIALOGO_MS: 3200 },
   // Mission 3 boss (src/entities/BossHeli.js): hovers HOVER px above the floor, comes down to DROP_HOVER to lower cops.
   HELI: { HP: 90, PART_HP: 15, HOVER: 100, DROP_HOVER: 64, DRIFT: 70, BULLET_SPEED: 130, MISSILE_SPEED: 120, MAX_ENEMIES: 3 },
 

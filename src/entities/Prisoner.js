@@ -31,6 +31,7 @@ class Prisoner extends Phaser.Physics.Arcade.Sprite {
     this.state = 'thanks';
     this.rescuer = by && by.index !== undefined ? by : null;
     if (this.rescuer) this.rescuer.rescued++;
+    if (Session.run) Session.run.freed = (Session.run.freed || 0) + 1; // the whole game: allies in Mission 5
     this.setTexture(`${this.skin}_salute`);
     this.body.setSize(8, 20).setOffset(4, 4);
     const clue = this.clue && s.mission.clues && s.mission.clues[this.clue];

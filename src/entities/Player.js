@@ -174,7 +174,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       else this.body.setSize(8, 20).setOffset(4, 4);
     }
 
-    const speed = P.SPEED * (this.fat ? CFG.FAT.SPEED : 1) * (this.crouching ? 0.4 : 1);
+    const slow = time < (this.slowUntil || 0) ? CFG.ALCALDE.PUDDLE_SLOW : 1; // stuck in the mayor's concrete
+    const speed = P.SPEED * (this.fat ? CFG.FAT.SPEED : 1) * (this.crouching ? 0.4 : 1) * slow;
     this.setVelocityX(move * speed + this.updateBelly(time, move));
     if (c.jumpP && onGround) {
       // ↓ + jump on a one-way floor drops through it instead of jumping.
@@ -283,6 +284,9 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     this.resetThrowables();
     this.resetBelly();
     this.invulnUntil = this.scene.time.now + CFG.PLAYER.INVULN_MS;
+    // In the air level you come back in a new aircraft.
+    const f = this.scene.flight;
+    if (f && !f.landed) f.board(this);
   }
 
   // Remove from play (continue countdown, game over, not joined yet).

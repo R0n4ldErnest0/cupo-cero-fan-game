@@ -116,8 +116,8 @@ Full design, weapons list and build order: `docs/LEVELS.md`.
 - [x] Mission 4 greybox: indoor tiles, comisaría (front desk, cells, evidence room), the journalist, the riot-shield
       wall, the rochabus escape (auto-scroll), the Comisario's filing-cabinet mech
 - [x] Moving-camera auto-scroll over a normal map (section `autoscroll`)
-- [ ] Air-shooter mode, ally AI
-- [ ] Mission 5: air level, plaza with allies, Municipalidad, mayor mech
+- [x] Flight mode (air level: helicopter / plane, flying enemies), allies (freed honest cops), town supplies
+- [x] Mission 5 greybox: air level, plaza where the town helps, Municipalidad, the mayor's obra-paralizada mech
 - [ ] Ending cutscene; credits
 
 ### M4.5 — Art, sound and story

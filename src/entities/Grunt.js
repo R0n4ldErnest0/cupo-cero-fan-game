@@ -11,6 +11,8 @@ const GRUNT_DEATH = [
 const KNIFER_LINES = ['¡Ven acá, chofercito!', '¡Te voy a cobrar en persona!', '¡Cupo o chaveta!'];
 // Corrupt cops (the 'cop' preset: patrullero).
 const COP_LINES = ['¡Colabora pe, chofer!', '¿Cuánto para el cafecito?', '¡Circulen, aquí no pasa nada!', '¡Documentos!', '¡Esto no es cupo, es papeleta!'];
+// Serenazgo (municipal security), on the mayor's side in Mission 5.
+const SERE_LINES = ['¡Retírense, es orden del alcalde!', '¡Esta plaza está cerrada por obras!', '¡Prohibido protestar sin permiso!'];
 const COP_DEATH = ['¡Llama a mi comisario!', '¡Yo solo cumplía órdenes!', '¡Mi pensión!', '¡Esto va a tu récord!'];
 
 // Variants: 'gunner' stops, aims and shoots; 'thrower' also lobs molotovs; 'knife' runs at you to stab.
@@ -29,6 +31,7 @@ class Grunt extends Phaser.Physics.Arcade.Sprite {
     this.hp = opts.hp || 1;
     this.burst = opts.burst || 1; // shots per attack
     this.cop = !!opts.cop;
+    this.sere = !!opts.sere;
     this.alive = true;
     this.facing = -1;
     this.score = this.cop ? 150 : 100;
@@ -90,7 +93,8 @@ class Grunt extends Phaser.Physics.Arcade.Sprite {
 
     if (onScreen && !fleeing && this.variant !== 'knife' && time > this.nextAction) this.act(time, t);
     if (onScreen && time > this.nextTalk) {
-      Fx.say(s, this, Phaser.Utils.Array.GetRandom(this.cop ? COP_LINES : this.variant === 'knife' ? KNIFER_LINES : GRUNT_LINES), 1500);
+      const lines = this.sere ? SERE_LINES : this.cop ? COP_LINES : this.variant === 'knife' ? KNIFER_LINES : GRUNT_LINES;
+      Fx.say(s, this, Phaser.Utils.Array.GetRandom(lines), 1500);
       this.nextTalk = time + Phaser.Math.Between(5000, 9000);
     }
     this.pose(time, dt, vx);

@@ -19,6 +19,8 @@
 //   mototaxi { x }             parked Mototaxi Slug instead (one vehicle per section)
 //   rochabus { x }             parked rochabus instead (Mission 4 escape)
 //   autoscroll                 px/s: the screen moves forward on its own (players get pushed by the left edge)
+//   flight { speed, seconds, events }  air level: players fly aircraft (src/systems/Flight.js)
+//   town: true                 the town helps: allies (freed cops) and supply crates (clues) (src/systems/Town.js)
 //   abuelitas [{ x }]          tied-up helpers
 //   crates [{ x, stack }]      one-way platforms
 //   props [{ x, type, drop }]  breakable gang property (CFG.PROPS: box, lootbag, trash, barrel, moto); drop: an item
@@ -29,7 +31,7 @@
 //   pickups [{ x, kind }]      a crate letter (guns H R A E G F D L, throwables B M P S) or a food id (CFG.FOOD)
 //   spawns [{ x, t, ... }]     enemies, spawned when x reaches the right screen edge.
 //                              t: 'grunt' (skin, variant 'gunner' | 'thrower' | 'knife', y, hp), 'biker', and the
-//                              police: 'cop' (patrullero), 'riot' (antimotines), 'motocop', 'sniper'
+//                              police: 'cop' (patrullero), 'riot' (antimotines), 'motocop', 'sniper'; 'sere' (serenazgo)
 //   decor [{ type, ... }]      'text' | 'controls' | 'image' | 'graffiti' | 'sign' | 'copcar'; an `id`
 //                              makes it addressable by events. text and sign need a y
 //   events [{ x, say | message | run }]

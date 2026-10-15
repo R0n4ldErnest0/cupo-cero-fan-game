@@ -64,10 +64,10 @@ lib/phaser.min.js     vendored engine
 src/config.js         constants (sizes, speeds, tuning)
 src/systems/          Textures (procedural art), Sfx (synth audio), Voice (announcer), Session (credits), Controls (input),
                       Fx, Terrain (text-map tiles, one-way floors, slopes), Weapons (guns, melee, player projectiles),
-                      Ride (sections on a moving vehicle: the Metropolitano roof)
+                      Ride (sections on a moving vehicle: the Metropolitano roof), Flight (air level), Town (Mission 5 help)
 src/entities/         Player, enemies (Grunt + cop preset, Biker + motocop, RiotCop, Sniper), Abuelita (helper),
-                      CombiSlug (vehicle base) + MototaxiSlug, RochabusSlug, Boss (framework) + BossCobrador, BossTruck,
-                      BossContador, BossHeli, BossComisario, Pickup,
+                      CombiSlug (vehicle base) + MototaxiSlug, RochabusSlug, Aircraft, Flyer (flying enemies), Ally,
+                      Boss (framework) + BossCobrador, BossTruck, BossContador, BossHeli, BossComisario, BossAlcalde, Pickup,
                       Breakable (gang props),
                       Vendor (food carts), Prisoner (honest cops to rescue)
 src/levels/           missions.js (registry + data schema), missionN.js (one data file per mission)

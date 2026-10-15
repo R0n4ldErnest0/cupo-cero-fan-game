@@ -32,7 +32,7 @@ A chain across the missions, so the ending feels earned:
 | 2 | Gamarra no se cierra | A Mercado (Mototaxi Slug) → B Azoteas → C Almacén (mid-boss) → D Oficina (boss) | 🚧 greybox (all sections) |
 | 3 | La ruta | A Cerros → B Metropolitano → C Estación (on foot) → D Metropolitano 2 + terminal (boss) | 🚧 greybox (all sections) |
 | 4 | Su denuncia es importante para nosotros | A Mesa de partes → B Oficinas y celdas → C Sala de evidencias (riot wall) → D La fuga (rochabus, boss) | 🚧 greybox (all sections) |
-| 5 | Obra paralizada | A Air level ❓ → B Plaza: the town joins you → C Municipalidad → D Mayor (final boss) | 📝 |
+| 5 | Obra paralizada (MISSION FINAL) | A Vuelo → B Plaza (the town helps) → C Municipalidad → D La obra (the mayor) | 🚧 greybox (all sections) |
 
 ---
 
@@ -140,7 +140,18 @@ Earlier design notes:
 **Decided:** you **drive the rochabus** (a vehicle: its water cannon pushes enemies back) on the escape; the boss is
 the Comisario in a **filing-cabinet mech** ("ARCHIVADO" stamps, flying complaint folders).
 
-## Mission 5 — "Obra paralizada" 📝
+## Mission 5 — "Obra paralizada" (MISSION FINAL) 🚧 greybox
+
+**Built (greybox):** A **Vuelo** (flight mode, `flight`): 1P flies Don Tito's old police helicopter, 2P a small plane;
+free movement while Lima scrolls below; machine gun + homing rockets; small police helicopters, kamikaze serenazgo
+drones and a TV news helicopter that can't be shot down; lose an aircraft = lose a life and come back in a new one;
+out of fuel, you crash-land at the plaza. B **Plaza** (`town: true`): the march surrounded by the **serenazgo** (new
+enemy) and the police; **allies** = the honest cops you freed in the whole game (1 + one per 3, max 4; they shoot,
+and pull back instead of dying), **supply crates** thrown from the balconies (more often with more clues in the
+expediente), the abuelita. C **Municipalidad** (indoor; "TRANSPARENCIA: PASE NOMÁS"). D **La obra**: the mayor's
+mech (promesas, concrete puddles that slow you, the wrecking ball, the scissors, the mesa de diálogo).
+
+Earlier design notes:
 
 **Defined (new structure):**
 - A **Air level** (like the final mission of Metal Slug 3): a **retired cop** knows where an **old police
@@ -281,8 +292,8 @@ Systems first (each one unlocks several missions), then the missions, then art/s
 7. ✅ **Mission 2** greybox (rooftops, Mototaxi Slug, truck mid-boss, accountant boss, ledger); next: restructure to
    4 sections → **art direction test** on it
 8. ✅ **Mission 3** greybox (cerros, Metropolitano + station + second ride with transfers, helicopter boss)
-9. **Mission 4** (indoor tiles, comisaría, rochabus, comisario)
-10. **Air-shooter mode + ally AI**, then **Mission 5** and the ending
+9. ✅ **Mission 4** greybox (indoor tiles, comisaría, rochabus, comisario)
+10. ✅ **Flight mode + allies**, ✅ **Mission 5** greybox; next: the ending
 11. Real art and music for everything, voice lines
 12. Story cutscenes between missions
 13. Balance, difficulty settings, release

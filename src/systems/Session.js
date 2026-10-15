@@ -21,7 +21,7 @@ const Session = {
 
   // A new game: players carried between missions, and the clues found for the expediente (kept all game long).
   newRun() {
-    this.run = { players: null, clues: [] };
+    this.run = { players: null, clues: [], freed: 0 };
   },
 
   hasClue(id) {

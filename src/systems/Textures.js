@@ -172,6 +172,7 @@ const SKINS = {
   tombo: { head: 'shades', pal: { H: '#2f5a34', M: '#2b1d14', Y: '#d8d8d8', C: '#5f7d45', P: '#34502f', F: '#1b1b22' } }, // corrupt cop
   riot: { head: 'helmet', pal: { H: '#26332a', V: '#8fb8d8', C: '#34502f', P: '#26332a', F: '#1b1b22' } }, // antimotines
   press: { head: 'cobradora', pal: { h: '#3a2a1e', C: '#2c6fd1', P: '#3a3d45', F: '#1b1b22' } }, // the journalist (PRENSA vest)
+  sere: { head: 'cop', pal: { H: '#1e3a6a', M: '#2b1d14', Y: '#f2c94c', C: '#2c4f86', P: '#1b2a4a', F: '#1b1b22' } }, // serenazgo
   poli: { head: 'cop', pal: { H: '#2f5a34', M: '#2b1d14', Y: '#d8d8d8', C: '#6b8a4f', P: '#34502f', F: '#1b1b22' } }, // honest cop (prisoner)
   vendor: { head: 'cobradora', pal: { h: '#2b1d14', C: '#f4f4f4', P: '#3a5fa0', F: '#5b3a20' } }, // street vendor
   cobrador: { head: 'driver', pal: { H: '#f4f4f4', M: '#1b1b22', C: '#e3b23c', P: '#1b1b22', F: '#f4f4f4' } },
@@ -219,6 +220,8 @@ const Textures = {
     this.contador(scene);
     this.rochabus(scene);
     this.comisario(scene);
+    this.aircraft(scene);
+    this.alcalde(scene);
     this.combi(scene);
     this.boss(scene);
     this.biker(scene);
@@ -417,6 +420,80 @@ const Textures = {
     pc.disc(14, 22, 4, PAL.k).disc(50, 22, 4, PAL.k).set(14, 22, PAL.g).set(50, 22, PAL.g);
     pc.outline();
     pc.register(scene, 'prop_patrol');
+  },
+
+  // Air level: the players' aircraft (Don Tito's old police helicopter, 2P's small plane) and the flying enemies.
+  aircraft(scene) {
+    const h = new Painter(40, 22);
+    h.rect(18, 0, 3, 4, PAL.G);
+    h.disc(14, 11, 8, '#9aa0a8').rect(14, 4, 14, 14, '#9aa0a8').disc(10, 10, 5, '#8fd0ee'); // old grey body, patched
+    h.rect(16, 13, 10, 2, '#2e7d32').rect(20, 6, 4, 3, '#a8743f').rect(26, 8, 12, 4, '#9aa0a8').rect(35, 4, 4, 7, '#2e7d32');
+    h.rect(8, 19, 22, 2, PAL.G);
+    h.outline();
+    h.register(scene, 'aircraft_heli');
+    const pl = new Painter(36, 16);
+    pl.rect(4, 6, 26, 6, '#f2c94c').rect(14, 2, 6, 12, '#e0b030').rect(30, 7, 3, 4, PAL.G).rect(33, 4, 2, 10, '#5a6068'); // body, wing, prop
+    pl.rect(0, 4, 5, 3, '#f2c94c').rect(20, 6, 6, 3, '#8fd0ee');
+    pl.outline();
+    pl.register(scene, 'aircraft_plane');
+    const ph = new Painter(30, 16);
+    ph.disc(8, 8, 6, '#f4f4f4').rect(8, 3, 12, 10, '#f4f4f4').disc(5, 7, 3, '#8fd0ee').rect(18, 6, 10, 3, '#f4f4f4').rect(26, 2, 3, 6, '#2e7d32');
+    ph.rect(8, 10, 12, 2, '#2e7d32').rect(12, 0, 2, 3, PAL.G).rect(4, 14, 16, 1, PAL.G);
+    ph.outline();
+    ph.register(scene, 'flyer_polheli');
+    const dr = new Painter(16, 9);
+    dr.rect(0, 1, 6, 1, '#d8d8d8').rect(10, 1, 6, 1, '#d8d8d8').rect(3, 3, 10, 4, '#1e5fb4').set(12, 4, '#ff3a3a').rect(5, 7, 6, 2, '#3a3d45');
+    dr.register(scene, 'flyer_drone');
+    const tv = new Painter(34, 18);
+    tv.disc(9, 9, 7, '#1e5fb4').rect(9, 3, 14, 12, '#1e5fb4').disc(5, 8, 3, '#8fd0ee').rect(22, 7, 10, 3, '#1e5fb4').rect(30, 3, 3, 7, '#f2c94c');
+    tv.rect(10, 6, 12, 5, '#f4f4f4').text('TV', 12, 6, '#c0282e').rect(13, 0, 2, 3, PAL.G).rect(4, 16, 18, 1, PAL.G);
+    tv.outline();
+    tv.register(scene, 'flyer_tv');
+  },
+
+  // Final boss: the mayor's obra-paralizada mech (facing left, 96x108): scaffolding legs, a concrete-mixer body, a
+  // podium cockpit with the mayor in his sash, traffic cones; the crane, the scissors and his attacks' sprites.
+  alcalde(scene) {
+    const m = new Painter(96, 108);
+    // podium + the mayor (sash, red-white)
+    m.disc(48, 8, 6, PAL.s).rect(42, 2, 12, 3, '#2b1d14').rect(44, 8, 2, 2, PAL.k).rect(50, 8, 2, 2, PAL.k);
+    m.rect(40, 14, 16, 12, '#2b2b33').rect(40, 14, 3, 12, '#d8343a').rect(43, 14, 3, 12, '#f4f4f4');
+    m.rect(34, 24, 28, 12, '#8a5a33').rect(46, 18, 2, 8, PAL.G).disc(47, 17, 2, PAL.k); // podium + mic
+    m.rect(36, 28, 24, 4, '#f2c94c').text('OBRA', 40, 28, '#1b1b22');
+    // concrete-mixer body
+    m.disc(48, 56, 22, '#c8c4b8');
+    for (let i = -18; i <= 18; i += 9) m.line(48 + i, 36, 48 + i - 8, 76, '#9d9a92');
+    m.rect(26, 36, 44, 4, '#e3842c');
+    m.rect(18, 64, 12, 6, '#5a6068').rect(66, 64, 12, 6, '#5a6068');
+    // traffic cones on the shoulders
+    [[22, 30], [72, 30]].forEach(([x, y]) => m.rect(x - 2, y + 8, 6, 2, '#e3842c').rect(x - 1, y + 3, 4, 5, '#e3842c').rect(x, y, 2, 3, '#e3842c').rect(x - 1, y + 5, 4, 1, '#f4f4f4'));
+    // scaffolding legs
+    for (const x0 of [24, 56]) {
+      m.rect(x0, 78, 2, 30, '#9aa0a8').rect(x0 + 14, 78, 2, 30, '#9aa0a8');
+      for (let y = 80; y < 108; y += 9) m.line(x0, y, x0 + 15, y + 8, '#7d838b');
+    }
+    m.rect(12, 92, 72, 8, '#f2c94c').text('OBRA EN EJECUCION', 14, 94, '#1b1b22');
+    m.outline();
+    m.register(scene, 'alcalde_mech');
+    const cr = new Painter(40, 10);
+    cr.rect(0, 3, 36, 4, '#f2c94c');
+    for (let x = 0; x < 36; x += 6) cr.line(x, 3, x + 3, 6, '#c8a030');
+    cr.rect(34, 0, 4, 10, '#3a3d45').outline();
+    cr.register(scene, 'crane');
+    const sc = new Painter(26, 14);
+    sc.line(0, 2, 20, 7, '#c9ced6').line(0, 12, 20, 7, '#c9ced6').line(0, 3, 20, 8, '#9aa0a8').line(0, 11, 20, 6, '#9aa0a8');
+    sc.disc(21, 7, 3, '#d8343a').rect(23, 4, 3, 6, '#d8343a').outline();
+    sc.register(scene, 'ribbon_scissors');
+    const pr = new Painter(40, 16);
+    pr.rect(1, 1, 38, 11, '#f4f4f4').rect(6, 12, 4, 3, '#f4f4f4').text('PROMESA', 6, 4, '#c0282e').outline();
+    pr.register(scene, 'promesa');
+    new Painter(10, 9).disc(5, 4, 4, '#9d9a92').set(3, 3, '#c8c4b8').register(scene, 'concrete');
+    new Painter(36, 6).rect(2, 2, 32, 4, '#8a877f').rect(0, 4, 36, 2, '#7a776f').rect(6, 2, 10, 1, '#a8a49a').register(scene, 'concrete_puddle');
+    new Painter(20, 20).disc(10, 10, 9, '#3a3d45').disc(7, 7, 3, '#5a6068').outline().register(scene, 'wrecking_ball');
+    const md = new Painter(44, 20);
+    md.rect(0, 4, 44, 4, '#8a5a33').rect(2, 8, 3, 12, '#5b3a20').rect(39, 8, 3, 12, '#5b3a20').rect(8, 0, 28, 4, '#f4f4f4');
+    md.text('DIALOGO', 9, 0, '#1e5fb4').outline();
+    md.register(scene, 'mesa_dialogo');
   },
 
   // Prisoner extras: tied up sitting on the floor, and saluting.
