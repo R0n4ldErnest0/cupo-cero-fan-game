@@ -114,6 +114,7 @@ const CFG = {
     trash: { hp: 3, score: 50 },
     barrel: { hp: 4, score: 100, explodes: true },
     moto: { hp: 6, score: 300, explodes: true },
+    patrol: { hp: 8, score: 500, explodes: true }, // a patrol car blocking the street (Mission 4 escape)
   },
   RANDOM_DROPS: ['pan', 'mote', 'makis', 'morada', 'lomo', 'caldo', 'jora', 'pisco', 'emoliente', 'B', 'pan', 'mote', 'jora'],
 
@@ -149,6 +150,7 @@ const CFG = {
     CANNON_AMMO: 20, CANNON_DAMAGE: 6, CANNON_RADIUS: 30, CANNON_SPEED: 300,
     MG_DELAY: 90, MG_SPEED: 400, WRECK_DAMAGE: 10,
     TURRET_SPEED: 0.006, // rad/ms; the gun turns toward the held direction and keeps its angle
+    LEVEL_SHOT_HEIGHT: 16, // a vehicle's level shots leave at this height above the ground (enemies' chest)
   },
 
   // Mototaxi Slug (src/entities/MototaxiSlug.js): fast, high jump, few hits. Grenades thrown by the passenger;
@@ -156,6 +158,12 @@ const CFG = {
   MOTOTAXI: {
     HP: 3, SPEED: 150, JUMP: 360, MG_DELAY: 100, MG_SPEED: 400,
     GRENADES: 15, HONKS: 3, HONK_REFILL: 6000, HONK_RANGE: 96, STUN_MS: 1600,
+  },
+
+  // Rochabus (src/entities/RochabusSlug.js): the stolen water-cannon truck. Water knocks back and stuns (STUN_MS).
+  ROCHABUS: {
+    HP: 6, SPEED: 85, JUMP: 250, MG_SPEED: 0, GRENADES: 10,
+    WATER_DELAY: 60, WATER_SPEED: 320, WATER_DAMAGE: 0.35, STUN_MS: 700, WATER_DROOP: 300, // jet gravity (px/s²)
   },
 
   ABUELITA: { DURATION: 22000, THROW_DELAY: 1000, RANGE: 230, DAMAGE: 2, SPLASH: 16 },
@@ -169,6 +177,8 @@ const CFG = {
   TRUCK: { HP: 80, TURRET_HP: 14, RAM_SPEED: 230, BULLET_SPEED: 120 },
   // Mission 2 boss (src/entities/BossContador.js): the accountant's mech.
   CONTADOR: { HP: 110, ARM_HP: 16, WALK: 22, STOMP_HEIGHT: 90, BILL_SPEED: 120, BOLETA_SPEED: 60 },
+  // Mission 4 boss (src/entities/BossComisario.js): the filing-cabinet mech.
+  COMISARIO: { HP: 130, DRAWER_HP: 18, CHARGE_SPEED: 170, STAMP_SPEED: 125, RAIN_SPEED: 70 },
   // Mission 3 boss (src/entities/BossHeli.js): hovers HOVER px above the floor, comes down to DROP_HOVER to lower cops.
   HELI: { HP: 90, PART_HP: 15, HOVER: 100, DROP_HOVER: 64, DRIFT: 70, BULLET_SPEED: 130, MISSILE_SPEED: 120, MAX_ENEMIES: 3 },
 

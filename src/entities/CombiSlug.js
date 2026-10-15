@@ -15,7 +15,7 @@ class CombiSlug extends Phaser.Physics.Arcade.Sprite {
     scene.add.existing(this);
     scene.physics.add.existing(this);
     this.spec = spec;
-    this.cfg = spec.kind === 'combi' ? CFG.COMBI : CFG.MOTOTAXI;
+    this.cfg = { combi: CFG.COMBI, mototaxi: CFG.MOTOTAXI, rochabus: CFG.ROCHABUS }[spec.kind];
     this.setOrigin(0.5, 1).setDepth(9);
     this.body.setSize(spec.body[0], spec.body[1]).setOffset(spec.body[2], spec.body[3]);
     this.wheels = spec.wheels.map(() => scene.add.image(x, y, 'wheel').setDepth(10).setScale(spec.wheelScale));
@@ -104,6 +104,20 @@ class CombiSlug extends Phaser.Physics.Arcade.Sprite {
     }
   }
 
+  // Where shots leave the gun. Aiming (roughly) forward, they leave at a standing enemy's chest height: the gun sits
+  // on the roof, and from there a level shot would fly over the heads of everyone on the street.
+  // Returns { x, y, angle }: near-level aims fire perfectly level.
+  muzzle() {
+    const len = this.spec.turret.len;
+    const x = this.turret.x + Math.cos(this.aimAngle) * len;
+    let y = this.turret.y + Math.sin(this.aimAngle) * len, angle = this.aimAngle;
+    if (Math.abs(Math.sin(this.aimAngle)) < 0.3 && !this.rotation) {
+      y = Math.max(y, this.y - CFG.COMBI.LEVEL_SHOT_HEIGHT);
+      angle = Math.cos(this.aimAngle) >= 0 ? 0 : Math.PI;
+    }
+    return { x, y, angle };
+  }
+
   // The gun turns toward the held direction and keeps its angle.
   aim(c, move, dt) {
     const ax = move, ay = (c.up ? -1 : 0) + (c.down ? 1 : 0);
@@ -139,11 +153,10 @@ class CombiSlug extends Phaser.Physics.Arcade.Sprite {
     }
     this.aim(c, move, dt);
 
-    const mx = this.turret.x + Math.cos(this.aimAngle) * this.spec.turret.len;
-    const my = this.turret.y + Math.sin(this.aimAngle) * this.spec.turret.len;
+    const { x: mx, y: my, angle } = this.muzzle();
     if (c.fire && time > this.lastMg + C.MG_DELAY) {
       this.lastMg = time;
-      s.firePlayerBullet(mx, my, this.aimAngle + Phaser.Math.FloatBetween(-0.05, 0.05), C.MG_SPEED, 1, 'mgbullet', this.driver);
+      s.firePlayerBullet(mx, my, angle + Phaser.Math.FloatBetween(-0.05, 0.05), C.MG_SPEED, 1, 'mgbullet', this.driver);
       Fx.spark(s, mx, my);
       Sfx.mg();
     }

@@ -17,6 +17,8 @@
 // Objects can be listed here or placed as letter markers in the map. Without a y they stand at street level.
 //   combi { x }                parked Combi Slug (optional)
 //   mototaxi { x }             parked Mototaxi Slug instead (one vehicle per section)
+//   rochabus { x }             parked rochabus instead (Mission 4 escape)
+//   autoscroll                 px/s: the screen moves forward on its own (players get pushed by the left edge)
 //   abuelitas [{ x }]          tied-up helpers
 //   crates [{ x, stack }]      one-way platforms
 //   props [{ x, type, drop }]  breakable gang property (CFG.PROPS: box, lootbag, trash, barrel, moto); drop: an item
@@ -33,7 +35,7 @@
 //   events [{ x, say | message | run }]
 //                              fire once when a player passes x. say: { who, text, ms },
 //                              message: [title, sub, ms], run: (scene) => {}
-//   arena                      { alert: [title, sub], boss: 'cobrador' | 'truck' | 'contador' | 'heli' } (BOSSES) or
+//   arena                      { alert: [title, sub], boss: 'cobrador' | 'truck' | 'contador' | 'heli' | 'comisario' } or
 //                              { alert, waves: [[{ dx, t, ... }], ...] } (dx relative to arenaX; < 0 enters from the left,
 //                              past the view width = runs in from the right edge)
 //   outro { title, sub }       mission-complete banner (title defaults to "MISSION COMPLETE!")

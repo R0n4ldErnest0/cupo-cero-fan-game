@@ -31,7 +31,7 @@ A chain across the missions, so the ending feels earned:
 | 1 | ¡Paga o ya sabes! | A Paradero → B Terminal (boss) | ✅ prototype (both sections) |
 | 2 | Gamarra no se cierra | A Mercado (Mototaxi Slug) → B Azoteas → C Almacén (mid-boss) → D Oficina (boss) | 🚧 greybox (all sections) |
 | 3 | La ruta | A Cerros → B Metropolitano → C Estación (on foot) → D Metropolitano 2 + terminal (boss) | 🚧 greybox (all sections) |
-| 4 | Su denuncia es importante para nosotros | A Front desk → B Offices and cells → C Evidence room → D Escape (boss) | 📝 |
+| 4 | Su denuncia es importante para nosotros | A Mesa de partes → B Oficinas y celdas → C Sala de evidencias (riot wall) → D La fuga (rochabus, boss) | 🚧 greybox (all sections) |
 | 5 | Obra paralizada | A Air level ❓ → B Plaza: the town joins you → C Municipalidad → D Mayor (final boss) | 📝 |
 
 ---
@@ -113,7 +113,19 @@ for ~4 s both drift together with a small gap ("¡SALTA! →"), then the broken 
 screen (stay on it and you lose a life); whoever stands on a bus moves with it. At the terminal the bus stops, a
 platform appears around it, and the **police helicopter** attacks there (a ride section can end in an `arena`).
 
-## Mission 4 — "Su denuncia es importante para nosotros" 📝
+## Mission 4 — "Su denuncia es importante para nosotros" 🚧 greybox
+
+**Built (greybox):** indoor tiles (`~` office floor, `;` plaster wall, `!` cell bars). A **Mesa de partes**: the
+queue of complaints ("TIEMPO DE ESPERA: 3 AÑOS", "TURNO N° 4,821"), cops, snipers on the filing shelves. B
+**Oficinas y celdas**: four floors; cells open as you pass and cuperos come out to fight for the police; **the
+journalist** is locked in a cell upstairs (prisoner skin `press`, clue m4b). C **Sala de evidencias**: the seized cupo
+money; mid-boss **the riot-shield wall** (waves of riot cops). D **La fuga**: **drive the rochabus** (water cannon:
+knocks enemies back and stuns them; tear gas thrown back with C) down a street that **scrolls on its own**
+(`autoscroll`), patrol cars blocking the way; boss **the Comisario "Archivo"** in his filing-cabinet mech on
+office-chair wheels: ARCHIVADO stamps, complaint folders, a rolling charge, and (angry) backup and a rain of stamps;
+the two drawers are breakable. After the mission: the expediente and the journalist's lines (it airs tonight).
+
+Earlier design notes:
 
 **Defined:**
 - A **Front desk:** an infinite queue of complaints; cops shoot **"ARCHIVADO"** stamps.

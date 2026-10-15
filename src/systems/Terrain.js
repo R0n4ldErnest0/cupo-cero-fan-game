@@ -5,6 +5,7 @@
 //   =  concrete slab (one-way: stand on it, jump up through it, ↓+jump to drop down)
 //   -  wooden plank (one-way)           :  back wall (decoration, no collision)
 //   /  slope going up to the right      \  slope going down to the right (put solid tiles under slopes)
+//   ~  office floor / wall (solid, indoor)   ;  plaster back wall (indoor)   !  cell bars (back wall)
 //   .  or space: empty
 // A marker sits in the empty cell just above the floor it stands on.
 //
@@ -16,11 +17,16 @@
 const TILE = 16;
 
 // Tileset order (the 'tiles' texture is painted in Textures.tiles in this order).
-const TILE_IDS = ['street_top', 'street_lane', 'street', 'brick_top', 'brick', 'dirt_top', 'dirt', 'slab', 'plank', 'slope_up', 'slope_down', 'backwall'];
+const TILE_IDS = ['street_top', 'street_lane', 'street', 'brick_top', 'brick', 'dirt_top', 'dirt', 'slab', 'plank', 'slope_up', 'slope_down', 'backwall',
+  'office_top', 'office', 'plaster', 'bars'];
 const TI = Object.fromEntries(TILE_IDS.map((id, i) => [id, i]));
 
-const TERRAIN_CHARS = { '#': 'street', '%': 'brick', '*': 'dirt', '=': 'slab', '-': 'plank', '/': 'up', '\\': 'down', ':': 'back' };
-const SOLID = { street: 1, brick: 1, dirt: 1 };
+const TERRAIN_CHARS = {
+  '#': 'street', '%': 'brick', '*': 'dirt', '~': 'office', '=': 'slab', '-': 'plank', '/': 'up', '\\': 'down',
+  ':': 'back', ';': 'plaster', '!': 'bars',
+};
+const SOLID = { street: 1, brick: 1, dirt: 1, office: 1 };
+const BACK = { back: TI.backwall, plaster: TI.plaster, bars: TI.bars }; // back-wall kinds -> their tile
 const ONE_WAY = { slab: 1, plank: 1 };
 const SLOPE = { up: 1, down: 1 };
 
@@ -103,7 +109,7 @@ class Terrain {
     });
     // Markers inside a gallery keep the back wall behind them.
     this.kinds.forEach((line) => line.forEach((k, c) => {
-      if (k === null && line[c - 1] === 'back' && line[c + 1] === 'back') line[c] = 'back';
+      if (k === null && BACK[line[c - 1]] !== undefined && BACK[line[c + 1]] !== undefined) line[c] = line[c - 1];
     }));
 
     this.buildLayer();
@@ -135,8 +141,11 @@ class Terrain {
   // Back wall goes on its own layer, so it also shows behind the floors of a gallery.
   backIndex(c, r) {
     const k = this.kind(c, r);
-    if (k === 'back') return TI.backwall;
-    if (ONE_WAY[k] && (this.kind(c, r - 1) === 'back' || this.kind(c, r + 1) === 'back')) return TI.backwall;
+    if (BACK[k] !== undefined) return BACK[k];
+    if (ONE_WAY[k]) {
+      const near = BACK[this.kind(c, r - 1)] !== undefined ? this.kind(c, r - 1) : this.kind(c, r + 1);
+      if (BACK[near] !== undefined) return near === 'bars' ? TI.plaster : BACK[near];
+    }
     return -1;
   }
 
@@ -190,7 +199,7 @@ class Terrain {
   // Is there something to stand on just ahead (used by enemies so they don't walk off ledges)?
   hasFloor(x, footY) {
     const k1 = this.kindAt(x, footY + 2), k2 = this.kindAt(x, footY + TILE);
-    return !!(k1 && k1 !== 'back') || !!SLOPE[k2];
+    return !!(k1 && BACK[k1] === undefined) || !!SLOPE[k2];
   }
 
   // First floor surface at or below y in column x (null over a pit).

@@ -100,7 +100,6 @@ Full design, weapons list and build order: `docs/LEVELS.md`.
 - [x] Ride mode: the section happens on a moving vehicle (Metropolitano bus roof): scrolling road and backgrounds,
       a timeline of enemies jumping on and pedestrian bridges to duck under (lose a life), braking into the station.
       Mission 3 greybox = the bus ride
-- [ ] Moving-camera auto-scroll over a normal map (chases, escapes)
 - [x] Police enemies: patrullero (bursts), antimotines (riot shield), motorizado, francotirador (laser sight);
       Mission 3 section A "Cerros" greybox with the first police
 - [x] Boss framework: phases by health, attack picker, breakable parts, death sequence, mid-bosses; no health bar
@@ -114,7 +113,9 @@ Full design, weapons list and build order: `docs/LEVELS.md`.
 - [ ] Mission 3: cerros, Metropolitano, station + helicopter boss (all greybox ✅); real art
 
 ### M4 — Missions 4–5 + ending
-- [ ] Mission 4: indoor tiles, comisaría, rochabus, comisario boss
+- [x] Mission 4 greybox: indoor tiles, comisaría (front desk, cells, evidence room), the journalist, the riot-shield
+      wall, the rochabus escape (auto-scroll), the Comisario's filing-cabinet mech
+- [x] Moving-camera auto-scroll over a normal map (section `autoscroll`)
 - [ ] Air-shooter mode, ally AI
 - [ ] Mission 5: air level, plaza with allies, Municipalidad, mayor mech
 - [ ] Ending cutscene; credits

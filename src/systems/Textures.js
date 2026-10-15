@@ -171,6 +171,7 @@ const SKINS = {
   thug3: { head: 'thug', pal: { Q: '#c0282e', X: '#1b1b22', C: '#e8e8e8', P: '#2b2b33', F: '#c0282e' } }, // knife runner
   tombo: { head: 'shades', pal: { H: '#2f5a34', M: '#2b1d14', Y: '#d8d8d8', C: '#5f7d45', P: '#34502f', F: '#1b1b22' } }, // corrupt cop
   riot: { head: 'helmet', pal: { H: '#26332a', V: '#8fb8d8', C: '#34502f', P: '#26332a', F: '#1b1b22' } }, // antimotines
+  press: { head: 'cobradora', pal: { h: '#3a2a1e', C: '#2c6fd1', P: '#3a3d45', F: '#1b1b22' } }, // the journalist (PRENSA vest)
   poli: { head: 'cop', pal: { H: '#2f5a34', M: '#2b1d14', Y: '#d8d8d8', C: '#6b8a4f', P: '#34502f', F: '#1b1b22' } }, // honest cop (prisoner)
   vendor: { head: 'cobradora', pal: { h: '#2b1d14', C: '#f4f4f4', P: '#3a5fa0', F: '#5b3a20' } }, // street vendor
   cobrador: { head: 'driver', pal: { H: '#f4f4f4', M: '#1b1b22', C: '#e3b23c', P: '#1b1b22', F: '#f4f4f4' } },
@@ -216,6 +217,8 @@ const Textures = {
     this.mototaxi(scene);
     this.truck(scene);
     this.contador(scene);
+    this.rochabus(scene);
+    this.comisario(scene);
     this.combi(scene);
     this.boss(scene);
     this.biker(scene);
@@ -368,18 +371,68 @@ const Textures = {
     b.register(scene, 'ledger_book');
   },
 
+  // Mission 4 vehicle: the rochabus (water-cannon truck, facing right, 78x46), its roof cannon and the water.
+  rochabus(scene) {
+    const r = new Painter(78, 46);
+    r.rect(2, 10, 56, 26, '#e8ecef').rect(2, 10, 56, 2, '#c8ccd0'); // armored body
+    r.rect(4, 14, 30, 8, '#9aa0a8').rect(6, 16, 26, 4, '#5a6068'); // grille windows
+    r.rect(2, 26, 56, 4, '#2e7d32').text('POLICIA', 12, 31, '#f4f4f4');
+    r.rect(58, 16, 16, 20, '#e8ecef').rect(62, 18, 10, 8, '#8fd0ee').rect(63, 19, 3, 2, '#ffffff'); // cab + windshield
+    r.rect(20, 4, 20, 6, '#5a6068').rect(22, 2, 16, 2, '#3a3d45'); // water tank on the roof
+    r.rect(26, 0, 4, 2, '#c0282e').rect(30, 0, 4, 2, '#2c6fd1'); // siren
+    r.rect(0, 36, 76, 4, '#3a3d45');
+    r.outline();
+    r.register(scene, 'rochabus');
+    new Painter(18, 7).disc(4, 3, 3, '#5a6068').rect(4, 2, 13, 3, '#9aa0a8').rect(15, 1, 3, 5, '#3a3d45').outline().register(scene, 'water_cannon');
+    new Painter(7, 4).rect(0, 1, 7, 2, '#8fd0ee').rect(2, 0, 3, 4, '#bfe6f8').set(5, 1, '#ffffff').register(scene, 'water');
+  },
+
+  // Mission 4 boss: the Comisario's filing-cabinet mech (facing left, 70x86) on office-chair wheels, its drawers
+  // (breakable parts), the ARCHIVADO stamps and the complaint folders; the patrol car you can smash.
+  comisario(scene) {
+    const pal = Object.assign({}, PAL, SKINS.tombo.pal);
+    const m = new Painter(70, 86);
+    m.grid([...HUMAN.HEADS.shades, ...HUMAN.TORSO.fwd.slice(0, 6)], 27, 0, pal, true); // the comisario on top
+    m.disc(35, 15, 6, pal.C); // belly
+    m.rect(12, 14, 46, 62, '#7d838b').rect(12, 14, 46, 2, '#a9afb7'); // the cabinet
+    [24, 44, 64].forEach((y) => m.rect(14, y - 8, 42, 18, '#6b7078').rect(30, y - 2, 10, 3, '#3a3d45'));
+    m.rect(16, 16, 38, 6, '#f2c94c').text('ARCHIVO', 21, 17, '#1b1b22');
+    m.rect(33, 76, 4, 4, PAL.k).rect(18, 80, 34, 2, PAL.k); // chair base
+    [20, 35, 50].forEach((x) => m.disc(x, 83, 2, PAL.k));
+    m.outline();
+    m.register(scene, 'comisario_mech');
+    const d = new Painter(20, 14);
+    d.rect(0, 0, 20, 14, '#9aa0a8').rect(2, 2, 16, 10, '#6b7078').rect(1, 5, 3, 4, '#3a3d45').outline();
+    d.register(scene, 'drawer');
+    const st = new Painter(10, 8);
+    st.rect(3, 0, 4, 3, '#5b3a20').rect(1, 3, 8, 5, '#c0282e').rect(2, 5, 6, 1, '#f4f4f4');
+    st.register(scene, 'stamp');
+    const f = new Painter(12, 9);
+    f.rect(0, 1, 12, 8, '#d9b878').rect(0, 0, 5, 2, '#c8a165').rect(2, 3, 8, 1, '#8a7a5a').rect(2, 5, 6, 1, '#8a7a5a').outline();
+    f.register(scene, 'folder');
+    const pc = new Painter(64, 28); // patrol car (same art as the sleeping cop's car, empty)
+    pc.rect(14, 4, 32, 8, '#f4f4f4').rect(17, 6, 11, 5, '#8fd0ee').rect(31, 6, 11, 5, '#8fd0ee');
+    pc.rect(26, 2, 4, 2, PAL.r).rect(30, 2, 4, 2, '#2c6fd1');
+    pc.rect(2, 12, 60, 10, '#f4f4f4').rect(2, 16, 60, 3, '#2e7d32').text('POLICIA', 18, 11, '#2e7d32');
+    pc.disc(14, 22, 4, PAL.k).disc(50, 22, 4, PAL.k).set(14, 22, PAL.g).set(50, 22, PAL.g);
+    pc.outline();
+    pc.register(scene, 'prop_patrol');
+  },
+
   // Prisoner extras: tied up sitting on the floor, and saluting.
   prisoner(scene) {
-    const pal = Object.assign({}, PAL, SKINS.poli.pal);
-    const head = HUMAN.HEADS.cop;
-    const t = new Painter(16, 24);
-    t.grid([...head, ...HUMAN.TORSO.up.slice(0, 4), ...HUMAN.CROUCH_LEGS], 0, 7, pal);
-    t.rect(3, 19, 10, 1, PAL.n).rect(3, 22, 10, 1, PAL.n).rect(4, 27, 9, 1, PAL.n); // rope
-    t.register(scene, 'poli_tied');
-    const s = new Painter(16, 24);
-    s.grid([...head, ...HUMAN.TORSO.up, ...HUMAN.LEGS.stand], 0, 0, pal);
-    s.rect(11, 3, 2, 2, PAL.s).rect(11, 5, 2, 4, pal.C).set(10, 3, PAL.s); // hand at the cap
-    s.register(scene, 'poli_salute');
+    ['poli', 'press'].forEach((skin) => {
+      const pal = Object.assign({}, PAL, SKINS[skin].pal);
+      const head = HUMAN.HEADS[SKINS[skin].head];
+      const t = new Painter(16, 24);
+      t.grid([...head, ...HUMAN.TORSO.up.slice(0, 4), ...HUMAN.CROUCH_LEGS], 0, 7, pal);
+      t.rect(3, 19, 10, 1, PAL.n).rect(3, 22, 10, 1, PAL.n); // rope
+      t.register(scene, `${skin}_tied`);
+      const s = new Painter(16, 24);
+      s.grid([...head, ...HUMAN.TORSO.up, ...HUMAN.LEGS.stand], 0, 0, pal);
+      s.rect(11, 3, 2, 2, PAL.s).rect(11, 5, 2, 4, pal.C).set(10, 3, PAL.s); // hand at the cap (a wave, for the press)
+      s.register(scene, `${skin}_salute`);
+    });
   },
 
   abuelita(scene) {
@@ -886,6 +939,21 @@ const Textures = {
         }
       },
       backwall: (o) => bricks(o, 0, '#5e3a30', '#4a2c24'),
+      // Indoor (the comisaría): linoleum floor with a skirting line, office wall below it, plaster, cell bars.
+      office_top: (o) => {
+        p.rect(o, 0, T, T, '#7a7468').rect(o, 0, T, 3, '#b8a888').rect(o, 3, T, 1, '#8a7a5a');
+        for (let x = 0; x < T; x += 8) p.rect(o + x, 4, 1, T - 4, '#6a645a');
+      },
+      office: (o) => { p.rect(o, 0, T, T, '#7a7468'); speckle(o, 0, 6, ['#6a645a', '#8a8478']); },
+      plaster: (o) => {
+        p.rect(o, 0, T, T, '#a8b8a0').rect(o, 12, T, 4, '#7a9070');
+        speckle(o, 0, 5, ['#98a890', '#b8c8b0']);
+      },
+      bars: (o) => {
+        p.rect(o, 0, T, T, '#3a3d45');
+        for (let x = 1; x < T; x += 4) p.rect(o + x, 0, 2, T, '#9aa0a8');
+        p.rect(o, 5, T, 1, '#7d838b');
+      },
     };
     TILE_IDS.forEach((id, i) => draw[id](i * T));
     p.register(scene, 'tiles');

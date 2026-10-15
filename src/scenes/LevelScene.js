@@ -2,7 +2,7 @@
 // Start with this.scene.start('Level', { mission: index, section: index }). A mission can be split into
 // `sections` (areas joined by a fade); each one is a fresh scene start with { carry: true }, so players keep
 // their lives, weapons, bombs, fat/drunk state and the Combi Slug they're driving.
-const BOSSES = { cobrador: BossCobrador, heli: BossHeli, truck: BossTruck, contador: BossContador };
+const BOSSES = { cobrador: BossCobrador, heli: BossHeli, truck: BossTruck, contador: BossContador, comisario: BossComisario };
 
 class LevelScene extends Phaser.Scene {
   constructor() {
@@ -65,6 +65,7 @@ class LevelScene extends Phaser.Scene {
     const run = Session.run || {};
     if (data.carry && run.combi && M.vehicles !== false) this.carryCombi(run.combi, start);
     else if (M.mototaxi) this.combi = new MototaxiSlug(this, M.mototaxi.x, this.floorY(M.mototaxi));
+    else if (M.rochabus) this.combi = new RochabusSlug(this, M.rochabus.x, this.floorY(M.rochabus));
     else {
       const combi = M.combi || marks.find((o) => o.combi);
       if (combi) this.combi = new CombiSlug(this, combi.x, this.floorY(combi));
@@ -169,15 +170,17 @@ class LevelScene extends Phaser.Scene {
   carryCombi(c, start) {
     const p = this.players[c.driver];
     const x = start.x + 30, y = this.floorY({ x, y: start.y });
-    const v = (this.combi = c.kind === 'mototaxi' ? new MototaxiSlug(this, x, y) : new CombiSlug(this, x, y));
+    const V = { combi: CombiSlug, mototaxi: MototaxiSlug, rochabus: RochabusSlug }[c.kind] || CombiSlug;
+    const v = (this.combi = new V(this, x, y));
     v.loadState(c);
     if (p && p.state === 'play') p.enterVehicle(v);
   }
 
-  // Bocinazo: stun an enemy and push it back (dir = which way). Enemies without a stun just take a hit.
-  stun(e, dir) {
-    if (e.stunUntil === undefined && !(e instanceof Grunt) && !(e instanceof RiotCop)) return e.hit(1, false, null);
-    e.stunUntil = this.time.now + CFG.MOTOTAXI.STUN_MS;
+  // Bocinazo / water cannon: stun an enemy and push it back (dir = which way). Enemies that can't be stunned (bikers,
+  // snipers) just take a hit.
+  stun(e, dir, ms = CFG.MOTOTAXI.STUN_MS) {
+    if (!(e instanceof Grunt) && !(e instanceof RiotCop)) return e.hit(1, false, null);
+    e.stunUntil = this.time.now + ms;
     if (e.dropKnife) e.dropKnife();
     if (e.dropBaton) e.dropBaton();
     e.aimUntil = 0;
@@ -549,7 +552,9 @@ class LevelScene extends Phaser.Scene {
     const maxTop = Math.max(0, this.levelH - CFG.VIEW_H);
     if (objs.length) {
       const front = Math.max(...objs.map((o) => o.x)), back = Math.min(...objs.map((o) => o.x));
-      const want = Math.min(front - CFG.PLAYER.CAM_LEAD, back - 16);
+      let want = Math.min(front - CFG.PLAYER.CAM_LEAD, back - 16);
+      // Auto-scroll (section `autoscroll`: px/s): the screen keeps moving forward on its own.
+      if (this.mission.autoscroll && !snap && !this.finished) want = Math.max(want, this.viewLeft + this.mission.autoscroll * this.game.loop.delta / 1000);
       this.viewLeft = Phaser.Math.Clamp(Math.max(this.viewLeft, want), 0, this.arenaX);
       const avgY = objs.reduce((a, o) => a + Math.min(o.y, this.levelH), 0) / objs.length;
       const wantTop = Phaser.Math.Clamp(avgY - CFG.VIEW_H * 0.68, 0, maxTop);
@@ -773,6 +778,10 @@ class LevelScene extends Phaser.Scene {
     }
     Fx.spark(this, b.x, b.y);
     this.hitTarget(t, b.damage, false, b.owner, b.how);
+    // The rochabus' water knocks people back (not the boss).
+    if (b.how === 'water' && t.alive && t !== this.boss && !(t instanceof BossPart) && !(t instanceof Breakable)) {
+      this.stun(t, b.pushDir || 1, CFG.ROCHABUS.STUN_MS);
+    }
     if (!b.pierce) b.destroy();
   }
 

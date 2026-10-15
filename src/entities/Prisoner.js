@@ -2,6 +2,7 @@
 // gang. A shot or a touch frees him; he salutes, walks to the nearest player, hands over his item and runs off.
 // Mission data: prisoners: [{ x, y?, drop, clue }] or a 'T' map marker; Breakable props can hide one (drop: 'prisoner').
 // A prisoner with a `clue` (an id of the mission's `clues`) tells it when freed: it goes into the expediente.
+// `skin: 'press'` is the journalist (Mission 4), the key to the story.
 const PRISONER_LINES = [
   '¡Gracias, colega!', 'Me amarraron por no querer cobrar cupos.', '¡Viva la policía honesta... somos tres!',
   'Mi comisario me vendió por un cupo.', '¡Yo sí tomé tu denuncia!', 'Toma, te va a servir.',
@@ -9,7 +10,9 @@ const PRISONER_LINES = [
 
 class Prisoner extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y, def = {}) {
-    super(scene, x, y, 'poli_tied');
+    const skin = def.skin || 'poli';
+    super(scene, x, y, `${skin}_tied`);
+    this.skin = skin;
     scene.add.existing(this);
     scene.physics.add.existing(this);
     this.setOrigin(0.5, 1).setDepth(5);
@@ -28,7 +31,7 @@ class Prisoner extends Phaser.Physics.Arcade.Sprite {
     this.state = 'thanks';
     this.rescuer = by && by.index !== undefined ? by : null;
     if (this.rescuer) this.rescuer.rescued++;
-    this.setTexture('poli_salute');
+    this.setTexture(`${this.skin}_salute`);
     this.body.setSize(8, 20).setOffset(4, 4);
     const clue = this.clue && s.mission.clues && s.mission.clues[this.clue];
     if (clue) {
@@ -55,7 +58,7 @@ class Prisoner extends Phaser.Physics.Arcade.Sprite {
     this.setFlipX(this.facing < 0);
     if (item !== 'none') s.spawnPickup(this.x + this.facing * 8, this.y - 16, item).setVelocityY(-120);
     this.state = 'leaving';
-    this.setTexture('poli_salute').setVelocityX(0);
+    this.setTexture(`${this.skin}_salute`).setVelocityX(0);
     s.time.delayedCall(500, () => this.active && (this.state = 'running'));
   }
 
@@ -78,7 +81,7 @@ class Prisoner extends Phaser.Physics.Arcade.Sprite {
 
   walk(dt, vx) {
     this.walkT += dt;
-    this.setTexture(vx ? `poli_fwd_${RUN_CYCLE[Math.floor(this.walkT / 100) % 4]}` : 'poli_fwd_stand');
+    this.setTexture(vx ? `${this.skin}_fwd_${RUN_CYCLE[Math.floor(this.walkT / 100) % 4]}` : `${this.skin}_fwd_stand`);
     this.setFlipX(this.facing < 0);
   }
 }
