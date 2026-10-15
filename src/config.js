@@ -1,18 +1,20 @@
-// Global tuning. World units are "pixels" of the 384x216 view (camera zoom 2.5 on a 960x540 canvas).
+// Global tuning. World units are "pixels" of the 320x180 view (camera zoom 3 on a 960x540 canvas). The zoom must be
+// a whole number: with 2.5 every game pixel was 2 or 3 screen pixels and characters seemed to change size.
 const FONT = '"Courier New", Courier, monospace';
 
 const CFG = {
   WIDTH: 960,
   HEIGHT: 540,
-  ZOOM: 2.5,
-  VIEW_W: 384, // = WIDTH / ZOOM
-  VIEW_H: 216, // = HEIGHT / ZOOM
+  ZOOM: 3,
+  VIEW_W: 320, // = WIDTH / ZOOM
+  VIEW_H: 180, // = HEIGHT / ZOOM
   GROUND_Y: 240,
   GRAVITY: 900,
   DEBUG: /[?&]debug/.test(location.search),
+  ALERT_MS: 1100, // how long a boss / ambush warning stays on screen
   SHOW_FPS: /[?&](fps|debug)/.test(location.search), // FPS meter + worst frame of the last 3 s (HUD, bottom)
 
-  PLAYER: { SPEED: 95, JUMP: 330, INVULN_MS: 2500, START_BOMBS: 10, CAM_LEAD: 160 },
+  PLAYER: { SPEED: 95, JUMP: 330, INVULN_MS: 2500, START_BOMBS: 10, CAM_LEAD: 135 },
 
   // Story intro crawl after character select (src/scenes/IntroScene.js): scroll speed.
   INTRO: { MS_PER_PX: 28 },
@@ -23,11 +25,11 @@ const CFG = {
   // Placeholder names/roles — see ROADMAP open questions.
   CHARACTERS: [
     // melee = texture of the close-range weapon (tire iron, police baton, machete, handbag).
-    // ids are internal (sprite keys); names are what the game shows. The 4th name is a placeholder.
+    // ids are internal (sprite keys); names are what the game shows.
     { id: 'chato', name: 'PANCHO', role: 'Chofer de combi', melee: 'melee_tireiron' },
     { id: 'sargento', name: 'DON TITO', role: 'Policía retirado (de los honestos)', melee: 'melee_baton' },
     { id: 'merc', name: 'AMARU', role: 'Mercenario contratado por el gremio', melee: 'melee_machete' },
-    { id: 'cobradora', name: 'LA BOTICARIA', role: 'Dueña de una botica extorsionada', melee: 'melee_handbag' },
+    { id: 'cobradora', name: 'INÉS', role: 'Dueña de una botica extorsionada', melee: 'melee_handbag' },
   ],
 
   // Keyboard maps. Solo accepts every layout; 2P splits the keyboard (gamepads also work: A jump, X fire, B grenade).
@@ -123,11 +125,11 @@ const CFG = {
   // each at the end of a mission, and goes back to 0 when you die (arcade rule).
   PRISONER: { BONUS: 1000, WALK: 45, GIVE_AFTER: 2500, RUN: 130 },
 
-  // Ride mode (src/systems/Ride.js): the Metropolitano bus roof. The ride section's map is 384 wide and 14 rows
+  // Ride mode (src/systems/Ride.js): the Metropolitano bus roof. The ride section's map is one screen wide and 14 rows
   // (224) tall; the road is at ROAD_Y, the roof at ROOF_Y. ROOFS: [x0, x1, dy] of each roof part, relative to the
   // bus (two cars and the lower accordion joint). A bridge deck passes DUCK_CLEARANCE above the roof: crouch!
   RIDE: {
-    ROAD_Y: 200, ROOF_Y: 152, BUS_X: 32, ROOFS: [[2, 150, 0], [150, 166, 4], [166, 318, 0]],
+    ROAD_Y: 200, ROOF_Y: 152, BUS_X: 28, BUS_W: 264, ROOFS: [[2, 124, 0], [124, 136, 4], [136, 262, 0]],
     DUCK_CLEARANCE: 15, WARN_MS: 1600, BRAKE_MS: 2500, POST_EVERY: 260,
     // Bus-to-bus transfer: the next bus catches up at TRANSFER_APPROACH px/s, then both drift left for
     // TRANSFER_TOGETHER ms with a TRANSFER_GAP px gap (jump!), then it settles into place.
@@ -141,6 +143,8 @@ const CFG = {
   // each shot. Any grunt stabs a player who gets within KNIFE_RANGE, after KNIFE_WINDUP ms of warning.
   ENEMY: {
     BULLET_SPEED: 95, GRUNT_SPEED: 35, BIKER_SPEED: 150, BOMB_RADIUS: 20,
+    // Chatter: only some enemies talk (once), and few have a last word, so speech bubbles don't crowd the screen.
+    TALK_CHANCE: 0.25, DEATH_LINE_CHANCE: 0.12,
     FIRST_SHOT: [1200, 2200], SHOT_GAP: [2200, 3800], AIM_MS: 400,
     KNIFE_RANGE: 20, KNIFE_REACH: 24, KNIFE_WINDUP: 350, KNIFE_COOLDOWN: 900, KNIFER_SPEED: 70,
   },
@@ -167,7 +171,7 @@ const CFG = {
   },
 
   // Flight section (Mission 5 air level, src/systems/Flight.js + entities/Aircraft.js, Flyer.js).
-  AIRCRAFT: { HP: 4, ROCKETS: 12, SPEED: 130, PLANE_SPEED: 160, DELAY: 90, PLANE_DELAY: 70, FLOOR_MARGIN: 50 },
+  AIRCRAFT: { HP: 4, ROCKETS: 12, SPEED: 130, PLANE_SPEED: 160, DELAY: 90, PLANE_DELAY: 70, FLOOR_MARGIN: 36 },
   FLYERS: {
     polheli: { hp: 6, score: 400, speed: 90, stay: 9 },
     drone: { hp: 1, score: 150, speed: 85 },

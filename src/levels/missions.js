@@ -29,6 +29,7 @@
 //                              `drop` (an item kind or 'random')
 //   vendors [{ x, food }]      street vendor with a cart, tosses that CFG.FOOD to a player walking by
 //   pickups [{ x, kind }]      a crate letter (guns H R A E G F D L, throwables B M P S) or a food id (CFG.FOOD)
+//   crowd { every, types, from, cluster }  extra enemies all along the section (see LevelScene.makeCrowd)
 //   spawns [{ x, t, ... }]     enemies, spawned when x reaches the right screen edge.
 //                              t: 'grunt' (skin, variant 'gunner' | 'thrower' | 'knife', y, hp), 'biker', and the
 //                              police: 'cop' (patrullero), 'riot' (antimotines), 'motocop', 'sniper'; 'sere' (serenazgo)
@@ -40,14 +41,14 @@
 //   arena                      { alert: [title, sub], boss: 'cobrador' | 'truck' | 'contador' | 'heli' | 'comisario' } or
 //                              { alert, waves: [[{ dx, t, ... }], ...] } (dx relative to arenaX; < 0 enters from the left,
 //                              past the view width = runs in from the right edge)
-//   outro { title, sub }       mission-complete banner (title defaults to "MISSION COMPLETE!")
-//   story [{ type, ... }]      story pages shown after the outro, before the tally (see src/scenes/StoryScene.js)
+//   story [{ type, ... }]      story pages shown after the MISSION COMPLETE! banner, before the tally (keep them few;
+//                              see src/scenes/StoryScene.js)
 //   clues { id: 'text' }       the expediente: clues the honest cops give when freed (prisoners `clue`, props with
 //                              drop 'prisoner' + `clue`, or `markerClues` for T markers). A page lists them at the end
 //
 // Sections: a mission can instead list `sections: [{ ... }]`, areas joined by a quick fade (like Metal Slug's
 // doors, holes and vehicles). Each section takes the per-area fields above (terrain, width, spawns, props,
-// arena, ...) on top of the mission's (title, subtitle, outro, bg, legend). Per section:
+// arena, ...) on top of the mission's (title, subtitle, story, bg, legend). Per section:
 //   area                       short name of the area (for the docs/tools; not shown in game)
 //   exit { type }              how a middle section ends: 'edge' (reach the right end; default) or 'door'
 //                              (walk into a '>' marker; default when the map has one). A middle section with an

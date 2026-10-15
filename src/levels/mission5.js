@@ -9,7 +9,6 @@ MISSIONS.push({
   subtitle: 'OBRA PARALIZADA',
   name: 'LA MUNICIPALIDAD',
   draft: true,
-  outro: { sub: '"El Jefe" cayó.' },
   // The ending (provisional: happy or bittersweet is still to decide).
   story: [
     {
@@ -18,9 +17,6 @@ MISSIONS.push({
       ticker: '· Cae la red de los cupos · Comisario "Archivo" capturado en Tumbes · Transportistas levantan el paro · Gamarra abre todos sus puestos ·',
       face: 'EL ALCALDE (DETENIDO)',
     },
-    { type: 'talk', who: 'LA BOTICARIA', text: 'Hoy abrí la botica sin miedo. Primera vez en dos años.' },
-    { type: 'talk', who: 'AMARU', text: 'El gremio me pagó. Pero esta vez no lo hice por la plata.' },
-    { type: 'talk', who: 'DON TITO', text: 'Los policías honestos vuelven a la comisaría. Somos más de tres, al final.' },
     { type: 'talk', who: 'PANCHO', text: 'Mañana vuelvo a manejar mi combi. Ruta 13-B. Sin cupo. Por Lucho.' },
   ],
   clues: {
@@ -38,6 +34,7 @@ MISSIONS.push({
         seconds: 55,
         events: [
           { at: 2, type: 'drone', y: 80 }, { at: 3, type: 'drone', y: 140 },
+          { at: 8, type: 'swarm', count: 5 }, { at: 22, type: 'swarm', count: 6 }, { at: 33, type: 'swarm', count: 7 }, { at: 46, type: 'swarm', count: 8 },
           { at: 6, type: 'polheli', y: 70 },
           { at: 10, type: 'tv', y: 40 },
           { at: 12, type: 'drone', y: 60 }, { at: 12.5, type: 'drone', y: 120 }, { at: 13, type: 'drone', y: 160 },
@@ -51,12 +48,12 @@ MISSIONS.push({
         ],
       },
       decor: [
-        { type: 'text', x: 192, y: 60, text: 'Don Tito: "Sé dónde hay un helicóptero viejo."\n¡A la plaza, que rodearon la marcha!', style: { fontSize: '10px', color: '#ffe066' } },
       ],
     },
     // B — La plaza: the march is surrounded by the serenazgo and the police. The town helps.
     {
       area: 'PLAZA',
+      crowd: { every: 100, types: [{ t: 'sere' }, { t: 'sere' }, { t: 'cop' }, { t: 'riot' }, { t: 'grunt', hp: 3, skin: 'thug2' }] },
       width: 2600,
       town: true,
       bg: { sky: 0xd8c0a0 },
@@ -82,6 +79,7 @@ MISSIONS.push({
     // C — Municipalidad: offices, a balcony, the press room. Leaves through the door to the works out back.
     {
       area: 'MUNICIPALIDAD',
+      crowd: { every: 120, types: [{ t: 'sere' }, { t: 'sere' }, { t: 'cop' }, { t: 'riot' }] },
       terrain: String.raw`
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

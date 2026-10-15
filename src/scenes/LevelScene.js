@@ -84,7 +84,8 @@ class LevelScene extends Phaser.Scene {
     (M.prisoners || []).concat(markerPrisoners).forEach((d) => this.addPrisoner(d.x, this.floorY(d), d));
     (M.pickups || []).forEach((p) => this.spawnPickup(p.x, this.floorY(p) - 40, p.kind));
     marks.filter((o) => o.pickup).forEach((p) => this.spawnPickup(p.x, p.y - 8, p.pickup));
-    this.spawns = (M.spawns || []).concat(marks.filter((o) => o.t)).map((s) => Object.assign({}, s)).sort((a, b) => a.x - b.x);
+    this.spawns = (M.spawns || []).concat(marks.filter((o) => o.t), this.makeCrowd(M.crowd))
+      .map((s) => Object.assign({}, s)).sort((a, b) => a.x - b.x);
     this.triggers = (M.events || []).map((e) => Object.assign({}, e)).sort((a, b) => a.x - b.x);
 
     this.town = M.town ? new Town(this) : null;
@@ -379,14 +380,47 @@ class LevelScene extends Phaser.Scene {
       .setDepth(-1);
   }
 
+  // Extra enemies along a section (section `crowd`: { every, types, from, cluster }): one every `every` px (with some
+  // jitter) between `from` and the arena, its type picked from `types` (spawn definitions), sometimes in pairs
+  // (`cluster` chance). Same layout every time (seeded); skips pits.
+  makeCrowd(C) {
+    if (!C) return [];
+    const rnd = mulberry32(1000 + this.missionIndex * 10 + this.sectionIndex);
+    const out = [], end = (C.to || this.arenaX) - 30;
+    for (let x = C.from || 440; x < end; x += C.every * (0.7 + rnd() * 0.6)) {
+      const xx = Math.round(x);
+      if (this.terrain.groundY(xx) === null) continue;
+      const n = rnd() < (C.cluster || 0.35) ? 2 : 1;
+      for (let i = 0; i < n; i++) out.push(Object.assign({}, C.types[Math.floor(rnd() * C.types.length)], { x: xx + i * 22 }));
+    }
+    return out;
+  }
+
+  // A sign board standing on two posts (down to the floor below it), or hanging from a ceiling above it.
+  physicalSign(x, y, text, bg) {
+    const t = this.worldText(x, y, text, { backgroundColor: bg, strokeThickness: 0, padding: { x: 3, y: 2 } });
+    const T = this.terrain, top = y - t.height / 2, bottom = y + t.height / 2, w = t.width;
+    const g = this.add.graphics().setDepth(-2);
+    let ceiling = null;
+    for (let yy = top - 4; yy > top - 120 && yy > 0; yy -= 4) if (T.isSolid(x, yy)) { ceiling = yy; break; }
+    if (ceiling !== null) {
+      g.lineStyle(1, 0x3a3d45, 1).lineBetween(x - w / 3, ceiling, x - w / 3, top).lineBetween(x + w / 3, ceiling, x + w / 3, top);
+    } else {
+      const floor = T.surfaceBelow(x, bottom);
+      const to = floor === null || floor - bottom > 200 ? bottom + 40 : floor;
+      g.fillStyle(0x5a6068, 1).fillRect(x - w / 3 - 1, bottom, 2, to - bottom).fillRect(x + w / 3 - 1, bottom, 2, to - bottom);
+    }
+    return t;
+  }
+
   // Decor without a y stands at street level (graffiti, images, the cop car); text and signs need a y.
   buildDecor() {
-    const sign = (x, y, text, bg) => this.worldText(x, y, text, { backgroundColor: bg, strokeThickness: 0, padding: { x: 3, y: 2 } });
+    const sign = (x, y, text, bg) => this.physicalSign(x, y, text, bg);
     const build = {
       text: (d) => this.worldText(d.x, d.y, d.text, d.style),
-      controls: (d) => this.worldText(d.x, d.y, Session.numPlayers === 1
-        ? '←→ MOVER   ↑ APUNTAR   ↓ AGACHARSE   ↓+Z BAJAR\nZ SALTAR   X DISPARAR   C GRANADA'
-        : '1P: WASD + F DISPARAR  G SALTAR  H GRANADA\n2P: FLECHAS + , DISPARAR  . SALTAR  / GRANADA'),
+      controls: (d) => sign(d.x, d.y, Session.numPlayers === 1
+        ? '←→ MOVER  ↑ APUNTAR  ↓ AGACHAR\nZ SALTAR  X DISPARAR  C GRANADA'
+        : '1P: WASD · F G H\n2P: FLECHAS · , . /', '#1b1b22'),
       image: (d) => this.add.image(d.x, this.floorY(d), d.key).setOrigin(0.5, 1).setDepth(-2),
       sign: (d) => sign(d.x, d.y, d.text, d.bg || '#1e5fb4'),
       graffiti: (d) => {
@@ -952,7 +986,7 @@ class LevelScene extends Phaser.Scene {
       if (this.lastSection) this.onBossDefeated();
       return;
     }
-    if (A.alert) this.message(A.alert[0], A.alert[1], 2200);
+    if (A.alert) this.message(A.alert[0], A.alert[1], CFG.ALERT_MS);
     if (A.boss) this.startBoss(A.boss);
     else if (A.waves) {
       this.waves = { list: A.waves, index: -1, pending: 0 };
@@ -1027,8 +1061,8 @@ class LevelScene extends Phaser.Scene {
     Sfx.stopMusic();
     Sfx.fanfare();
     Voice.say('mission_complete', 'Mission complete!', 'en');
-    const O = this.mission.outro || {};
-    this.message(O.title || 'MISSION COMPLETE!', O.sub || '', 4500);
+    // Just the arcade banner: the story (if any) comes in the pages after it.
+    this.message('MISSION COMPLETE!', '', 4500);
     // Prisoner bonus, like the arcade's tally: every rescue since your last death counts.
     this.players.forEach((p) => {
       p.rescueBonus = p.state === 'play' ? p.rescued * CFG.PRISONER.BONUS : 0;
@@ -1038,9 +1072,10 @@ class LevelScene extends Phaser.Scene {
     this.time.delayedCall(5200, () => {
       this.scene.stop('HUD');
       const end = { mission: this.missionIndex, scores: this.scores() };
-      // The expediente page (this mission's clues: found or "???"), then the mission's own story pages.
+      // The expediente page (this mission's clues: found or "???"; only if you found at least one), then the
+      // mission's own story pages.
       const C = this.mission.clues;
-      const file = C ? [{
+      const file = C && Object.keys(C).some((id) => Session.hasClue(id)) ? [{
         type: 'file', title: `EXPEDIENTE — ${this.mission.title}`,
         items: Object.keys(C).map((id) => ({ text: C[id], found: Session.hasClue(id) })),
       }] : [];

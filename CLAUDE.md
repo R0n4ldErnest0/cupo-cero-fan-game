@@ -9,7 +9,7 @@ extortion crisis ("cobro de cupos") in Lima, Peru: gangs charging quotas to comb
 businesses and schools, and police/politicians colluding with them.
 
 Pancho, a combi driver whose compadre was killed for not paying, teams up with Amaru (a mercenary hired by the
-drivers' union), Don Tito (a retired honest cop) and a drugstore owner, and fights through 5 missions: gangs
+drivers' union), Don Tito (a retired honest cop) and Inés (a drugstore owner), and fights through 5 missions: gangs
 first, then gangs + police, finally a corrupt mayor. Character ids in code stay chato/sargento/merc/cobradora.
 
 See `ROADMAP.md` for the plan, level list and open decisions.
@@ -30,8 +30,9 @@ See `ROADMAP.md` for the plan, level list and open decisions.
 - **Phaser 3.80.1**, vendored at `lib/phaser.min.js` (no CDN, works offline).
 - Plain classic `<script>` tags, **no build step, no modules**. Files share globals; load order is
   defined in `index.html`. Keep it that way unless we deliberately add a bundler.
-- Arcade physics. Game canvas is 960x540; the level camera uses zoom 2.5 (`CFG.ZOOM`), so the view is
-  384x216 world "pixel" units (`CFG.VIEW_W/H`); never hardcode the view size. The HUD runs in its own scene at zoom 1.
+- Arcade physics. Game canvas is 960x540; the level camera uses zoom 3 (`CFG.ZOOM`), so the view is
+  320x180 world "pixel" units (`CFG.VIEW_W/H`); never hardcode the view size. Keep the zoom a whole number:
+  at 2.5 game pixels were 2 or 3 screen pixels and characters seemed to change size as they moved. The HUD runs in its own scene at zoom 1.
 - **All placeholder art is generated in code** (`src/systems/Textures.js`): small sprites are ASCII
   pixel grids + palettes, larger ones (combi, boss, backgrounds) use Painter primitives (rect, disc, line, 3x5 text).
   Replace with real sprite sheets later by loading images under the same texture keys.
@@ -89,6 +90,9 @@ tools/serve.py        no-cache dev server
 - Arcade physics has no slopes: `Terrain.snap` puts walkers on slope surfaces after each physics step.
   Vehicles only touch the tile under their center (plus walls 2+ tiles taller than the wheels), and tilt.
   Mission-specific logic goes in the data (`events[].run`) or a new entity, not in `LevelScene`.
+- On-screen text: no floating sentences in levels; area names are physical signs (`sign` decor stands on posts or
+  hangs from a ceiling); ordinary enemies rarely talk (`CFG.ENEMY.TALK_CHANCE`); warnings are short (`CFG.ALERT_MS`);
+  after a mission only "MISSION COMPLETE!", then few story pages.
 - Damage values: pistol 1, machine gun 1, emoliente 2, grenade 5, combi cannon 6; pickup weapons in `CFG.WEAPONS`.
 - Weapons: data in `CFG.WEAPONS` / `CFG.THROWABLES` (name, crate letter = map marker, ammo, cadence), behavior in
   `Weapons.FIRE` and `Weapons.PROJECTILES`. Crate letters are Spanish initials except H and R (see docs/LEVELS.md).

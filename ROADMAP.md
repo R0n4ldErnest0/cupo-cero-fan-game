@@ -13,7 +13,7 @@ The driver ends the game as a folk hero and a fugitive ("going rogue").
 | **Pancho** | Playable. Combi driver; the extortionists killed his compadre Lucho (ruta 13-B). |
 | **Don Tito** | Playable. Retired policeman, one of the honest ones; knows where the old helicopter is (Mission 5). |
 | **Amaru** | Playable. Mercenary hired by the drivers' union. |
-| **La Boticaria** (name to decide) | Playable. Owner of a small drugstore (a PYME) extorted again and again. |
+| **Inés** | Playable. Owner of a small drugstore (a PYME) extorted again and again. |
 | **Emoliente Abuelita** | Rescuable helper (our "Hyakutaro"): follows you and throws boiling emoliente cups. |
 | **El Cobrador de Cupos** | Mission 1 boss, rides an armored mototaxi. |
 | **Corrupt Comisario** | Mission 4 boss. |
@@ -86,7 +86,8 @@ Full design, weapons list and build order: `docs/LEVELS.md`.
       Mission 2 = Mercado → Galerías
 - [x] Weapons: letter pickups, ammo, HUD; Rocket Launcher, Anticuchera, Escopeta, Gallo de pelea, Pelota, Dron, Láser,
       Piedras; Molotov, Súper granada; per-character melee; tap-to-shoot pistol cadence
-- [x] Enemy feel: slower bullets, aim before shooting, knife attack, knife runners; camera zoom 2.5 (bigger characters)
+- [x] Enemy feel: slower bullets, aim before shooting, knife attack, knife runners; camera zoom 3 (bigger characters,
+      consistent size: whole-number zoom)
 - [x] Food (Peruvian), getting fat (Metal Slug rules, emoliente = diet, cucharón melee), getting drunk (caldo cures);
       breakable gang props that drop items; vendors who toss food
 - [x] Announcer voice on pickups (browser speech placeholder until clips are recorded in `assets/voice/`)
@@ -124,6 +125,9 @@ Full design, weapons list and build order: `docs/LEVELS.md`.
 ### M4.5 — Art, sound and story
 - [ ] Real sprites, backgrounds and tiles; music per mission; voice lines ("¡METRALLETA!", "¡MISIÓN CUMPLIDA!")
 - [x] Intro crawl and story pages between missions (talk, ledger, expediente, TV news) — placeholder art
+- [x] Playtest feedback round 1: zoom 3 (consistent sizes), physical signs and no floating texts, less enemy
+      chatter, short boss warnings, more enemies (section `crowd`) and Metropolitano waves, a lighter end of mission
+      (banner + the expediente only if you found clues + 1-3 story lines)
 - [ ] Illustrated cutscenes (real art) for the intro and between missions
 
 ### M5 — Release
@@ -139,8 +143,7 @@ Answered: the Mission 3 ride is on the roof of a Metropolitano bus (not the Lín
 Answered: the air level uses an old police helicopter a retired cop knows about; 2P flies a small plane.
 Answered: the story arc (ledger + expediente of clues from freed honest cops → a journalist prisoner airs it on TV
 → strike and march → the town helps in Mission 5); see `docs/LEVELS.md`.
-Answered: names: Pancho (driver), Don Tito (retired cop), Amaru (mercenary); the 4th is a drugstore owner (name
-to decide).
+Answered: names: Pancho (driver), Don Tito (retired cop), Amaru (mercenary); the 4th is Inés, a drugstore owner.
 Answered: max 4 sections per mission (Mission 2 to be restructured: Mercado with the Mototaxi Slug → Azoteas →
 Almacén → Oficina).
 Answered: ripped Metal Slug assets → **private testing only** (`assets/_private/`, gitignored).

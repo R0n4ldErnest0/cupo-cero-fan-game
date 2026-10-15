@@ -5,11 +5,8 @@ MISSIONS.push({
   title: 'MISSION 1',
   subtitle: '¡PAGA O YA SABES!',
   name: 'EL PARADERO',
-  outro: { sub: '...¿contactos en la comisaría?' },
   story: [
-    { type: 'talk', who: 'PANCHO', text: 'Se escapó, el muy... Pero ya sabemos quién cobra los cupos del paradero.' },
-    { type: 'talk', who: 'DON TITO', text: '¿Contactos en la comisaría? Esto es más grande de lo que creen.' },
-    { type: 'talk', who: 'LA BOTICARIA', text: 'En Gamarra cobran puesto por puesto. Dicen que llevan un libro de cuentas.' },
+    { type: 'talk', who: 'DON TITO', text: '¿Contactos en la comisaría? En Gamarra dicen que la banda lleva un libro de cuentas...' },
   ],
   // Expediente: what the honest cops tell you (gang -> protection).
   clues: {
@@ -21,6 +18,7 @@ MISSIONS.push({
     // A — Paradero: the street. Leaves by the right edge (on foot or in the Combi Slug).
     {
       area: 'PARADERO',
+      crowd: { every: 115, types: [{ t: 'grunt' }, { t: 'grunt', skin: 'thug2' }, { t: 'grunt', variant: 'thrower' }, { t: 'grunt', variant: 'knife' }].concat([{ t: 'biker' }]) },
       width: 2950,
       combi: { x: 1840 },
       abuelitas: [{ x: 1040 }],
@@ -76,8 +74,7 @@ MISSIONS.push({
         { x: 2900, t: 'biker' },
       ],
       decor: [
-        { type: 'text', x: 192, y: 104, text: 'Los cuperos mataron a tu compadre.\nHoy no se paga. Hoy se cobra.', style: { fontSize: '10px', color: '#ffe066' } },
-        { type: 'controls', x: 192, y: 134 },
+        { type: 'controls', x: 210, y: 210 },
         { type: 'image', key: 'paradero', x: 150 },
         { type: 'graffiti', x: 330, text: 'LOS CUPEROS\nMANDAN', color: '#c0282e' },
         { type: 'image', key: 'banner', x: 650 },
@@ -94,6 +91,7 @@ MISSIONS.push({
     // B — Terminal: a short run-up and the boss arena.
     {
       area: 'TERMINAL',
+      crowd: { every: 95, types: [{ t: 'grunt' }, { t: 'grunt', skin: 'thug2' }, { t: 'grunt', variant: 'thrower' }, { t: 'grunt', variant: 'knife' }] },
       width: 1250,
       bg: { sky: 0xd8c8b0 },
       crates: [{ x: 300, stack: 1 }],

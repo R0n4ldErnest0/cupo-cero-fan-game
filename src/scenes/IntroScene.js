@@ -22,7 +22,7 @@ const INTRO_TEXT = [
   'Don Tito, policía retirado (de los honestos),',
   'conoce a los de uniforme mejor que nadie.',
   '',
-  'Y la dueña de la botica de la esquina,',
+  'Y doña Inés, la de la botica de la esquina,',
   'extorsionada tres veces este mes,',
   'también se apuntó.',
   '',

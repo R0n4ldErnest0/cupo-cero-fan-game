@@ -29,7 +29,7 @@ class RiotCop extends Phaser.Physics.Arcade.Sprite {
     this.nextPeek = scene.time.now + Phaser.Math.Between(...R.PEEK_EVERY);
     this.swing = null;
     this.shieldImg = scene.add.image(x, y, this.gang ? 'shutter_shield' : 'riot_shield').setOrigin(0.5, 1).setDepth(7);
-    this.nextTalk = scene.time.now + Phaser.Math.Between(1500, 4000);
+    this.nextTalk = Math.random() < CFG.ENEMY.TALK_CHANCE ? scene.time.now + Phaser.Math.Between(1500, 4000) : Infinity;
   }
 
   get shielded() {
@@ -66,7 +66,7 @@ class RiotCop extends Phaser.Physics.Arcade.Sprite {
 
     if (onScreen && time > this.nextTalk) {
       Fx.say(s, this, Phaser.Utils.Array.GetRandom(this.gang ? SHIELD_THUG_LINES : RIOT_LINES), 1400);
-      this.nextTalk = time + Phaser.Math.Between(6000, 10000);
+      this.nextTalk = Infinity; // once
     }
     if (vx) {
       this.walkT += dt;

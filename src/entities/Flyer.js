@@ -22,7 +22,7 @@ class Flyer extends Phaser.Physics.Arcade.Sprite {
     this.born = scene.time.now;
     this.nextShot = scene.time.now + Phaser.Math.Between(900, 1600);
     this.bubbleOffset = 16;
-    if (FLYER_LINES[variant] && Math.random() < 0.6) Fx.say(scene, this, Phaser.Utils.Array.GetRandom(FLYER_LINES[variant]), 1400);
+    if (FLYER_LINES[variant] && (variant === 'tv' || Math.random() < CFG.ENEMY.TALK_CHANCE)) Fx.say(scene, this, Phaser.Utils.Array.GetRandom(FLYER_LINES[variant]), 1400);
   }
 
   update(time) {

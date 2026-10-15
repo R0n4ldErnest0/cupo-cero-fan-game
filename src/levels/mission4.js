@@ -11,7 +11,6 @@ MISSIONS.push({
   name: 'LA COMISARÍA',
   draft: true,
   bg: { sky: 0x505058, hills: 0x404048, city: 0x48484f },
-  outro: { sub: 'La periodista tiene todo grabado...' },
   // Expediente: the comisario reports to a regidor; the public-works company is the mayor's.
   clues: {
     m4a: 'El comisario le pasa la plata a un regidor de la comisión de Obras.',
@@ -22,6 +21,7 @@ MISSIONS.push({
     // A — Mesa de partes: the lobby. An endless queue of complaints; cops fire ARCHIVADO stamps... and shoot.
     {
       area: 'MESA DE PARTES',
+      crowd: { every: 120, types: [{ t: 'cop' }, { t: 'cop' }, { t: 'riot' }, { t: 'grunt' }] },
       terrain: String.raw`
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -45,7 +45,6 @@ MISSIONS.push({
       ],
       pickups: [{ x: 300, kind: 'E' }],
       decor: [
-        { type: 'text', x: 192, y: 120, text: 'La comisaría. Aquí archivan todas las denuncias.\nY aquí se esconde El Cobrador.', style: { fontSize: '10px', color: '#ffe066' } },
         { type: 'image', key: 'vendor_fwd_stand', x: 100 }, { type: 'image', key: 'chato_fwd_stand', x: 118 },
         { type: 'image', key: 'cobradora_fwd_stand', x: 136 }, { type: 'image', key: 'thug2_fwd_stand', x: 154 },
         { type: 'sign', x: 120, y: 150, text: 'COLA DE DENUNCIAS\nTIEMPO DE ESPERA: 3 AÑOS', bg: '#1b1b22' },
@@ -58,6 +57,7 @@ MISSIONS.push({
     // police. The journalist is locked in a cell upstairs.
     {
       area: 'OFICINAS Y CELDAS',
+      crowd: { every: 130, types: [{ t: 'cop' }, { t: 'grunt', variant: 'knife' }, { t: 'riot' }] },
       terrain: String.raw`
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -149,6 +149,7 @@ MISSIONS.push({
     // the way. At the end the Comisario comes out in his filing-cabinet mech.
     {
       area: 'LA FUGA',
+      crowd: { every: 110, types: [{ t: 'cop' }, { t: 'cop' }, { t: 'riot' }, { t: 'motocop' }] },
       width: 3000,
       autoscroll: 45,
       bg: { sky: 0x8090a8 },
@@ -163,7 +164,7 @@ MISSIONS.push({
         { x: 1800, t: 'riot' }, { x: 1850, t: 'cop' }, { x: 2000, t: 'motocop' }, { x: 2300, t: 'cop' }, { x: 2350, t: 'riot' },
       ],
       decor: [
-        { type: 'text', x: 192, y: 120, text: '¡El rochabus! ↓ para subir.\nX: CHORRO DE AGUA   C: GAS', style: { fontSize: '10px', color: '#ffe066' } },
+        { type: 'sign', x: 240, y: 196, text: 'ROCHABUS: ↓ SUBIR\nX AGUA · C GAS', bg: '#2e7d32' },
         { type: 'graffiti', x: 1000, text: 'LA POLICÍA\nNO ES EL PUEBLO', color: '#1e5fb4' },
         { type: 'graffiti', x: 2000, text: '¡FUERA\nCUPEROS!', color: '#c0282e' },
       ],
@@ -172,7 +173,6 @@ MISSIONS.push({
   ],
   // After the mission: the journalist airs everything (the arc's trigger).
   story: [
-    { type: 'talk', who: 'LA PERIODISTA', text: 'Lo tengo todo: el libro, la plata incautada, el comisario. Esta noche sale en vivo.' },
     {
       type: 'tv',
       headline: 'EL LIBRO DE LOS CUPOS: la banda, la comisaría y "EL JEFE"',
@@ -180,8 +180,7 @@ MISSIONS.push({
       face: '"EL JEFE" ES...',
       reveal: 'EL ALCALDE',
     },
-    { type: 'talk', who: 'DIRIGENTE DEL GREMIO', text: '¡Compañeros: mañana paro de transportistas y marcha a la Municipalidad!' },
-    { type: 'talk', who: 'PANCHO', text: 'El alcalde va a mandar al serenazgo y a la policía. Van a encerrar a la marcha en la plaza.' },
+    { type: 'talk', who: 'DIRIGENTE DEL GREMIO', text: '¡Mañana paro y marcha a la Municipalidad! (Y el alcalde ya mandó a los serenos a rodear la plaza.)' },
     { type: 'talk', who: 'DON TITO', text: 'Entonces llegamos por el aire. Sé dónde hay un helicóptero viejo... todavía vuela.' },
   ],
 });

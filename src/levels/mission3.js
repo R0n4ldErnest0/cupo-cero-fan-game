@@ -10,10 +10,8 @@ MISSIONS.push({
   subtitle: 'LA RUTA',
   name: 'LOS CERROS',
   draft: true,
-  outro: { sub: 'El Cobrador se escapó... rumbo a la comisaría.' },
   story: [
-    { type: 'talk', who: 'AMARU', text: 'Un helicóptero de la policía... para sacar a un cupero. Ya no hay duda.' },
-    { type: 'talk', who: 'DON TITO', text: 'Se fue a la comisaría. La conozco por dentro. Vamos a entrar.' },
+    { type: 'talk', who: 'DON TITO', text: 'Un helicóptero de la policía para salvar a un cupero... Se fue a la comisaría. Vamos a entrar.' },
   ],
   // Expediente: the comisario and his ties to the Municipalidad.
   clues: {
@@ -25,6 +23,7 @@ MISSIONS.push({
     // A — Cerros: up the hill to the Metropolitano stop. Leaves by the right edge.
     {
       area: 'CERROS',
+      crowd: { every: 130, types: [{ t: 'grunt' }, { t: 'grunt', variant: 'knife' }, { t: 'cop' }, { t: 'cop' }, { t: 'grunt', variant: 'thrower' }] },
       markerClues: ['m3a', 'm3b'], // the two tied-up cops on the hill (T markers, left to right)
       bg: { sky: 0xd0c8c0, hills: 0xc0a080 },
       terrain: String.raw`
@@ -66,7 +65,6 @@ MISSIONS.push({
       ],
       pickups: [{ x: 740, y: 304, kind: 'B' }, { x: 1890, y: 176, kind: 'L' }],
       decor: [
-        { type: 'text', x: 192, y: 330, text: 'El Cobrador huyó cerro arriba.\nDicen que la policía lo protege...', style: { fontSize: '10px', color: '#ffe066' } },
         { type: 'sign', x: 200, y: 392, text: 'A.H. VILLA EL CUPO', bg: '#a81f25' },
         { type: 'sign', x: 600, y: 230, text: 'SE VENDE LOTE\n(CON CUPO INCLUIDO)', bg: '#1b1b22' },
         { type: 'sign', id: 'comisaria', x: 1100, y: 92, text: 'MÓDULO POLICIAL\nCERRADO POR "OPERATIVO"', bg: '#2e7d32' },
@@ -96,8 +94,13 @@ MISSIONS.push({
         speed: 260,
         seconds: 62,
         events: [
-          { at: 2, type: 'grunt', x: 290 },
+          { at: 2, type: 'grunt', x: 240 },
           { at: 6, type: 'jumper', from: 'right' },
+          { at: 8, type: 'wave', size: 4 },
+          { at: 21, type: 'wave', size: 5 },
+          { at: 33, type: 'wave', size: 5, cop: true },
+          { at: 44, type: 'wave', size: 6 },
+          { at: 53, type: 'wave', size: 6, cop: true },
           { at: 10, type: 'bridge' },
           { at: 13, type: 'jumper', from: 'left', variant: 'knife' },
           { at: 15, type: 'grunt', x: 250, variant: 'thrower' },
@@ -119,13 +122,13 @@ MISSIONS.push({
         ],
       },
       decor: [
-        { type: 'text', x: 192, y: 60, text: 'Los cuperos van a la estación.\n¡Súbete al Metropolitano!', style: { fontSize: '10px', color: '#ffe066' } },
       ],
     },
     // C — Estación: off the bus and through the station on foot (turnstiles, cops guarding it), then board the
     // next bus through its door at the end of the platform.
     {
       area: 'ESTACIÓN',
+      crowd: { every: 90, types: [{ t: 'cop' }, { t: 'cop' }, { t: 'riot' }, { t: 'grunt', variant: 'knife' }] },
       width: 900,
       bg: { sky: 0xb8c0c8 },
       vehicles: false,
@@ -161,8 +164,13 @@ MISSIONS.push({
         speed: 280,
         seconds: 58,
         events: [
-          { at: 2, type: 'grunt', x: 280 },
+          { at: 2, type: 'grunt', x: 230 },
           { at: 5, type: 'jumper', from: 'right', cop: true },
+          { at: 7, type: 'wave', size: 5, cop: true },
+          { at: 18, type: 'wave', size: 5 },
+          { at: 26, type: 'wave', size: 6, cop: true },
+          { at: 40, type: 'wave', size: 6 },
+          { at: 49, type: 'wave', size: 7, cop: true },
           { at: 9, type: 'bridge' },
           { at: 12, type: 'transfer' },
           { at: 22, type: 'jumper', from: 'left', variant: 'knife' },
@@ -177,7 +185,6 @@ MISSIONS.push({
         ],
       },
       decor: [
-        { type: 'text', x: 192, y: 60, text: 'El Cobrador va a la estación terminal.\n¡Que no se escape!', style: { fontSize: '10px', color: '#ffe066' } },
       ],
       arena: { alert: ['¡ALERTA!', 'HELICÓPTERO POLICIAL'], boss: 'heli' },
     },

@@ -7,6 +7,7 @@
 //   type 'grunt'    { x, variant }          a cupero already standing on the roof (drops in from above)
 //   type 'jumper'   { from: 'left'|'right', variant, cop }  a biker (or a motorbike cop) rides alongside and jumps on
 //   type 'bridge'                           a pedestrian bridge: crouch under it or lose a life (warned first)
+//   type 'wave'     { size, cop }               `size` bikers at once from both sides + some cuperos dropping on the roof
 //   type 'transfer'                         your bus breaks down ("FUERA DE SERVICIO") and falls behind while the next
 //                                           bus pulls up right in front of it: jump across before the gap opens
 // Falling off a bus means being run over (a pit). Whoever stands on a bus moves with it.
@@ -27,7 +28,8 @@ class Ride {
     // Road below the buses (scrolls at full speed).
     this.road = scene.add.tileSprite(0, R.ROAD_Y, CFG.VIEW_W, scene.levelH - R.ROAD_Y + 8, 'ground').setOrigin(0).setDepth(-4);
     this.buses = [this.makeBus(R.BUS_X)];
-    this.warning = scene.worldText(CFG.VIEW_W - 60, 40, '¡AGÁCHATE! ↓', { color: '#ff5a3a', fontSize: '10px' }).setDepth(60).setVisible(false);
+    const top = scene.levelH - CFG.VIEW_H;
+    this.warning = scene.worldText(CFG.VIEW_W - 50, top + 44, '¡AGÁCHATE! ↓', { color: '#ff5a3a', fontSize: '10px' }).setDepth(60).setVisible(false);
   }
 
   get roofY() {
@@ -56,7 +58,7 @@ class Ride {
     const riders = [...s.players.filter((p) => p.state === 'play' && p.alive && !p.vehicle), ...s.enemies.getChildren(), ...s.pickups.getChildren()];
     riders.forEach((o) => {
       if (!o.body || !o.active) return;
-      const onIt = o.body.blocked.down && Math.abs(o.body.bottom - (R.ROOF_Y + 4)) <= 6 && o.x >= bus.x && o.x <= bus.x + 320;
+      const onIt = o.body.blocked.down && Math.abs(o.body.bottom - (R.ROOF_Y + 4)) <= 6 && o.x >= bus.x && o.x <= bus.x + R.BUS_W;
       if (onIt) o.x += dx;
     });
     bus.x += dx;
@@ -126,6 +128,7 @@ class Ride {
     } else if (e.type === 'jumper') this.jumper(e);
     else if (e.type === 'bridge') this.bridge();
     else if (e.type === 'transfer') this.startTransfer();
+    else if (e.type === 'wave') this.wave(e);
   }
 
   // Your bus breaks down and falls behind; the next bus pulls up just ahead of it for a few seconds.
@@ -147,7 +150,7 @@ class Ride {
   // settle: the broken bus drops behind and leaves the screen while the new one pulls into place.
   updateTransfer(time, sec) {
     const R = CFG.RIDE, T = this.transferring;
-    const front = T.old.x + 320;
+    const front = T.old.x + R.BUS_W;
     if (T.phase === 'approach') {
       this.moveBus(T.next, -Math.min(R.TRANSFER_APPROACH * sec, T.next.x - (front + R.TRANSFER_GAP)));
       if (T.next.x <= front + R.TRANSFER_GAP) {
@@ -161,7 +164,7 @@ class Ride {
     } else {
       this.moveBus(T.old, -R.TRANSFER_SPEED * 3 * sec);
       if (T.next.x > R.BUS_X) this.moveBus(T.next, -Math.min(R.TRANSFER_SETTLE * sec, T.next.x - R.BUS_X));
-      if (T.old.x + 320 < -10 && T.next.x <= R.BUS_X) {
+      if (T.old.x + R.BUS_W < -10 && T.next.x <= R.BUS_X) {
         this.removeBus(T.old);
         this.transferring = null;
         this.jumpSign.destroy();
@@ -170,7 +173,20 @@ class Ride {
     }
     if (this.jumpSign.active) {
       this.jumpSign.setVisible(T.phase !== 'approach' || T.next.x < CFG.VIEW_W);
-      this.jumpSign.setPosition(Phaser.Math.Clamp(T.old.x + 320 + R.TRANSFER_GAP / 2, 30, CFG.VIEW_W - 30), R.ROOF_Y - 40);
+      this.jumpSign.setPosition(Phaser.Math.Clamp(T.old.x + R.BUS_W + R.TRANSFER_GAP / 2, 30, CFG.VIEW_W - 30), R.ROOF_Y - 40);
+    }
+  }
+
+  wave(e) {
+    const s = this.scene, R = CFG.RIDE, n = e.size || 4;
+    for (let i = 0; i < n; i++) {
+      s.time.delayedCall(i * 380, () => this.jumper({ from: i % 2 ? 'left' : 'right', cop: e.cop && i % 2 === 0, variant: i % 3 === 2 ? 'knife' : undefined }));
+    }
+    for (let i = 0; i < Math.floor(n / 2); i++) {
+      s.time.delayedCall(300 + i * 500, () => {
+        const g = s.spawnEnemy({ t: 'grunt', variant: i % 2 ? 'thrower' : undefined }, Phaser.Math.Between(R.BUS_X + 40, R.BUS_X + R.BUS_W - 40));
+        g.y = R.ROOF_Y - 90;
+      });
     }
   }
 
@@ -178,7 +194,7 @@ class Ride {
   jumper(e) {
     const s = this.scene, R = CFG.RIDE, fromLeft = e.from === 'left';
     const startX = fromLeft ? -30 : CFG.VIEW_W + 30;
-    const jumpX = fromLeft ? Phaser.Math.Between(80, 150) : Phaser.Math.Between(240, 320);
+    const jumpX = fromLeft ? Phaser.Math.Between(60, 120) : Phaser.Math.Between(190, 260);
     const moto = s.add.image(startX, R.ROAD_Y + 4, e.cop ? 'motocop' : 'biker').setOrigin(0.5, 1).setDepth(-1).setFlipX(fromLeft);
     s.tweens.add({
       targets: moto, x: jumpX, duration: 1100, ease: 'Sine.Out',
@@ -187,7 +203,7 @@ class Ride {
         const g = s.spawnEnemy({ t: e.cop ? 'cop' : 'grunt', variant: e.variant }, jumpX);
         g.y = R.ROAD_Y - 12;
         g.setVelocity(fromLeft ? 30 : -30, -340);
-        Fx.say(s, g, e.cop ? '¡Alto, papeleta!' : '¡Arriba, causa!', 900);
+        if (Math.random() < CFG.ENEMY.TALK_CHANCE) Fx.say(s, g, e.cop ? '¡Alto, papeleta!' : '¡Arriba, causa!', 900);
         moto.setTexture('prop_moto');
         s.tweens.add({ targets: moto, x: fromLeft ? -60 : CFG.VIEW_W + 60, duration: 900, onComplete: () => moto.destroy() });
       },

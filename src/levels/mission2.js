@@ -15,7 +15,6 @@ MISSIONS.push({
   legend: {
     h: { t: 'grunt', hp: 3, skin: 'thug2' },
   },
-  outro: { sub: '¡Encontraste el libro de cupos!' },
   // Expediente: who collects at the comisaría and where the money goes.
   clues: {
     m2a: 'Un suboficial recoge la plata del mercado. El Contador la cuenta y la reparte.',
@@ -37,14 +36,14 @@ MISSIONS.push({
       ],
       footer: '— El Contador',
     },
-    { type: 'talk', who: 'PANCHO', text: 'La comisaría cobra su parte... ¿y quién es "el Jefe"?' },
-    { type: 'talk', who: 'AMARU', text: 'El Cobrador escapó hacia los cerros. Si alguien sabe, es él.' },
+    { type: 'talk', who: 'PANCHO', text: 'La comisaría cobra su parte... ¿y quién es "el Jefe"? El Cobrador sabe: está en los cerros.' },
   ],
   sections: [
     // A — Market street with the first gallery, the trench and the rubble mound. The Mototaxi Slug is parked on the
     // street. Ends with an ambush in front of the second gallery (the way up to the rooftops).
     {
       area: 'MERCADO',
+      crowd: { every: 120, types: [{ t: 'grunt' }, { t: 'grunt', skin: 'thug2' }, { t: 'grunt', variant: 'thrower' }, { t: 'grunt', variant: 'knife' }].concat([{ t: 'shieldthug' }]) },
       terrain: String.raw`
         |
         |
@@ -86,8 +85,6 @@ MISSIONS.push({
         { x: 1640, kind: 'F' },
       ],
       decor: [
-        { type: 'text', x: 192, y: 216, text: 'Los cuperos cobran a cada puesto del mercado.\nEl gremio dice que tienen un libro de cuentas...', style: { fontSize: '10px', color: '#ffe066' } },
-        { type: 'controls', x: 192, y: 246 },
         { type: 'graffiti', x: 400, text: 'TODO A\nS/ 5', color: '#a81f25' },
         { type: 'sign', x: 848, y: 196, text: 'GALERÍA EL PROGRESO', bg: '#a81f25' },
         { type: 'graffiti', x: 1000, text: 'PUESTO CERRADO\nPOR AMENAZAS', color: '#1b1b22' },
@@ -101,13 +98,13 @@ MISSIONS.push({
       events: [
         { x: 1180, say: { who: 'fiscal', text: '¡Decomiso! Esas chompas no tienen permiso. ...¿Los de la pistola? No los vi.', ms: 3200 } },
       ],
-      // Ambush in front of the gallery (the camera locks at x 1488; the facade wall is at x 1840).
+      // Ambush in front of the gallery (the camera locks at x 1552; the facade wall is at x 1840).
       arena: {
         alert: ['¡EMBOSCADA!', 'LOS CUPEROS DE LA GALERÍA'],
         waves: [
-          [{ dx: 330, t: 'grunt' }, { dx: 310, t: 'grunt', skin: 'thug2' }, { dx: -20, t: 'grunt', variant: 'thrower' }, { dx: 330, t: 'grunt', variant: 'knife' }],
-          [{ dx: 330, t: 'grunt', hp: 3 }, { dx: -40, t: 'grunt', skin: 'thug2' }, { dx: 320, t: 'shieldthug' }],
-          [{ dx: 330, t: 'grunt', variant: 'thrower' }, { dx: -20, t: 'grunt', hp: 3, skin: 'thug2' }, { dx: 190, y: 304, t: 'gangsniper' }, { dx: 330, t: 'grunt', variant: 'knife' }],
+          [{ dx: 270, t: 'grunt' }, { dx: 255, t: 'grunt', skin: 'thug2' }, { dx: -20, t: 'grunt', variant: 'thrower' }, { dx: 270, t: 'grunt', variant: 'knife' }],
+          [{ dx: 270, t: 'grunt', hp: 3 }, { dx: -40, t: 'grunt', skin: 'thug2' }, { dx: 260, t: 'shieldthug' }, { dx: -20, t: 'grunt', variant: 'knife' }],
+          [{ dx: 270, t: 'grunt', variant: 'thrower' }, { dx: -20, t: 'grunt', hp: 3, skin: 'thug2' }, { dx: 140, y: 304, t: 'gangsniper' }, { dx: 270, t: 'grunt', variant: 'knife' }, { dx: -40, t: 'grunt' }],
         ],
       },
     },
@@ -116,6 +113,7 @@ MISSIONS.push({
     // an ambush at the end. Rows 0-23: the street floor of the gallery is row 22; roofs between rows 13 and 17.
     {
       area: 'AZOTEAS',
+      crowd: { every: 140, from: 420, types: [{ t: 'grunt' }, { t: 'grunt', skin: 'thug2' }, { t: 'grunt', variant: 'thrower' }, { t: 'grunt', variant: 'knife' }] },
       vehicles: false,
       bg: { sky: 0xffb880, hills: 0xd09070, city: 0xd8a888 },
       terrain: String.raw`
@@ -152,7 +150,6 @@ MISSIONS.push({
       ],
       pickups: [{ x: 1276, kind: 'H' }, { x: 2356, kind: 'R' }, { x: 900, kind: 'S' }, { x: 1700, kind: 'L' }, { x: 2200, kind: 'P' }],
       decor: [
-        { type: 'text', x: 192, y: 236, text: 'El almacén de los cuperos está al otro lado.\n¡Sube por la galería a las azoteas!', style: { fontSize: '10px', color: '#ffe066' } },
         { type: 'sign', x: 1496, y: 120, text: 'SE ALQUILA AZOTEA\n(CUPO NO INCLUIDO)', bg: '#1b1b22' },
         { type: 'sign', x: 2876, y: 150, text: 'ALMACÉN →', bg: '#1b1b22' },
       ],
@@ -168,6 +165,7 @@ MISSIONS.push({
     // Camión Recaudador arrives with the day's cupos (mid-boss). Rows 0-15: ceiling 0-1, floor top row 14 (y = 224).
     {
       area: 'ALMACÉN',
+      crowd: { every: 110, types: [{ t: 'grunt' }, { t: 'grunt', skin: 'thug2' }, { t: 'grunt', variant: 'thrower' }, { t: 'grunt', variant: 'knife' }].concat([{ t: 'shieldthug' }]) },
       bg: { sky: 0x505058, hills: 0x404048, city: 0x48484f },
       terrain: String.raw`
         |%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -196,7 +194,6 @@ MISSIONS.push({
       ],
       pickups: [{ x: 520, kind: 'A' }, { x: 1380, kind: 'H' }],
       decor: [
-        { type: 'text', x: 192, y: 120, text: 'El almacén de los cuperos.\nAquí guardan la recaudación... y las cuentas.', style: { fontSize: '10px', color: '#ffe066' } },
         { type: 'sign', x: 420, y: 100, text: 'PROHIBIDO EL PASO\n(SALVO PARA PAGAR)', bg: '#c0282e' },
         { type: 'sign', x: 950, y: 100, text: 'RECAUDACIÓN DIARIA\nMETA: S/ 50,000', bg: '#1b1b22' },
         { type: 'sign', x: 1700, y: 100, text: 'ZONA DE CARGA', bg: '#c06a1e' },

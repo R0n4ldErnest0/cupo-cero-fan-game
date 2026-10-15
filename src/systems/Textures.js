@@ -880,19 +880,19 @@ const Textures = {
   // Ride mode: the articulated Metropolitano bus (two cars + accordion), a pedestrian bridge seen side-on
   // (deck + pillar) and lamp posts.
   ride(scene) {
-    const b = new Painter(320, 50);
+    const b = new Painter(264, 50);
     const car = (x0, x1) => {
       b.rect(x0, 2, x1 - x0, 40, '#e8ecef').rect(x0, 0, x1 - x0, 3, '#9aa0a8'); // body + roof
       b.rect(x0, 30, x1 - x0, 4, '#1e5fb4').rect(x0, 34, x1 - x0, 2, '#f2a33a'); // stripes
       for (let x = x0 + 6; x < x1 - 14; x += 18) b.rect(x, 9, 14, 13, '#3b4a5a').rect(x + 1, 10, 4, 2, '#8fb8d8');
       b.rect(x0, 36, x1 - x0, 6, '#5a6068');
     };
-    car(0, 150);
-    car(166, 320);
-    for (let x = 150; x < 166; x += 2) b.rect(x, 4, 1, 36, '#3a3d45').rect(x + 1, 4, 1, 36, '#5a6068'); // accordion
-    b.rect(304, 9, 14, 20, '#8fd0ee').rect(306, 4, 12, 4, PAL.k); // windshield + route display
-    b.text('EXPRESO', 228, 24, '#1e5fb4');
-    [24, 120, 196, 290].forEach((x) => b.disc(x, 43, 6, PAL.k).set(x, 43, PAL.g));
+    car(0, 124);
+    car(136, 264);
+    for (let x = 124; x < 136; x += 2) b.rect(x, 4, 1, 36, '#3a3d45').rect(x + 1, 4, 1, 36, '#5a6068'); // accordion
+    b.rect(248, 9, 14, 20, '#8fd0ee').rect(250, 4, 12, 4, PAL.k); // windshield + route display
+    b.text('EXPRESO', 180, 24, '#1e5fb4');
+    [22, 100, 160, 238].forEach((x) => b.disc(x, 43, 6, PAL.k).set(x, 43, PAL.g));
     b.outline();
     b.register(scene, 'metro_bus');
 

@@ -3,7 +3,8 @@
 // out of fuel over the plaza and crash-land: the section is cleared.
 //
 // Section data: flight: { speed, seconds, events: [{ at, type, y }] }
-//   type 'polheli' | 'drone' | 'tv'   a flying enemy enters from the right (y: height, default random)
+//   type 'polheli' | 'drone' | 'tv'   a flying enemy enters from the right (y: height in a 0-180 band, default random)
+//   type 'swarm'  { count }            a column of serenazgo drones
 class Flight {
   constructor(scene, def) {
     this.scene = scene;
@@ -16,7 +17,7 @@ class Flight {
     this.nextCloud = 0;
     this.landed = false;
     // The city far below: rooftops scrolling at the bottom of the screen.
-    this.roofs = scene.add.tileSprite(0, CFG.VIEW_H - 40, CFG.VIEW_W, 60, 'bg_city').setOrigin(0).setDepth(-4).setTint(0x9098a8);
+    this.roofs = scene.add.tileSprite(0, scene.levelH - 40, CFG.VIEW_W, 60, 'bg_city').setOrigin(0).setDepth(-4).setTint(0x9098a8);
   }
 
   // Put a player into an aircraft (at the start, and again after losing one).
@@ -55,7 +56,13 @@ class Flight {
 
   spawn(e) {
     const s = this.scene;
-    const y = e.y || Phaser.Math.Between(40, CFG.VIEW_H - 80);
+    if (e.type === 'swarm') {
+      for (let i = 0; i < (e.count || 5); i++) s.time.delayedCall(i * 160, () => this.spawn({ type: 'drone', y: 20 + (i * 37) % 160 }));
+      return;
+    }
+    // Event heights are written for a 0-180 band; map them into the visible air (below the HUD, above the roofs).
+    const top = s.viewTop + 36, bottom = s.viewTop + CFG.VIEW_H - CFG.AIRCRAFT.FLOOR_MARGIN;
+    const y = top + ((e.y === undefined ? Math.random() * 180 : Phaser.Math.Clamp(e.y, 0, 180)) / 180) * (bottom - top);
     const f = new Flyer(s, s.viewLeft + CFG.VIEW_W + 40, y, e.type);
     s.enemies.add(f);
     f.body.setAllowGravity(false);

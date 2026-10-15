@@ -39,7 +39,7 @@ class Grunt extends Phaser.Physics.Arcade.Sprite {
     this.bubbleOffset = 28;
     const now = scene.time.now, E = CFG.ENEMY;
     this.nextAction = now + Phaser.Math.Between(...E.FIRST_SHOT);
-    this.nextTalk = now + Phaser.Math.Between(800, 5000);
+    this.nextTalk = Math.random() < CFG.ENEMY.TALK_CHANCE ? now + Phaser.Math.Between(800, 4000) : Infinity;
     this.crouchUntil = 0;
     this.fleeUntil = 0;
     this.aimUntil = 0;
@@ -76,7 +76,7 @@ class Grunt extends Phaser.Physics.Arcade.Sprite {
       else if (dist > 150) vx = this.facing * E.GRUNT_SPEED;
       else if (dist < 55 && this.variant === 'thrower') vx = -this.facing * 30;
       // Comic panic when the driver gets too close
-      if (this.variant !== 'knife' && dist < 70 && Math.random() < 0.004) {
+      if (this.variant !== 'knife' && dist < 70 && Math.random() < 0.0015) {
         this.fleeUntil = time + 1100;
         Fx.say(s, this, this.cop ? '¡Central, pida refuerzos!' : '¡Mamita, el chofer está loco!', 1100);
       }
@@ -95,7 +95,7 @@ class Grunt extends Phaser.Physics.Arcade.Sprite {
     if (onScreen && time > this.nextTalk) {
       const lines = this.sere ? SERE_LINES : this.cop ? COP_LINES : this.variant === 'knife' ? KNIFER_LINES : GRUNT_LINES;
       Fx.say(s, this, Phaser.Utils.Array.GetRandom(lines), 1500);
-      this.nextTalk = time + Phaser.Math.Between(5000, 9000);
+      this.nextTalk = Infinity; // once
     }
     this.pose(time, dt, vx);
   }
@@ -224,7 +224,7 @@ class Grunt extends Phaser.Physics.Arcade.Sprite {
     s.addScore(this.score, this.x, this.y - 26, owner);
     Sfx.scream();
     if (how === 'fire') return this.burn();
-    if (Math.random() < 0.4) Fx.say(s, this, Phaser.Utils.Array.GetRandom(this.cop ? COP_DEATH : GRUNT_DEATH), 1200);
+    if (Math.random() < CFG.ENEMY.DEATH_LINE_CHANCE) Fx.say(s, this, Phaser.Utils.Array.GetRandom(this.cop ? COP_DEATH : GRUNT_DEATH), 1200);
     this.setTexture(`${this.skin}_fwd_jump`);
     this.setVelocity(-this.facing * (explosive ? 110 : 40), explosive ? -260 : -120);
     s.tweens.add({ targets: this, angle: -this.facing * (explosive ? 720 : 90), duration: explosive ? 700 : 300 });

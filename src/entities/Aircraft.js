@@ -35,7 +35,7 @@ class Aircraft extends Phaser.Physics.Arcade.Sprite {
     this.setVelocity(mx * sp, my * sp);
     // Stay inside the screen (above the rooftops at the bottom).
     this.x = Phaser.Math.Clamp(this.x, s.viewLeft + 24, s.viewLeft + CFG.VIEW_W - 24);
-    this.y = Phaser.Math.Clamp(this.y, s.viewTop + 24, s.viewTop + CFG.VIEW_H - A.FLOOR_MARGIN);
+    this.y = Phaser.Math.Clamp(this.y, s.viewTop + 34, s.viewTop + CFG.VIEW_H - A.FLOOR_MARGIN);
     this.setAngle(mx * 6 + Math.sin(time / 260) * 2);
     if (this.rotor) this.rotor.setPosition(this.x, this.y - 10).setScale((Math.abs(Math.sin(time / 30)) * 0.4 + 0.05), 1);
 

@@ -6,6 +6,16 @@ All names are fictional placeholders.
 
 Status: ✅ built · 🚧 greybox (playable, placeholder) · 📝 designed only · ❓ needs a decision
 
+## Presentation rules (from playtest feedback)
+
+- No floating sentences over the levels; area names are **physical signs** (on posts, or hanging indoors).
+- Ordinary enemies talk rarely (about 1 in 4, once); bosses, clues and story moments keep their lines.
+- Boss / ambush warnings flash for about a second.
+- More enemies: each section has a `crowd` (extra enemies all along it, the mission's own mix); the Metropolitano
+  rides have **waves** (several bikers at once from both sides + cuperos dropping on the roof); the air level has
+  drone **swarms**.
+- End of mission: "MISSION COMPLETE!" only, the expediente only if you found a clue there, then 1–3 story lines.
+
 ## Story pages (built)
 
 Shown after MISSION COMPLETE, before the tally (`StoryScene`; mission `story` data): the **expediente** of every
