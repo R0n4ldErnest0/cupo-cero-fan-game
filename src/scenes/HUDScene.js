@@ -21,7 +21,8 @@ class HUDScene extends Phaser.Scene {
     });
 
     this.tCredits = this.add.text(16, 528, '', Object.assign({}, small, { fontSize: '14px', color: '#ffe066' })).setOrigin(0, 1);
-    this.add.text(944, 528, 'P pausa · M sonido · 5 moneda · F2 free play', Object.assign({}, small, { fontSize: '12px', strokeThickness: 3 }))
+    const keys = TouchPad.enabled ? '' : `P pausa · M sonido · 5 moneda${CFG.DEV ? ' · F2 free play' : ''}`;
+    this.add.text(944, 528, keys, Object.assign({}, small, { fontSize: '12px', strokeThickness: 3 }))
       .setOrigin(1, 1).setAlpha(0.7);
 
     this.msg = this.add.text(480, 300, '', Object.assign({}, big, { fontSize: '48px', strokeThickness: 8, align: 'center' })).setOrigin(0.5);
@@ -105,11 +106,11 @@ class HUDScene extends Phaser.Scene {
         p.joining ? `${i + 1}P ¿ENTRAS? ${sec}` : `${i + 1}P ¿CONTINUAR? ${sec}`,
         `< ${c.name} >`,
         pay ? (blink ? `PRESIONA ${startKey}` : '') : 'SIN CRÉDITOS',
-        pay ? '' : blink ? 'INSERTA MONEDA (5)' : '',
+        pay ? '' : blink ? (TouchPad.enabled ? 'TOCA MONEDA' : 'INSERTA MONEDA (5)') : '',
       );
     } else if (p.state === 'inactive') {
       s.name.setColor('#888888');
-      set(`${i + 1}P`, blink ? (Session.canPay(1) ? `PRESIONA ${startKey} PARA ENTRAR` : 'INSERTA MONEDA (5)') : '', '', '');
+      set(`${i + 1}P`, blink ? (Session.canPay(1) ? `PRESIONA ${startKey} PARA ENTRAR` : (TouchPad.enabled ? 'TOCA MONEDA' : 'INSERTA MONEDA (5)')) : '', '', '');
     } else {
       s.name.setColor('#888888');
       set(`${i + 1}P GAME OVER`, String(p.score).padStart(7, '0'), '', '');

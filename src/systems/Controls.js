@@ -1,4 +1,4 @@
-// Per-player input: keyboard map + optional gamepad, polled once per frame.
+// Per-player input: keyboard map + optional gamepad (+ the on-screen TouchPad for player 1), polled once per frame.
 // read() returns held states (left, fire, ...) and this-frame presses (leftP, fireP, ...).
 const PAD = { A: 0, B: 1, X: 2, Y: 3, START: 9, UP: 12, DOWN: 13, LEFT: 14, RIGHT: 15 };
 const ACTIONS = ['left', 'right', 'up', 'down', 'fire', 'jump', 'bomb', 'start'];
@@ -25,8 +25,9 @@ class Controls {
     const pad = this.pad();
     const since = this.lastRead;
     this.lastRead = performance.now();
-    const tapped = (a) => this.keys[a].some((k) => k.timeDown > since);
-    const key = (a) => tapped(a) || this.keys[a].some((k) => k.isDown);
+    const tp = this.padIndex === 0 && TouchPad.enabled ? TouchPad : null;
+    const tapped = (a) => this.keys[a].some((k) => k.timeDown > since) || (tp && tp.downAt[a] > since);
+    const key = (a) => tapped(a) || this.keys[a].some((k) => k.isDown) || (tp && tp.held[a]);
     const btn = (i) => !!(pad && pad.buttons[i] && pad.buttons[i].pressed);
     const sx = pad ? pad.leftStick.x : 0, sy = pad ? pad.leftStick.y : 0;
     const cur = {

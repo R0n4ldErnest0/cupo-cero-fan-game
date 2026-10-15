@@ -2,16 +2,55 @@
 <html lang="es">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Cupo Cero</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <meta name="description" content="Cupo Cero: un fan game run-and-gun estilo Metal Slug (no oficial) que satiriza la extorsión en Lima." />
+    <meta name="theme-color" content="#000000" />
+    <title>Cupo Cero (fan game)</title>
     <style>
       html, body { margin: 0; height: 100%; background: #000; overflow: hidden; }
+      body { touch-action: none; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
       #game { width: 100%; height: 100%; }
       canvas { image-rendering: pixelated; }
+
+      /* On-screen controls (src/systems/TouchPad.js): only with body.touch. */
+      #touch { display: none; position: fixed; inset: 0; z-index: 5; pointer-events: none; font-family: "Courier New", monospace; }
+      body.touch #touch { display: block; }
+      #touch .stick-zone { position: absolute; left: 0; top: 18%; width: 45%; bottom: 0; pointer-events: auto; touch-action: none; }
+      #touch .stick { position: fixed; width: 104px; height: 104px; margin: -52px 0 0 -52px; border-radius: 50%;
+        border: 2px solid rgba(255, 255, 255, 0.35); background: rgba(255, 255, 255, 0.08); display: none; }
+      #touch .stick.on { display: block; }
+      #touch .knob { position: absolute; left: 30px; top: 30px; width: 44px; height: 44px; border-radius: 50%;
+        background: rgba(255, 224, 102, 0.55); border: 2px solid rgba(255, 255, 255, 0.6); }
+      #touch .btn { position: absolute; pointer-events: auto; touch-action: none; border-radius: 50%; display: grid; place-items: center;
+        color: #fff; font-weight: bold; font-size: 13px; text-shadow: 0 1px 2px #000;
+        background: rgba(255, 255, 255, 0.14); border: 2px solid rgba(255, 255, 255, 0.45); }
+      #touch .btn.on { background: rgba(255, 224, 102, 0.55); }
+      #touch .fire { width: 84px; height: 84px; right: calc(max(16px, env(safe-area-inset-right)) + 86px); bottom: 26px; background: rgba(216, 52, 58, 0.35); }
+      #touch .jump { width: 74px; height: 74px; right: max(16px, env(safe-area-inset-right)); bottom: 96px; background: rgba(46, 125, 50, 0.35); }
+      #touch .bomb { width: 62px; height: 62px; right: max(16px, env(safe-area-inset-right)); bottom: 16px; background: rgba(242, 201, 76, 0.3); }
+      #touch .top { width: 52px; height: 30px; border-radius: 8px; top: 8px; font-size: 11px; }
+      #touch .start { right: calc(max(16px, env(safe-area-inset-right)) + 120px); }
+      #touch .pause { right: calc(max(16px, env(safe-area-inset-right)) + 62px); }
+      #touch .coin { right: max(16px, env(safe-area-inset-right)); }
+      #rotate { display: none; position: fixed; inset: 0; z-index: 6; background: #000; color: #ffe066; place-items: center;
+        text-align: center; font: bold 20px "Courier New", monospace; padding: 0 16px; }
+      @media (orientation: portrait) { body.touch #rotate { display: grid; } }
     </style>
   </head>
   <body>
     <div id="game"></div>
+    <!-- On-screen controls for touch screens (src/systems/TouchPad.js). -->
+    <div id="touch" aria-hidden="true">
+      <div class="stick-zone"></div>
+      <div class="stick"><div class="knob"></div></div>
+      <div class="btn fire" data-action="fire">DISPARO</div>
+      <div class="btn jump" data-action="jump">SALTO</div>
+      <div class="btn bomb" data-action="bomb">GRANADA</div>
+      <div class="btn top start" data-action="start">START</div>
+      <div class="btn top pause" data-tap="pause">II</div>
+      <div class="btn top coin" data-tap="coin">MONEDA</div>
+    </div>
+    <div id="rotate">Gira tu teléfono<br />para jugar ↻</div>
     <!-- Load order matters: classic scripts sharing globals, no build step. -->
     <script src="lib/phaser.min.js"></script>
     <script src="src/config.js"></script>
@@ -21,6 +60,7 @@
     <script src="src/systems/Voice.js"></script>
     <script src="src/systems/Fx.js"></script>
     <script src="src/systems/Session.js"></script>
+    <script src="src/systems/TouchPad.js"></script>
     <script src="src/systems/Controls.js"></script>
     <script src="src/systems/Terrain.js"></script>
     <script src="src/systems/Weapons.js"></script>

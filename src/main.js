@@ -18,15 +18,19 @@ const game = new Phaser.Game({
   scene: [BootScene, TitleScene, CharSelectScene, IntroScene, LevelScene, HUDScene, StoryScene, MissionEndScene, EndingScene, GameOverScene],
 });
 
-// Arcade-style global keys, active in every scene: 5 = insert coin, F2 = toggle FREE PLAY,
+TouchPad.init();
+
+// Arcade-style global keys, active in every scene: 5 = insert coin. Testing (CFG.DEV only): F2 = toggle FREE PLAY,
 // F4 = finish the current mission, F6 / F7 = drop the next item crate / food in front of 1P,
-// F8 = skip to the next section (testing).
+// F8 = skip to the next section.
 window.addEventListener('keydown', (e) => {
   if (e.repeat) return;
   if (e.code === 'Digit5' || e.code === 'Numpad5') {
     Session.addCredit();
     Sfx.init();
     Sfx.coin();
+  } else if (!CFG.DEV) {
+    return;
   } else if (e.code === 'F2') {
     e.preventDefault();
     Session.toggleFreePlay();

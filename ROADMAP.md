@@ -134,6 +134,7 @@ Full design, weapons list and build order: `docs/LEVELS.md`.
       mototaxi aims down like the combi
 - [x] Air level variety: missile planes (a blinking line warns each missile), parachuting serenazgo, more police
       helicopters; El Contador's stomp telegraphed (crouch, hang over a shadow), El Cobrador's charge can be jumped
+- [x] Public build: GitHub Pages, on-screen touch controls for phones, testing keys only with ?dev, fan-game notice
 - [x] Final mission rework: the honest police help all mission (escort helicopter in the air, cops + tanqueta in the
       plaza with reinforcements, cops in the Municipalidad, a bomber helicopter at the obra), a Combi Slug in the
       plaza, serenazgo tanquetas and bigger police crowds, the mayor in a bulldozer with guards; the TV page before

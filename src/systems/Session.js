@@ -13,6 +13,7 @@ const Session = {
     try {
       this.freePlay = localStorage.getItem('cupocero.freePlay') === '1';
     } catch (e) { /* storage unavailable: keep default */ }
+    if (!CFG.DEV) return;
     const m = /[?&]mission=(\d+)/.exec(location.search);
     if (m) this.startMission = Phaser.Math.Clamp(+m[1] - 1, 0, MISSIONS.length - 1);
     const sec = /[?&]section=(\d+)/.exec(location.search);

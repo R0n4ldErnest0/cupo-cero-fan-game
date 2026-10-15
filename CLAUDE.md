@@ -39,6 +39,11 @@ See `ROADMAP.md` for the plan, level list and open decisions.
 - **All sound is synthesized** with WebAudio (`src/systems/Sfx.js`), including the placeholder
   chicha-style music loop.
 
+## Public build
+
+The game is published with GitHub Pages from `main` (repo `cupo-cero-fan-game`, see README.md). It's an unofficial
+fan game: keep the "fan game no oficial" notice on the title screen and in the README.
+
 ## Running
 
 ```
@@ -53,7 +58,9 @@ Controls (solo): ←/→ move, ↑ aim up, ↓ crouch (in the air: shoot down), 
 P pause, M mute, Enter start.
 2 players: 1P WASD + F shoot / G jump / H grenade, 2P arrows + , shoot / . jump / / grenade; gamepads work
 (A jump, X shoot, B grenade, Start). Keys are defined in `CFG.KEYS`.
-Testing: **5** inserts a coin, **F2** toggles FREE PLAY (infinite credits, saved in localStorage),
+Phones and tablets get on-screen controls (`src/systems/TouchPad.js`: joystick + SALTO / DISPARO / GRANADA, START,
+pause, MONEDA), player 1 only.
+Testing (only on localhost, from a file, or with `?dev` in the URL: `CFG.DEV`): **5** inserts a coin (always on), **F2** toggles FREE PLAY (infinite credits, saved in localStorage),
 **F3** on the title picks the starting mission, **F4** finishes the current mission, **F6** / **F7** drop the next weapon crate / food, **F8** skips to the next section,
 `?mission=2` preselects a mission and `&section=2` a section of it.
 
@@ -64,7 +71,7 @@ index.html            entry; script load order lives here
 lib/phaser.min.js     vendored engine
 src/config.js         constants (sizes, speeds, tuning)
 src/systems/          Textures (procedural art), Sfx (synth audio), Voice (announcer), Session (credits), Controls (input),
-                      Fx, Terrain (text-map tiles, one-way floors, slopes), Weapons (guns, melee, player projectiles),
+                      TouchPad (on-screen controls), Fx, Terrain (text-map tiles, one-way floors, slopes), Weapons (guns, melee, player projectiles),
                       Ride (sections on a moving vehicle: the Metropolitano roof), Flight (air level), Town (Mission 5 help)
 src/entities/         Player, enemies (Grunt + cop preset, Biker + motocop, RiotCop, Sniper), Abuelita (helper),
                       CombiSlug (vehicle base) + MototaxiSlug, RochabusSlug, Aircraft, Flyer (flying enemies), Ally,

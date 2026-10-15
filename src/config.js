@@ -11,6 +11,8 @@ const CFG = {
   GROUND_Y: 240,
   GRAVITY: 900,
   DEBUG: /[?&]debug/.test(location.search),
+  // Testing shortcuts (F2-F8, ?mission=, ?section=): only with ?dev in the URL, on localhost or from a local file.
+  DEV: /[?&]dev/.test(location.search) || ['localhost', '127.0.0.1'].includes(location.hostname) || location.protocol === 'file:',
   ALERT_MS: 1100, // how long a boss / ambush warning stays on screen
   SHOW_FPS: /[?&](fps|debug)/.test(location.search), // FPS meter + worst frame of the last 3 s (HUD, bottom)
 

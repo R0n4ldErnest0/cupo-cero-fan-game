@@ -44,14 +44,17 @@ class TitleScene extends Phaser.Scene {
     this.tStage = this.add.text(480, 284, '', menuStyle({ fontSize: '17px', color: '#9fd3f0', strokeThickness: 5 })).setOrigin(0.5);
 
     this.tCredits = this.add.text(16, 528, '', menuStyle({ fontSize: '16px', color: '#ffe066', strokeThickness: 4 })).setOrigin(0, 1);
-    this.add.text(944, 528, '5: moneda   F2: free play   F3: misión (pruebas)', menuStyle({ fontSize: '13px', color: '#ffffff', strokeThickness: 3 })).setOrigin(1, 1);
-    this.add.text(480, 506, 'Sátira. Todos los personajes y organizaciones son ficticios.', menuStyle({ fontSize: '13px', color: '#ffffff', strokeThickness: 3 })).setOrigin(0.5, 1);
+    const keys = TouchPad.enabled ? 'MONEDA: créditos' : CFG.DEV ? '5: moneda   F2: free play   F3: misión (pruebas)' : '5: moneda';
+    this.add.text(944, 528, keys, menuStyle({ fontSize: '13px', color: '#ffffff', strokeThickness: 3 })).setOrigin(1, 1);
+    this.add.text(480, 508, 'Fan game no oficial inspirado en Metal Slug (SNK), sin fines de lucro · Sátira: personajes y organizaciones ficticios',
+      menuStyle({ fontSize: '12px', color: '#ffffff', strokeThickness: 3 })).setOrigin(0.5, 1);
 
     this.ctrl = new Controls(this, CFG.KEYS.solo, 0);
     this.twoCtrl = new Controls(this, { start: ['TWO'] });
     this.input.on('pointerdown', () => this.start(this.choice + 1));
-    this.input.keyboard.addCapture('F3');
+    if (CFG.DEV) this.input.keyboard.addCapture('F3');
     this.input.keyboard.on('keydown-F3', () => {
+      if (!CFG.DEV) return;
       Sfx.init();
       Session.cycleStartMission();
       Sfx.jump();
@@ -61,7 +64,7 @@ class TitleScene extends Phaser.Scene {
   start(n) {
     Sfx.init();
     if (!Session.pay(n)) {
-      this.notice.setColor('#ff6b6b').setText(`INSERTA ${n === 2 ? '2 MONEDAS' : 'MONEDA'} (TECLA 5)`);
+      this.notice.setColor('#ff6b6b').setText(`INSERTA ${n === 2 ? '2 MONEDAS' : 'MONEDA'} (${TouchPad.enabled ? 'BOTÓN MONEDA' : 'TECLA 5'})`);
       Sfx.hit();
       return;
     }

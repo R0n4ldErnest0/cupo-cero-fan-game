@@ -419,9 +419,11 @@ class LevelScene extends Phaser.Scene {
     const sign = (x, y, text, bg) => this.physicalSign(x, y, text, bg);
     const build = {
       text: (d) => this.worldText(d.x, d.y, d.text, d.style),
-      controls: (d) => sign(d.x, d.y, Session.numPlayers === 1
-        ? '←→ MOVER  ↑ APUNTAR  ↓ AGACHAR\nZ SALTAR  X DISPARAR  C GRANADA'
-        : '1P: WASD · F G H\n2P: FLECHAS · , . /', '#1b1b22'),
+      controls: (d) => sign(d.x, d.y, TouchPad.enabled
+        ? 'JOYSTICK: MOVER Y APUNTAR\nSALTO · DISPARO · GRANADA'
+        : Session.numPlayers === 1
+          ? '←→ MOVER  ↑ APUNTAR  ↓ AGACHAR\nZ SALTAR  X DISPARAR  C GRANADA'
+          : '1P: WASD · F G H\n2P: FLECHAS · , . /', '#1b1b22'),
       image: (d) => this.add.image(d.x, this.floorY(d), d.key).setOrigin(0.5, 1).setDepth(-2),
       sign: (d) => sign(d.x, d.y, d.text, d.bg || '#1e5fb4'),
       graffiti: (d) => {
