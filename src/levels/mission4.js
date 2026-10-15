@@ -173,6 +173,15 @@ MISSIONS.push({
   // After the mission: the journalist airs everything (the arc's trigger).
   story: [
     { type: 'talk', who: 'LA PERIODISTA', text: 'Lo tengo todo: el libro, la plata incautada, el comisario. Esta noche sale en vivo.' },
-    { type: 'talk', who: 'DON TITO', text: 'Entonces mañana no va a ser un día normal en Lima.' },
+    {
+      type: 'tv',
+      headline: 'EL LIBRO DE LOS CUPOS: la banda, la comisaría y "EL JEFE"',
+      ticker: '· Comisario "Archivo" se da a la fuga · El libro registra pagos a la Municipalidad · "Obras y Proyectos El Progreso SAC" a nombre del cuñado del alcalde ·',
+      face: '"EL JEFE" ES...',
+      reveal: 'EL ALCALDE',
+    },
+    { type: 'talk', who: 'DIRIGENTE DEL GREMIO', text: '¡Compañeros: mañana paro de transportistas y marcha a la Municipalidad!' },
+    { type: 'talk', who: 'PANCHO', text: 'El alcalde va a mandar al serenazgo y a la policía. Van a encerrar a la marcha en la plaza.' },
+    { type: 'talk', who: 'DON TITO', text: 'Entonces llegamos por el aire. Sé dónde hay un helicóptero viejo... todavía vuela.' },
   ],
 });

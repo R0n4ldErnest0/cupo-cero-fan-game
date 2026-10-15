@@ -118,11 +118,13 @@ Full design, weapons list and build order: `docs/LEVELS.md`.
 - [x] Moving-camera auto-scroll over a normal map (section `autoscroll`)
 - [x] Flight mode (air level: helicopter / plane, flying enemies), allies (freed honest cops), town supplies
 - [x] Mission 5 greybox: air level, plaza where the town helps, Municipalidad, the mayor's obra-paralizada mech
-- [ ] Ending cutscene; credits
+- [x] Ending (provisional, story pages + an end screen with freed cops / clues / score); credits still to do
+- [ ] Decide the ending's tone (happy or bittersweet) and rewrite the final pages
 
 ### M4.5 — Art, sound and story
 - [ ] Real sprites, backgrounds and tiles; music per mission; voice lines ("¡METRALLETA!", "¡MISIÓN CUMPLIDA!")
-- [ ] Intro cutscene (coworker's death → drivers' union assembly → hiring the mercenary) and story between missions
+- [x] Intro crawl and story pages between missions (talk, ledger, expediente, TV news) — placeholder art
+- [ ] Illustrated cutscenes (real art) for the intro and between missions
 
 ### M5 — Release
 - [ ] Balance, polish, accessibility options

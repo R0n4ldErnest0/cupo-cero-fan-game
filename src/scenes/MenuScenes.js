@@ -212,12 +212,17 @@ class EndingScene extends Phaser.Scene {
 
   create(data = {}) {
     this.cameras.main.setBackgroundColor('#0c0c14');
-    this.add.text(480, 140, 'CONTINUARÁ...', menuStyle({ fontSize: '64px', color: '#ffe066', strokeThickness: 9 })).setOrigin(0.5);
-    this.add.text(480, 220, `Jugaste todas las misiones disponibles (${MISSIONS.length} de 5).\nLa ruta, la comisaría y la municipalidad te esperan.`,
-      menuStyle({ fontSize: '20px', color: '#ffffff', strokeThickness: 5 })).setOrigin(0.5);
+    // Provisional ending (happy or bittersweet is still to decide; see docs/LEVELS.md).
+    this.add.text(480, 110, 'CUPO CERO', menuStyle({ fontSize: '72px', color: '#ffe066', stroke: '#a81f25', strokeThickness: 10 })).setOrigin(0.5);
+    this.add.text(480, 180, 'FIN', menuStyle({ fontSize: '40px', color: '#ffffff', strokeThickness: 7 })).setOrigin(0.5);
+    const run = Session.run || {};
+    this.add.text(480, 236, `Policías honestos liberados: ${run.freed || 0}   ·   Pistas del expediente: ${(run.clues || []).length}`,
+      menuStyle({ fontSize: '18px', color: '#9fd3f0', strokeThickness: 4 })).setOrigin(0.5);
     const scores = (data.scores || []).filter((p) => p.score > 0)
       .map((p) => `${p.index + 1}P ${CFG.CHARACTERS.find((c) => c.id === p.char).name}   ${p.score}`).join('\n');
-    this.add.text(480, 330, scores, menuStyle({ fontSize: '22px', color: '#ffe066', strokeThickness: 5 })).setOrigin(0.5);
+    this.add.text(480, 320, scores, menuStyle({ fontSize: '22px', color: '#ffe066', strokeThickness: 5 })).setOrigin(0.5);
+    this.add.text(480, 400, 'Gracias por jugar. Sátira: todos los personajes y organizaciones son ficticios.',
+      menuStyle({ fontSize: '14px', color: '#cccccc', strokeThickness: 3 })).setOrigin(0.5);
     this.add.text(480, 440, 'ENTER: volver al título', menuStyle({ fontSize: '18px', color: '#cccccc', strokeThickness: 4 })).setOrigin(0.5);
     this.ctrl = new Controls(this, CFG.KEYS.solo, 0);
     Session.run = null;

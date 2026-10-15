@@ -6,6 +6,11 @@ MISSIONS.push({
   subtitle: '¡PAGA O YA SABES!',
   name: 'EL PARADERO',
   outro: { sub: '...¿contactos en la comisaría?' },
+  story: [
+    { type: 'talk', who: 'PANCHO', text: 'Se escapó, el muy... Pero ya sabemos quién cobra los cupos del paradero.' },
+    { type: 'talk', who: 'DON TITO', text: '¿Contactos en la comisaría? Esto es más grande de lo que creen.' },
+    { type: 'talk', who: 'LA BOTICARIA', text: 'En Gamarra cobran puesto por puesto. Dicen que llevan un libro de cuentas.' },
+  ],
   // Expediente: what the honest cops tell you (gang -> protection).
   clues: {
     m1a: 'Los cuperos le pagan a alguien de la comisaría. Por eso nadie los detiene.',

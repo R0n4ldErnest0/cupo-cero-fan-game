@@ -6,6 +6,15 @@ All names are fictional placeholders.
 
 Status: ✅ built · 🚧 greybox (playable, placeholder) · 📝 designed only · ❓ needs a decision
 
+## Story pages (built)
+
+Shown after MISSION COMPLETE, before the tally (`StoryScene`; mission `story` data): the **expediente** of every
+mission, then: M1 the team reacts to El Cobrador's escape; M2 the **ledger**; M3 the helicopter reveal → "vamos a
+entrar" (comisaría); M4 the journalist → a **TV news page** ("EL JEFE" ES... EL ALCALDE, revealed) → the union calls a
+strike and a march → Don Tito knows where an old helicopter is; M5 (**provisional ending**) the mayor arrested on TV
+("es una persecución política"), each character's closing line, then the FIN screen with the freed cops, clues and
+score. The ending's tone (happy or bittersweet) is still to decide.
+
 ## Story arc (decided; details to refine)
 
 A chain across the missions, so the ending feels earned:
@@ -294,8 +303,8 @@ Systems first (each one unlocks several missions), then the missions, then art/s
 8. ✅ **Mission 3** greybox (cerros, Metropolitano + station + second ride with transfers, helicopter boss)
 9. ✅ **Mission 4** greybox (indoor tiles, comisaría, rochabus, comisario)
 10. ✅ **Flight mode + allies**, ✅ **Mission 5** greybox; next: the ending
-11. Real art and music for everything, voice lines
-12. Story cutscenes between missions
+11. ✅ Story pages between missions (dialogue, the ledger, the expediente, TV news) and a provisional ending
+12. **Next:** human playtest of the whole game → balance; art direction; real art and music; voice lines
 13. Balance, difficulty settings, release
 
 Not needed: **Tiled** (text maps cover every mission; it only helps if a non-programmer designs levels or once

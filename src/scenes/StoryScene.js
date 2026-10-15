@@ -7,6 +7,8 @@
 //      censored name (black bar).
 //   { type: 'talk', who, text }   a line of dialogue in a box at the bottom (over the last page shown).
 //   { type: 'file', title, items: [{ text, found }] }   the expediente: clues from the honest cops, "???" if missed.
+//   { type: 'tv', channel, headline, ticker, face, reveal }   a TV news screen: a headline, a scrolling ticker and a
+//      face behind a black bar; if `reveal` is set, the bar slides away after a moment and shows that name.
 class StoryScene extends Phaser.Scene {
   constructor() {
     super('Story');
@@ -34,6 +36,7 @@ class StoryScene extends Phaser.Scene {
     this.readyAt = this.time.now + 600;
     if (page.type === 'ledger') this.showLedger(page);
     else if (page.type === 'file') this.showFile(page);
+    else if (page.type === 'tv') this.showTv(page);
     else this.showTalk(page);
   }
 
@@ -107,6 +110,53 @@ class StoryScene extends Phaser.Scene {
         Sfx.hit();
       });
     }
+  }
+
+  showTv(page) {
+    this.layer.removeAll(true);
+    this.talkBox.removeAll(true);
+    const g = this.add.graphics();
+    const x0 = 140, y0 = 30, w = 680, h = 380;
+    g.fillStyle(0x2b2b33).fillRoundedRect(x0 - 24, y0 - 20, w + 48, h + 60, 18); // the TV set
+    g.fillStyle(0x1e3a6a).fillRect(x0, y0, w, h); // studio
+    g.fillStyle(0x0f1f3a).fillRect(x0, y0 + h - 100, w, 100);
+    g.fillStyle(0xc0282e).fillRect(x0, y0 + h - 96, 210, 50); // "ÚLTIMO MINUTO" box
+    g.fillStyle(0xf4f4f4).fillRect(x0 + 210, y0 + h - 96, w - 210, 50);
+    g.fillStyle(0xf2c94c).fillRect(x0, y0 + h - 40, w, 26); // ticker
+    this.layer.add(g);
+    const st = (size, color) => ({ fontFamily: FONT, fontSize: `${size}px`, color, fontStyle: 'bold' });
+    this.layer.add(this.add.text(x0 + 16, y0 + 12, page.channel || 'CANAL 7 · EN VIVO', st(16, '#ffffff')));
+    this.layer.add(this.add.text(x0 + 12, y0 + h - 82, 'ÚLTIMO MINUTO', st(18, '#ffffff')));
+    this.layer.add(this.add.text(x0 + 222, y0 + h - 92, page.headline, Object.assign(st(15, '#1b1b22'), { wordWrap: { width: w - 240 } })));
+    // The face on screen, behind a black bar until it's revealed.
+    const fx = x0 + w / 2, fy = y0 + 130;
+    const face = this.add.graphics();
+    face.fillStyle(0xc98a5a).fillCircle(fx, fy, 60).fillStyle(0x2b1d14).fillRect(fx - 50, fy - 66, 100, 26);
+    face.fillStyle(0x1b1b22).fillRect(fx - 32, fy - 12, 18, 8).fillRect(fx + 14, fy - 12, 18, 8).fillRect(fx - 20, fy + 24, 40, 6);
+    face.fillStyle(0xd8343a).fillRect(fx - 70, fy + 60, 140, 14).fillStyle(0xf4f4f4).fillRect(fx - 24, fy + 60, 48, 14); // sash
+    this.layer.add(face);
+    const caption = this.add.text(fx, fy + 92, page.face || '', st(18, '#ffe066')).setOrigin(0.5);
+    this.layer.add(caption);
+    const bar = this.add.rectangle(fx, fy - 8, 170, 40, 0x000000);
+    this.layer.add(bar);
+    if (page.reveal) {
+      this.time.delayedCall(1400, () => {
+        if (!bar.active) return;
+        this.tweens.add({ targets: bar, scaleX: 0, alpha: 0, duration: 450, ease: 'Quad.In' });
+        this.tweens.add({ targets: caption, alpha: 0, duration: 250 });
+        const name = this.add.text(fx, fy + 92, page.reveal, st(22, '#ff6b6b')).setOrigin(0.5).setAlpha(0);
+        this.layer.add(name);
+        this.tweens.add({ targets: name, alpha: 1, duration: 300, delay: 400 });
+        Sfx.hit();
+      });
+      this.readyAt = this.time.now + 2000;
+    }
+    // Scrolling ticker.
+    const ticker = this.add.text(x0 + w, y0 + h - 36, page.ticker || '', st(16, '#1b1b22'));
+    this.layer.add(ticker);
+    this.tweens.add({ targets: ticker, x: x0 - ticker.width, duration: (w + ticker.width) * 9, repeat: -1 });
+    const mask = this.make.graphics({ add: false }).fillRect(x0, y0 + h - 40, w, 26);
+    ticker.setMask(mask.createGeometryMask());
   }
 
   // Text where '█' runs become black bars (a censored name).

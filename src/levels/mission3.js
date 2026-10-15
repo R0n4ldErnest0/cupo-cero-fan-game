@@ -11,6 +11,10 @@ MISSIONS.push({
   name: 'LOS CERROS',
   draft: true,
   outro: { sub: 'El Cobrador se escapó... rumbo a la comisaría.' },
+  story: [
+    { type: 'talk', who: 'AMARU', text: 'Un helicóptero de la policía... para sacar a un cupero. Ya no hay duda.' },
+    { type: 'talk', who: 'DON TITO', text: 'Se fue a la comisaría. La conozco por dentro. Vamos a entrar.' },
+  ],
   // Expediente: the comisario and his ties to the Municipalidad.
   clues: {
     m3a: 'Al comisario le dicen "Archivo": todas las denuncias contra los cuperos terminan en su cajón.',

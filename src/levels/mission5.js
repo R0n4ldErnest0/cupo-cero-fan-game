@@ -9,7 +9,20 @@ MISSIONS.push({
   subtitle: 'OBRA PARALIZADA',
   name: 'LA MUNICIPALIDAD',
   draft: true,
-  outro: { sub: '"El Jefe" cayó. Lima amanece distinta... ¿o no?' },
+  outro: { sub: '"El Jefe" cayó.' },
+  // The ending (provisional: happy or bittersweet is still to decide).
+  story: [
+    {
+      type: 'tv',
+      headline: 'ALCALDE DETENIDO: "Es una persecución política", declaró desde la mesa de diálogo',
+      ticker: '· Cae la red de los cupos · Comisario "Archivo" capturado en Tumbes · Transportistas levantan el paro · Gamarra abre todos sus puestos ·',
+      face: 'EL ALCALDE (DETENIDO)',
+    },
+    { type: 'talk', who: 'LA BOTICARIA', text: 'Hoy abrí la botica sin miedo. Primera vez en dos años.' },
+    { type: 'talk', who: 'AMARU', text: 'El gremio me pagó. Pero esta vez no lo hice por la plata.' },
+    { type: 'talk', who: 'DON TITO', text: 'Los policías honestos vuelven a la comisaría. Somos más de tres, al final.' },
+    { type: 'talk', who: 'PANCHO', text: 'Mañana vuelvo a manejar mi combi. Ruta 13-B. Sin cupo. Por Lucho.' },
+  ],
   clues: {
     m5a: 'El alcalde firmó la obra, cobró la obra... y nunca hizo la obra.',
     m5b: 'Los serenos tienen orden de no dejar pasar a la prensa.',

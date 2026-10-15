@@ -73,7 +73,7 @@ src/entities/         Player, enemies (Grunt + cop preset, Biker + motocop, Riot
 src/levels/           missions.js (registry + data schema), missionN.js (one data file per mission)
 src/scenes/           MenuScenes (Boot, Title, CharSelect, MissionEnd, Ending, GameOver), IntroScene (story crawl),
                       HUDScene, LevelScene,
-                      StoryScene (story pages like the ledger, between a mission and its tally)
+                      StoryScene (story pages between a mission and its tally: talk, ledger, expediente, TV news)
 docs/LEVELS.md        mission designs + what's missing for Missions 2–5
 tools/serve.py        no-cache dev server
 ```
