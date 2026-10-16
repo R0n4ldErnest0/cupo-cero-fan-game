@@ -51,6 +51,9 @@ class TitleScene extends Phaser.Scene {
 
     this.ctrl = new Controls(this, CFG.KEYS.solo, 0);
     this.twoCtrl = new Controls(this, { start: ['TWO'] });
+    // The "Sobre el juego" link (an HTML link over the canvas, index.html) shows only here.
+    document.body.classList.add('on-title');
+    this.events.once('shutdown', () => document.body.classList.remove('on-title'));
     this.input.on('pointerdown', () => this.start(this.choice + 1));
     if (CFG.DEV) this.input.keyboard.addCapture('F3');
     this.input.keyboard.on('keydown-F3', () => {

@@ -35,10 +35,16 @@
       #rotate { display: none; position: fixed; inset: 0; z-index: 6; background: #000; color: #ffe066; place-items: center;
         text-align: center; font: bold 20px "Courier New", monospace; padding: 0 16px; }
       @media (orientation: portrait) { body.touch #rotate { display: grid; } }
+      /* "Sobre el juego": only on the title screen (MenuScenes TitleScene toggles body.on-title). */
+      #about { display: none; position: fixed; z-index: 7; top: max(10px, env(safe-area-inset-top)); left: max(12px, env(safe-area-inset-left));
+        padding: 6px 12px; font: bold 14px "Courier New", monospace; color: #1b1b22; background: #ffe066; text-decoration: none;
+        box-shadow: 3px 3px 0 #a81f25; }
+      body.on-title #about { display: block; }
     </style>
   </head>
   <body>
     <div id="game"></div>
+    <a id="about" href="sobre.html">Sobre el juego</a>
     <!-- On-screen controls for touch screens (src/systems/TouchPad.js). -->
     <div id="touch" aria-hidden="true">
       <div class="stick-zone"></div>

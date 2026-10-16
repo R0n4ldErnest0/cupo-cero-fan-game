@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Cupo Cero (fan game): sobre el juego</title>
+    <meta name="description" content="Cupo Cero: fan game run-and-gun estilo Metal Slug, hecho con Claude Code e inspirado en la crisis de extorsiones que vive el transporte en Lima." />
+    <meta property="og:title" content="Cupo Cero (fan game)" />
+    <meta property="og:description" content="Un chofer de combi contra cuperos, policías corruptos y el alcalde de Pima. Juégalo gratis en el navegador." />
+    <meta property="og:image" content="https://r0n4ldernest0.github.io/cupo-cero-fan-game/docs/screenshots/01-title.png" />
+    <meta name="theme-color" content="#14111a" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Work+Sans:wght@400;600;700&display=swap" />
+    <style>
+      /* Layout: one centered column like a game's back cover: title + play button, the pitch, the inspiration,
+         a screenshot grid, controls, credits. Deliberately dark (arcade night), single theme. */
+      :root {
+        --bg: #14111a;
+        --panel: #1e1a27;
+        --line: #3a3348;
+        --ink: #f1eee8;
+        --muted: #b9b2c7;
+        --gold: #ffe066;
+        --red: #c0282e;
+        --blue: #5ad1ff;
+        --display: "Bungee", "Arial Black", Impact, sans-serif;
+        --body: "Work Sans", "Segoe UI", system-ui, sans-serif;
+        color-scheme: dark;
+      }
+      * { box-sizing: border-box; }
+      html { background: var(--bg); }
+      body {
+        margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 17px; line-height: 1.6;
+        padding-inline: 16px; padding-block: max(24px, env(safe-area-inset-top)) 48px;
+      }
+      main { max-width: 960px; margin: 0 auto; display: grid; gap: 56px; }
+      a { color: var(--blue); }
+      a:focus-visible, .play:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+
+      header { display: grid; gap: 18px; justify-items: center; text-align: center; padding-top: 24px; }
+      .eyebrow { margin: 0; font-weight: 700; font-size: 13px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
+      h1 {
+        margin: 0; font-family: var(--display); font-weight: 400; line-height: 0.95; letter-spacing: 0.01em;
+        font-size: clamp(56px, 13vw, 128px); color: var(--gold); text-shadow: 5px 5px 0 var(--red); text-wrap: balance;
+      }
+      .tagline { margin: 0; font-size: clamp(18px, 2.6vw, 22px); color: var(--ink); max-width: 36ch; text-wrap: balance; }
+      .play {
+        display: inline-block; margin-top: 8px; padding: 16px 40px; font-family: var(--display); font-size: 28px; letter-spacing: 0.04em;
+        color: #1b1b22; background: var(--gold); text-decoration: none; box-shadow: 6px 6px 0 var(--red); transition: transform 0.12s, box-shadow 0.12s;
+      }
+      .play:hover { transform: translate(-2px, -2px); box-shadow: 8px 8px 0 var(--red); }
+      .play-note { margin: 0; color: var(--muted); font-size: 14px; }
+
+      h2 { margin: 0 0 14px; font-family: var(--display); font-weight: 400; font-size: 26px; color: var(--gold); letter-spacing: 0.02em; text-wrap: balance; }
+      section p { margin: 0 0 14px; max-width: 68ch; }
+      .why { border-left: 6px solid var(--red); background: var(--panel); padding: 22px 24px; }
+      .why p:last-child { margin-bottom: 0; }
+
+      .shots { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 18px; margin: 0; }
+      .shots figure { margin: 0; min-width: 0; }
+      .shots img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; image-rendering: pixelated; border: 2px solid var(--line); background: #000; }
+      .shots figcaption { margin-top: 6px; font-size: 14px; color: var(--muted); }
+
+      .features { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 10px 28px; }
+      .features li { padding-left: 22px; position: relative; min-width: 0; }
+      .features li::before { content: "▸"; position: absolute; left: 0; color: var(--red); }
+
+      .controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 18px; }
+      .card { background: var(--panel); border: 1px solid var(--line); padding: 18px 20px; min-width: 0; }
+      .card h3 { margin: 0 0 10px; font-size: 15px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+      .card dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; }
+      .card dt { font-weight: 700; color: var(--gold); white-space: nowrap; }
+      .card dd { margin: 0; }
+      kbd { font-family: ui-monospace, "Courier New", monospace; font-size: 0.9em; border: 1px solid var(--line); padding: 0 5px; }
+
+      .english { background: var(--panel); padding: 22px 24px; border: 1px solid var(--line); }
+      .english h2 { font-size: 20px; }
+      .english p { margin-bottom: 0; }
+
+      footer { border-top: 1px solid var(--line); padding-top: 24px; display: grid; gap: 10px; font-size: 14px; color: var(--muted); }
+      footer p { margin: 0; max-width: 80ch; }
+      .bottom-play { text-align: center; }
+      @media (prefers-reduced-motion: reduce) { .play { transition: none; } .play:hover { transform: none; } }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <p class="eyebrow">Fan game no oficial · hecho con Claude Code</p>
+        <h1>CUPO CERO</h1>
+        <p class="tagline">Un chofer de combi contra los cuperos, la policía corrupta y el alcalde de Pima.</p>
+        <a class="play" href="./">▶ JUGAR</a>
+        <p class="play-note">Gratis en el navegador · PC (teclado o mando) o celular (controles táctiles) · 1 o 2 jugadores</p>
+      </header>
+
+      <section>
+        <h2>De qué trata</h2>
+        <p><strong>Cupo Cero</strong> es un run-and-gun al estilo Metal Slug. Pancho, chofer de combi, se cansa de pagar el
+          "cupo" después de que matan a su compadre por no pagar. Junto a Amaru (un mercenario contratado por el gremio de
+          transportistas), Don Tito (un policía retirado, de los honestos) e Inés (dueña de una botica extorsionada), recorre
+          5 misiones: primero las bandas, luego la policía corrupta que las protege y al final el alcalde detrás de todo.</p>
+        <p>Es una sátira con humor de arcade: muertes exageradas, jefes ridículos y globos de diálogo. Los chistes apuntan a
+          los extorsionadores, a los malos policías y a los políticos, nunca a las víctimas.</p>
+      </section>
+
+      <section class="why">
+        <h2>Por qué lo hicimos</h2>
+        <p>Nos inspiramos en la terrible situación que vive actualmente el transporte en Lima: choferes de combi y de bus
+          extorsionados, amenazados y asesinados por no pagar. "Pima" es nuestra parodia de la ciudad, pero el problema es real.</p>
+        <p>Queremos visibilizarlo. Para ti esto es un juego; para mucha gente, no lo es.</p>
+      </section>
+
+      <section>
+        <h2>Capturas</h2>
+        <div class="shots">
+          <figure><img src="docs/screenshots/01-title.png" alt="Pantalla de título de Cupo Cero" width="960" height="540" loading="lazy" /><figcaption>La pantalla de título.</figcaption></figure>
+          <figure><img src="docs/screenshots/02-combi.png" alt="Pancho manejando la Combi Slug contra cuperos" width="960" height="540" loading="lazy" /><figcaption>Misión 1: la Combi Slug en el paradero.</figcaption></figure>
+          <figure><img src="docs/screenshots/03-lentopolitano.png" alt="Pelea en el techo de un bus del Lentopolitano" width="960" height="540" loading="lazy" /><figcaption>Misión 3: en el techo del Lentopolitano.</figcaption></figure>
+          <figure><img src="docs/screenshots/04-air.png" alt="Nivel aéreo con helicópteros y paracaidistas" width="960" height="540" loading="lazy" /><figcaption>Misión final: el viejo helicóptero de Don Tito.</figcaption></figure>
+          <figure><img src="docs/screenshots/05-plaza.png" alt="La combi contra una tanqueta del serenazgo en la plaza" width="960" height="540" loading="lazy" /><figcaption>La plaza: la combi contra la tanqueta del serenazgo.</figcaption></figure>
+          <figure><img src="docs/screenshots/06-mayor.png" alt="El alcalde en su excavadora, jefe final" width="960" height="540" loading="lazy" /><figcaption>Jefe final: el alcalde en su excavadora.</figcaption></figure>
+        </div>
+      </section>
+
+      <section>
+        <h2>Qué tiene</h2>
+        <ul class="features">
+          <li>5 misiones y 7 jefes: una máquina contadora de billetes, un archivador gigante, el alcalde en excavadora…</li>
+          <li>Vehículos: la Combi Slug, un mototaxi, el rochabus, el techo del Lentopolitano y un nivel aéreo.</li>
+          <li>Armas como la anticuchera, un gallo de pelea y una pelota de fulbito.</li>
+          <li>Comida peruana que te pone gordito o mareado.</li>
+          <li>Rescata policías honestos: te dan pistas para el expediente y vuelven a pelear contigo al final.</li>
+          <li>Cooperativo para 2 jugadores en el mismo teclado o con mandos.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Controles</h2>
+        <div class="controls">
+          <div class="card">
+            <h3>Teclado</h3>
+            <dl>
+              <dt><kbd>←</kbd> <kbd>→</kbd></dt><dd>Moverse</dd>
+              <dt><kbd>↑</kbd> / <kbd>↓</kbd></dt><dd>Apuntar arriba / agacharse (subir a la combi)</dd>
+              <dt><kbd>Z</kbd></dt><dd>Saltar</dd>
+              <dt><kbd>X</kbd></dt><dd>Disparar</dd>
+              <dt><kbd>C</kbd></dt><dd>Granada</dd>
+              <dt><kbd>Enter</kbd> / <kbd>5</kbd></dt><dd>Empezar / insertar moneda</dd>
+              <dt><kbd>P</kbd> / <kbd>M</kbd></dt><dd>Pausa / sonido</dd>
+            </dl>
+          </div>
+          <div class="card">
+            <h3>Celular</h3>
+            <dl>
+              <dt>Joystick</dt><dd>Desliza en la mitad izquierda para moverte y apuntar</dd>
+              <dt>SALTO</dt><dd>Saltar</dd>
+              <dt>DISPARO</dt><dd>Disparar</dd>
+              <dt>GRANADA</dt><dd>Granada</dd>
+              <dt>MONEDA</dt><dd>Créditos</dd>
+            </dl>
+            <p style="margin: 12px 0 0; color: var(--muted); font-size: 14px;">Juega con el celular en horizontal.</p>
+          </div>
+          <div class="card">
+            <h3>2 jugadores</h3>
+            <dl>
+              <dt>1P</dt><dd><kbd>WASD</kbd> + <kbd>F</kbd> <kbd>G</kbd> <kbd>H</kbd></dd>
+              <dt>2P</dt><dd>Flechas + <kbd>,</kbd> <kbd>.</kbd> <kbd>/</kbd></dd>
+              <dt>Mando</dt><dd>A saltar · X disparar · B granada · Start</dd>
+            </dl>
+          </div>
+        </div>
+      </section>
+
+      <section class="english" lang="en">
+        <h2>In English</h2>
+        <p><strong>Cupo Cero</strong> is a Metal Slug-style run-and-gun fan game made with Claude Code, inspired by the real
+          extortion crisis hitting bus drivers in Lima, Peru. A combi driver and three allies fight the gangs, the corrupt
+          police who protect them and finally the mayor of "Pima", our parody of the city. Goofy arcade action on a serious
+          subject; the satire punches up, never at the victims. All art and sound are generated in code. Free to play in the
+          browser, on PC or phone, for 1 or 2 players.</p>
+      </section>
+
+      <p class="bottom-play"><a class="play" href="./">▶ JUGAR</a></p>
+
+      <footer>
+        <p>Fan game no oficial, sin fines de lucro. No está afiliado ni respaldado por SNK; "Metal Slug" es una marca de SNK
+          Corporation. Todos los personajes y organizaciones son ficticios. Todo el arte y el sonido están generados con código.</p>
+        <p>Código: <a href="https://github.com/R0n4ldErnest0/cupo-cero-fan-game">github.com/R0n4ldErnest0/cupo-cero-fan-game</a></p>
+      </footer>
+    </main>
+  </body>
+</html>
