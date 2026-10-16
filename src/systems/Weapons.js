@@ -17,6 +17,8 @@ const Weapons = {
     let m;
     if (p.aim === 'up') m = { x: p.x + p.facing * 4, y: p.y - 26, angle: -Math.PI / 2 };
     else if (p.aim === 'down') m = { x: p.x, y: p.y - 2, angle: Math.PI / 2 };
+    else if (p.aim === 'dup') m = { x: p.x + p.facing * 9, y: p.y - 18, angle: p.facing > 0 ? -Math.PI / 4 : (-3 * Math.PI) / 4 };
+    else if (p.aim === 'ddn') m = { x: p.x + p.facing * 9, y: p.y - 8, angle: p.facing > 0 ? Math.PI / 4 : (3 * Math.PI) / 4 };
     else m = { x: p.x + p.facing * 9 * p.scaleX, y: p.y - (p.crouching ? 6 : 13), angle: p.facing > 0 ? 0 : Math.PI };
     if (p.drunk) m.angle += Math.sin(p.scene.time.now / 140) * CFG.DRUNK.AIM_WOBBLE;
     return m;
@@ -144,8 +146,8 @@ const Weapons = {
       b.kind = 'ball';
       b.owner = p;
       b.hop = w.hop;
-      const vy = p.aim === 'up' ? -320 : p.aim === 'down' ? 120 : -120;
-      b.setVelocity(p.aim === 'fwd' ? p.facing * w.speed : p.facing * 40, vy).setAngularVelocity(p.facing * 600);
+      const vy = { up: -320, down: 120, dup: -240, ddn: 40 }[p.aim] ?? -120;
+      b.setVelocity(p.aim === 'up' || p.aim === 'down' ? p.facing * 40 : p.facing * w.speed, vy).setAngularVelocity(p.facing * 600);
       b.vx = b.body.velocity.x;
       const born = time;
       b.step = (t) => {

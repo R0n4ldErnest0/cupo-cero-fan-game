@@ -104,6 +104,24 @@ const HUMAN = {
       '....kPPPPPk.....',
     ],
   },
+  // Arm and gun held diagonally (aims 'dup' up-forward and 'ddn' down-forward): the torso without the level gun...
+  diag: [
+    '.....kCCCCk.....',
+    '....kCCCCCCk....',
+    '....kCCCCssk....',
+    '....kCCCCCk.....',
+    '....kCCCCCk.....',
+    '....kCCCCCk.....',
+    '....kkkkkkk.....',
+    '....kPPPPPk.....',
+  ],
+  // ...plus the gun as pixels [x, y, palette key] from the hand (10, 11) toward the corner.
+  DIAG_GUN: {
+    dup: [[11, 10, 'g'], [12, 9, 'g'], [13, 8, 'g'], [14, 7, 'g'], [12, 10, 'G'], [13, 9, 'G'], [14, 8, 'G'], [15, 7, 'G'],
+      [11, 9, 'k'], [12, 8, 'k'], [13, 7, 'k'], [14, 6, 'k'], [15, 6, 'k'], [13, 10, 'k'], [14, 9, 'k'], [15, 8, 'k']],
+    ddn: [[11, 12, 'g'], [12, 13, 'g'], [13, 14, 'g'], [14, 15, 'g'], [12, 12, 'G'], [13, 13, 'G'], [14, 14, 'G'], [15, 15, 'G'],
+      [11, 13, 'k'], [12, 14, 'k'], [13, 15, 'k'], [14, 16, 'k'], [15, 16, 'k'], [13, 12, 'k'], [14, 13, 'k'], [15, 14, 'k']],
+  },
   // Gun held upright, overlaid at (10,4) for the aim-up frames.
   UP_GUN: ['.kk.', 'kggk', 'kggk', 'kGgk', 'kggk', 'kssk', 'kssk'],
   LEGS: {
@@ -241,11 +259,13 @@ const Textures = {
     for (const [name, skin] of Object.entries(SKINS)) {
       const pal = Object.assign({}, PAL, skin.pal);
       const head = HUMAN.HEADS[skin.head];
-      for (const aim of ['fwd', 'up']) {
+      for (const aim of ['fwd', 'up', 'dup', 'ddn']) {
+        const diag = HUMAN.DIAG_GUN[aim];
         for (const legs of Object.keys(HUMAN.LEGS)) {
           const p = new Painter(16, 24);
-          p.grid([...head, ...HUMAN.TORSO[aim], ...HUMAN.LEGS[legs]], 0, 0, pal);
+          p.grid([...head, ...(diag ? HUMAN.diag : HUMAN.TORSO[aim]), ...HUMAN.LEGS[legs]], 0, 0, pal);
           if (aim === 'up') p.grid(HUMAN.UP_GUN, 10, 4, pal);
+          if (diag) diag.forEach(([x, y, c]) => p.set(x, y, pal[c]));
           p.register(scene, `${name}_${aim}_${legs}`);
         }
       }

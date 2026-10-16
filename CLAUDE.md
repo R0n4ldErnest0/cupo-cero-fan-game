@@ -55,7 +55,7 @@ python tools/serve.py 8000   # then open http://localhost:8000
 `tools/serve.py` disables caching so edits show up on a plain reload. Opening `index.html` directly
 also works. Add `?debug` to the URL to see physics bodies, `?fps` for an FPS meter (with the worst recent frame).
 
-Controls (solo): ←/→ move, ↑ aim up, ↓ crouch (in the air: shoot down), Z jump (↓+Z on a thin floor: drop down), X shoot, C grenade,
+Controls (solo): ←/→ move, ↑ aim up, ↑/↓ + ←/→ aim diagonally (8 directions), ↓ crouch (in the air: shoot down), Z jump (↓+Z on a thin floor: drop down), X shoot, C grenade,
 ↓ near the Combi Slug (or Mototaxi Slug) to board, ↓+Z to exit it; in the mototaxi ↓+C is the bocinazo.
 P pause, M mute, Enter start.
 2 players: 1P WASD + F shoot / G jump / H grenade, 2P arrows + , shoot / . jump / / grenade; gamepads work

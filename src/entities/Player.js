@@ -169,7 +169,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     if (move) this.facing = move;
 
     const wasCrouching = this.crouching;
-    this.crouching = c.down && onGround;
+    this.crouching = c.down && onGround && !move; // ↓ + a direction aims diagonally down instead
     if (this.crouching !== wasCrouching) {
       if (this.crouching) this.body.setSize(8, 12).setOffset(4, 12);
       else this.body.setSize(8, 20).setOffset(4, 4);
@@ -187,8 +187,12 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       }
     }
 
-    // Holding ↓ in the air shoots straight down, like Metal Slug.
-    this.aim = !onGround && c.down ? 'down' : c.up && !this.crouching ? 'up' : 'fwd';
+    // Eight directions, like the Combi Slug's gun: ↑ up, ↑ + ←/→ diagonally up, ↓ + ←/→ diagonally down,
+    // ↓ alone crouches on the ground and shoots straight down in the air.
+    if (c.up && !this.crouching) this.aim = move ? 'dup' : 'up';
+    else if (c.down && move) this.aim = 'ddn';
+    else if (c.down && !onGround) this.aim = 'down';
+    else this.aim = 'fwd';
     // Every press fires as soon as the gun allows (a press slightly early is kept, not lost), so tapping
     // faster shoots faster; holding repeats at the slower `hold` rate.
     if (c.fireP) this.firePressedAt = time;
