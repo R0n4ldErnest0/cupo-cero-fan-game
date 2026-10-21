@@ -21,6 +21,7 @@ class TitleScene extends Phaser.Scene {
   }
 
   create() {
+    Music.play('title');
     this.add.image(480, 270, 'bg_sky').setScale(2);
     this.add.tileSprite(0, 100, 480, 150, 'bg_hills').setOrigin(0).setScale(2);
     this.add.tileSprite(0, 480 - 340, 480, 170, 'bg_city').setOrigin(0).setScale(2);
@@ -217,6 +218,7 @@ class EndingScene extends Phaser.Scene {
   }
 
   create(data = {}) {
+    Music.play('title');
     this.cameras.main.setBackgroundColor('#0c0c14');
     // Provisional ending (happy or bittersweet is still to decide; see docs/LEVELS.md).
     this.add.text(480, 110, 'CUPO CERO', menuStyle({ fontSize: '72px', color: '#ffe066', stroke: '#a81f25', strokeThickness: 10 })).setOrigin(0.5);

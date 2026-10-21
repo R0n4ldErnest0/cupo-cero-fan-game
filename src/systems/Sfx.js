@@ -1,4 +1,4 @@
-// Synthesized sound effects + a placeholder chicha loop (WebAudio, no asset files).
+// Synthesized sound effects (WebAudio, no asset files). The music is in Music.js.
 // Every call is a no-op until init() runs from a user gesture (browser autoplay rules).
 
 const mtof = (m) => 440 * Math.pow(2, (m - 69) / 12);
@@ -8,21 +8,9 @@ const NOTE = (name) => {
   return 12 * (Number(m[3]) + 1) + base + (m[2] ? 1 : 0);
 };
 
-// 4 bars of 16th-note steps over Am - G - F - E (the classic chicha / Andalusian cadence).
-const MELODY = [
-  'A4 . C5 . E5 . D5 C5 B4 . A4 . C5 . . .',
-  'B4 . D5 . G5 . F5 E5 D5 . B4 . G4 . . .',
-  'A4 . C5 . F5 . E5 D5 C5 . A4 . F4 . A4 .',
-  'G#4 . B4 . E5 . D5 . C5 . B4 . G#4 . . .',
-].join(' ').split(' ').map((t) => (t === '.' ? null : NOTE(t)));
-const BASS_ROOTS = [45, 43, 41, 40];
-const CHORDS = [[57, 60, 64], [55, 59, 62], [53, 57, 60], [52, 56, 59]];
-const STEP = 60 / 104 / 4;
-
 const Sfx = {
   ctx: null,
   muted: false,
-  music: null,
 
   init() {
     if (this.ctx) {
@@ -41,9 +29,9 @@ const Sfx = {
     this.musicBus = ctx.createGain();
     this.musicBus.gain.value = 0.3;
     this.musicBus.connect(this.master);
-    // Surf-guitar echo for the chicha lead
+    // Surf-guitar echo for the music's lead (Music sets the delay to the song's tempo)
     this.echo = ctx.createDelay(1);
-    this.echo.delayTime.value = STEP * 1.5;
+    this.echo.delayTime.value = 0.22;
     const fb = ctx.createGain();
     fb.gain.value = 0.3;
     this.echo.connect(fb).connect(this.echo);
@@ -52,6 +40,7 @@ const Sfx = {
     const d = this.noiseBuf.getChannelData(0);
     for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
     Voice.init();
+    Music.wake();
   },
 
   toggleMute() {
@@ -184,50 +173,5 @@ const Sfx = {
       this.tone('square', 440, 440, 0.16, 0.06, { when: t + d });
       this.tone('square', 554, 554, 0.16, 0.06, { when: t + d });
     });
-  },
-  fanfare() {
-    if (!this.ctx) return;
-    const t = this.ctx.currentTime;
-    [72, 76, 79, 84, 79, 84].forEach((m, i) => this.tone('square', mtof(m), mtof(m), i === 5 ? 0.6 : 0.14, 0.08, { when: t + i * 0.13 }));
-  },
-
-  startMusic() {
-    if (!this.ctx || this.music) return;
-    this.music = { step: 0, next: this.ctx.currentTime + 0.1 };
-    this.music.timer = setInterval(() => this._tick(), 25);
-  },
-
-  stopMusic() {
-    this.rotorStop();
-    if (!this.music) return;
-    clearInterval(this.music.timer);
-    this.music = null;
-  },
-
-  _tick() {
-    const m = this.music;
-    if (!m) return;
-    while (m.next < this.ctx.currentTime + 0.12) {
-      this._step(m.step, m.next);
-      m.next += STEP;
-      m.step = (m.step + 1) % 64;
-    }
-  },
-
-  _step(step, t) {
-    const bar = Math.floor(step / 16), s = step % 16;
-    const dest = this.musicBus;
-    // güiro: long-short-short on every beat
-    if (s % 4 === 0) this.noise(0.1, 0.05, { type: 'bandpass', f0: 5000, f1: 3000, when: t, dest });
-    else if (s % 4 >= 2) this.noise(0.035, 0.04, { type: 'bandpass', f0: 6000, when: t, dest });
-    if (s === 0 || s === 8) this.tone('sine', 110, 40, 0.18, 0.5, { when: t, dest });
-    // cumbia bass
-    const root = BASS_ROOTS[bar];
-    const bass = { 0: root, 6: root + 7, 8: root + 7, 12: root, 14: root + 12 }[s];
-    if (bass) this.tone('triangle', mtof(bass), null, 0.22, 0.35, { when: t, dest });
-    // off-beat chord "chucu"
-    if (s % 4 === 2) CHORDS[bar].forEach((n) => this.tone('triangle', mtof(n), null, 0.08, 0.025, { when: t, dest }));
-    const note = MELODY[step];
-    if (note) this.tone('square', mtof(note), null, 0.2, 0.05, { when: t, dest, vibrato: 6, echo: true });
   },
 };

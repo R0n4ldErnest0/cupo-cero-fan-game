@@ -97,10 +97,11 @@ class LevelScene extends Phaser.Scene {
 
     this.scene.stop('HUD');
     this.scene.launch('HUD');
-    Sfx.startMusic();
+    // The mission's track (a section can pick another with `music`); boss fights switch to `bossMusic` or 'boss'.
+    Music.play(M.music || `m${this.missionIndex + 1}`);
     this.events.once('shutdown', () => {
       Sfx.rotorStop();
-      if (!this.keepMusic) Sfx.stopMusic();
+      if (!this.keepMusic) Music.stop();
     });
     if (data.carry) this.cameras.main.fadeIn(400, 0, 0, 0);
     else {
@@ -985,7 +986,9 @@ class LevelScene extends Phaser.Scene {
     if (this.finished) return;
     this.finished = true;
     this.updateFreeze();
-    Sfx.stopMusic();
+    Sfx.rotorStop();
+    this.keepMusic = true;
+    Music.play('gameover');
     this.time.delayedCall(800, () => {
       this.scene.stop('HUD');
       this.scene.start('GameOver', { scores: this.scores() });
@@ -1060,6 +1063,7 @@ class LevelScene extends Phaser.Scene {
 
   startBoss(type) {
     Sfx.rev();
+    Music.play(this.mission.bossMusic || 'boss');
     // In a ride the "floor" is the bus roof (the bus has stopped at the terminal).
     const floor = this.ride ? CFG.RIDE.ROOF_Y : this.floorY({ x: this.levelW - 40 });
     const b = (this.boss = new BOSSES[type](this, this.levelW + 70, floor));
@@ -1095,8 +1099,9 @@ class LevelScene extends Phaser.Scene {
     if (this.finished) return;
     this.finished = true;
     this.updateFreeze();
-    Sfx.stopMusic();
-    Sfx.fanfare();
+    Sfx.rotorStop();
+    this.keepMusic = true;
+    Music.play('win');
     Voice.say('mission_complete', 'Mission complete!', 'en');
     // Just the arcade banner: the story (if any) comes in the pages after it.
     this.message('MISSION COMPLETE!', '', 4500);

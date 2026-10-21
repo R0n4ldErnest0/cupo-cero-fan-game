@@ -123,7 +123,8 @@ Full design, weapons list and build order: `docs/LEVELS.md`.
 - [ ] Decide the ending's tone (happy or bittersweet) and rewrite the final pages
 
 ### M4.5 — Art, sound and story
-- [ ] Real sprites, backgrounds and tiles; music per mission; voice lines ("¡METRALLETA!", "¡MISIÓN CUMPLIDA!")
+- [x] Music per mission (synthesized: title, 5 missions, boss, win and game-over jingles; real files can replace any track)
+- [ ] Real sprites, backgrounds and tiles; voice lines ("¡METRALLETA!", "¡MISIÓN CUMPLIDA!")
 - [x] Intro crawl and story pages between missions (talk, ledger, expediente, TV news) — placeholder art
 - [x] Playtest feedback round 1: zoom 3 (consistent sizes), physical signs and no floating texts, less enemy
       chatter, short boss warnings, more enemies (section `crowd`) and Metropolitano waves, a lighter end of mission

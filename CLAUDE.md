@@ -38,8 +38,10 @@ See `ROADMAP.md` for the plan, level list and open decisions.
 - **All placeholder art is generated in code** (`src/systems/Textures.js`): small sprites are ASCII
   pixel grids + palettes, larger ones (combi, boss, backgrounds) use Painter primitives (rect, disc, line, 3x5 text).
   Replace with real sprite sheets later by loading images under the same texture keys.
-- **All sound is synthesized** with WebAudio (`src/systems/Sfx.js`), including the placeholder
-  chicha-style music loop.
+- **All sound is synthesized** with WebAudio: effects in `src/systems/Sfx.js`; music in `src/systems/Music.js`, which plays
+  one song per mission plus title, boss and jingles from the data in `src/systems/Songs.js` (16-step bars of notes and chords
+  over a style: cumbia, huayno, noir, march, boss). A recorded file listed in `assets/music/music.json` replaces a song
+  (see `assets/music/README.md`).
 
 ## Public build
 
@@ -72,7 +74,7 @@ Testing (only on localhost, from a file, or with `?dev` in the URL: `CFG.DEV`): 
 index.html            entry; script load order lives here
 lib/phaser.min.js     vendored engine
 src/config.js         constants (sizes, speeds, tuning)
-src/systems/          Textures (procedural art), Sfx (synth audio), Voice (announcer), Session (credits), Controls (input),
+src/systems/          Textures (procedural art), Sfx (synth audio), Music + Songs (background music), Voice (announcer), Session (credits), Controls (input),
                       TouchPad (on-screen controls), Fx, Terrain (text-map tiles, one-way floors, slopes), Weapons (guns, melee, player projectiles),
                       Ride (sections on a moving vehicle: the Metropolitano roof), Flight (air level), Town (Mission 5 help)
 src/entities/         Player, enemies (Grunt + cop preset, Biker + motocop, RiotCop, Sniper), Abuelita (helper),
